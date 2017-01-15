@@ -9,9 +9,10 @@ namespace ground_gear_intake {
 
   class GroundGearIntake {
    public:
+    GroundGearIntake();
     double voltage_;
-    auto Update();
-  }
+    double Update();
+  };
 
 } // ground_gear_intake
 
