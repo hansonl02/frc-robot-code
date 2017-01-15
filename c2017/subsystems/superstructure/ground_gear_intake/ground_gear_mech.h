@@ -5,13 +5,15 @@
 
 namespace c2017 {
 
-namespace ground_gear_mech {
+namespace ground_gear_intake {
 
-class GroundGearIntake {
- public:
-  void SetGoal();
+  class GroundGearIntake {
+   public:
+    void SetGoal();
+    double Update();
+  }
 
-  double Update();
+} // ground_gear_intake
 
-
+}
 #endif //C2017_SUBSYSTEMS_SUPERSTRUCTURE_GROUNDGEARINTAKE_H_
