@@ -30,6 +30,7 @@ GroundGearIntakeOutputProto GroundGearIntake::Update(GroundGearIntakeInputProto 
    }
   GroundGearIntakeOutputProto output;
   output->set_roller_voltage(voltage);
+  output->set_solenoid(is_solenoid_up);
   return output;
 
 }
