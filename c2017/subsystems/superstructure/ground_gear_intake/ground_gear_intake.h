@@ -7,12 +7,14 @@ namespace c2017 {
 
 namespace ground_gear_intake {
 
-  class GroundGearIntake {
-   public:
-    GroundGearIntake();
-    double voltage_;
-    double Update();
-  };
+class GroundGearIntake {
+ public:
+  GroundGearIntake();
+  GroundGearIntakeOutputProto Update(GroundGearIntakeInputProto input, GroundGearIntakeGoalProto goal);
+  GroundGearIntakeGoalProto Set_Goal
+ private:
+  GroundGearIntakeGoalProto goal_;
+};
 
 } // ground_gear_intake
 
