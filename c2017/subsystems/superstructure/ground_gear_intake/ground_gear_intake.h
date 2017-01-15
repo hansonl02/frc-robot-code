@@ -10,8 +10,7 @@ namespace ground_gear_intake {
   class GroundGearIntake {
    public:
     double voltage_;
-    void SetGoal();
-    double Update();
+    auto Update();
   }
 
 } // ground_gear_intake
