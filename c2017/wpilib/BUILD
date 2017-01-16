@@ -6,7 +6,11 @@ cc_library(
     'queue_types.h',
   ],
   deps = [
+<<<<<<< HEAD
     'wpilib_proto', 
+=======
+    'wpilib_proto',
+>>>>>>> upstream/master
     '//muan/proto:stack_proto',
     '//muan/queues:queues'
   ],
@@ -21,6 +25,25 @@ cc_proto_library(
   visibility = ['//visibility:public']
 )
 
+<<<<<<< HEAD
+=======
+cc_library(
+  name = 'drivetrain_interface',
+  srcs = [
+    'drivetrain_interface.cpp'
+  ],
+  hdrs = [
+    'drivetrain_interface.h'
+  ],
+  deps = [
+    '//c2017/queue_manager',
+    '//muan/wpilib/gyro:gyro',
+    '//third_party/wpilibsuite:wpilib',
+    '//muan/utils:math_utils'
+  ]
+)
+
+>>>>>>> upstream/master
 cc_library(
   name = 'wpilib_interface',
   srcs = [
@@ -30,11 +53,17 @@ cc_library(
     'wpilib_interface.h',
   ],
   deps = [
+    ':drivetrain_interface',
     '//c2017/queue_manager',
     '//muan/wpilib:can_wrapper',
+    '//muan/wpilib/gyro:gyro',
     '//third_party/wpilibsuite:wpilib',
+    '//muan/utils:math_utils'
   ],
   visibility = ['//visibility:public']
 )
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
