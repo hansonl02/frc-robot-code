@@ -24,9 +24,10 @@ cc_proto_library(
 
 cc_test(
   name = 'ground_gear_intake_test',
-  srcs = ['ground_gear_intake.cpp'],
+  srcs = ['ground_gear_intake_test.cpp'],
   deps = [
     ':ground_gear_intake',
+    ':ground_gear_intake_queues',
     '//third_party/google/googletest:googletest',
   ]
 )

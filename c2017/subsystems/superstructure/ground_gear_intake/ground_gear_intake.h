@@ -10,8 +10,8 @@ namespace ground_gear_intake {
 class GroundGearIntake {
  public:
   GroundGearIntake();
-  GroundGearIntakeOutputProto Update(GroundGearIntakeInputProto input) ;
-  GroundGearIntakeGoalProto SetGoal(GroundGearIntakeGoalProto goal);
+  GroundGearIntakeOutputProto Update(GroundGearIntakeInputProto input);
+  void SetGoal(GroundGearIntakeGoalProto goal);
  private:
   GroundGearIntakeGoalProto goal_;
 };

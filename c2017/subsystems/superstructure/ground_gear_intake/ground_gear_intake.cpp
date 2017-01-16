@@ -44,12 +44,12 @@ GroundGearIntakeOutputProto GroundGearIntake::Update(GroundGearIntakeInputProto 
   //sends voltage and solenoid output
   GroundGearIntakeOutputProto output;
   output->set_roller_voltage(voltage);
-  output->set_solenoid(is_solenoid_up_);
+  output->set_solenoid(!is_solenoid_up_);
   return output;
 }
 
-void SetGoal(GroundGearIntakeGoalProto goal) {
-  goal = goal;
+void GroundGearIntake::SetGoal(GroundGearIntakeGoalProto goal) {
+  goal_ = goal;
 }
 
 }//ground_gear_intake
