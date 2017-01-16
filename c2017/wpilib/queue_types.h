@@ -17,4 +17,4 @@ namespace wpilib {
 
 } // c2017
 
-#endif
+#endif // C2017_WPILIB_QUEUE_TYPES_H_ 
