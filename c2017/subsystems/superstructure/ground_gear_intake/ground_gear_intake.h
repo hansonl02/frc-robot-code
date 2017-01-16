@@ -11,7 +11,7 @@ class GroundGearIntake {
  public:
   GroundGearIntake();
   GroundGearIntakeOutputProto Update(GroundGearIntakeInputProto input) ;
-  GroundGearIntakeGoalProto Set_Goal(GroundGearIntakeGoalProto goal);
+  GroundGearIntakeGoalProto SetGoal(GroundGearIntakeGoalProto goal);
  private:
   GroundGearIntakeGoalProto goal_;
 };
