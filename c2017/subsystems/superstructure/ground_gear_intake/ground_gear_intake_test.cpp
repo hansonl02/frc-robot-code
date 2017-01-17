@@ -33,7 +33,7 @@ TEST(GroundGearIntakeTest, CanCarryWithoutCurrentSpike) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->solenoid());
-    EXPECT_EQ(output->roller_voltage(), 0.);
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 }
 
@@ -50,7 +50,7 @@ TEST(GroundGearIntakeTest, CanPickupWithCurrentSpike) {
     input->set_current(134.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->solenoid());
-    EXPECT_EQ(output->roller_voltage(), 0.);
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 }
 
@@ -112,7 +112,7 @@ TEST(GroundGearIntakeTest, CanCarryAfterPickingUpStalls) {
     input->set_current(134.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->solenoid());
-    EXPECT_EQ(output->roller_voltage(), 0.);
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 
   goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::CARRY);
@@ -122,7 +122,7 @@ TEST(GroundGearIntakeTest, CanCarryAfterPickingUpStalls) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->solenoid());
-    EXPECT_EQ(output->roller_voltage(), 0.);
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 }
 
@@ -139,7 +139,7 @@ TEST(GroundGearIntakeTest, CanScoreAfterCarrying) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->solenoid());
-    EXPECT_EQ(output->roller_voltage(), 0.);
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 
   goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::SCORE);
