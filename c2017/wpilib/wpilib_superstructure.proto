@@ -1,17 +1,13 @@
 syntax = "proto2";
 
-package c2017.wpilib_proto;
+package c2017.wpilib;
 
 option cc_enable_arenas = true;
 
 message WpilibOutput {
   // Intake Group
   required double main_roller_voltage = 1;
-<<<<<<< HEAD
   required bool ball_intake_down = 2; 
-=======
-  required bool ball_intake_down = 2;
->>>>>>> upstream/master
   required double ground_gear_voltage = 3;
   required bool ground_gear_down = 4;
 
@@ -20,11 +16,7 @@ message WpilibOutput {
   required bool magazine_open = 7;
   // Shooter/Climber Group
   // shooter_voltage is also the climber_voltage, since they run together
-<<<<<<< HEAD
   required double shooter_voltage = 8; 
-=======
-  required double shooter_voltage = 8;
->>>>>>> upstream/master
   required double trigger_voltage = 9;
 }
 

@@ -3,7 +3,7 @@
 
 #include "muan/proto/stack_proto.h"
 #include "muan/queues/message_queue.h"
-#include "c2017/subsystems/magazine.pb.h"
+#include "c2017/subsystems/superstructure/magazine/magazine.pb.h"
 
 namespace c2017 {
 

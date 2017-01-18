@@ -41,4 +41,14 @@ QueueManager::drivetrain_output_queue() {
   return &drivetrain_output_queue_;
 }
 
+c2017::wpilib::WpilibInputQueue* 
+QueueManager::superstructure_input_queue() {
+  return &superstrucutre_input_queue_;
+}
+
+c2017::wpilib::WpilibOutputQueue* 
+QueueManager::superstructure_output_queue() {
+  return &superstrucutre_output_queue_;
+}
+
 }  // c2017
