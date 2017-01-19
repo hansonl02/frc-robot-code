@@ -32,11 +32,12 @@ cc_library(
   deps = [
     '//c2017/queue_manager',
     '//muan/utils:math_utils',
+    '//muan/wpilib:pcm_wrapper',
+    '//muan/wpilib:can_wrapper',
     '//third_party/wpilibsuite:wpilib'
   ],
   visibility = ['//visibility:public']
 )
-
 
 cc_library(
   name = 'wpilib_interface',
@@ -55,4 +56,20 @@ cc_library(
     ':superstructure_interface',
   ],
   visibility = ['//visibility:public']
+)
+
+cc_library(
+  name = 'drivetrain_interface',
+  srcs = [
+    'drivetrain_interface.cpp'
+  ],
+  hdrs = [
+    'drivetrain_interface.h'
+  ],
+  deps = [
+    '//c2017/queue_manager',
+    '//muan/wpilib/gyro:gyro',
+    '//third_party/wpilibsuite:wpilib',
+    '//muan/utils:math_utils'
+  ]
 )
