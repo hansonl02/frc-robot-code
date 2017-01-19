@@ -19,7 +19,13 @@ class SuperStructureInterface {
   void ReadSensors();
 
  private:
-  c2017::wpilib::WpilibInputQueue* input_queue_;
+  c2017::shooter::ShooterInputQueue* shooter_input_queue_;
+  c2017::trigger::TriggerInputQueue* trigger_input_queue_;
+  c2017::climber::ClimberInputQueue* climber_input_queue_;
+  
+  c2017::magazine::MagazineInputQueue* magazine_input_queue_;
+  c2017::ground_gear_intake::GroundGearIntakeInputQueue* ground_gear_input_queue_;
+  
   c2017::wpilib::WpilibOutputQueue::QueueReader output_queue_;
 
   VictorSP shooter_motor_a_, shooter_motor_b_, shooter_motor_c_, shooter_motor_d_;

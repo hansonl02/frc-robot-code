@@ -21,12 +21,3 @@ message WpilibOutput {
   required double trigger_voltage = 10;
 }
 
-message WpilibInput {
-  required double shooter_encoder = 1;
-  required double trigger_encoder = 2;
-
-  // TODO placeholder for the actually things that require current
-  required double ground_gear_current = 3;
-  required double climber_current = 4;
-}
-

@@ -42,7 +42,11 @@ constexpr double kMaxVoltage = 12;
 } // ports
 
 SuperStructureInterface::SuperStructureInterface(muan::wpilib::CanWrapper* can_wrapper) 
-    : input_queue_(QueueManager::GetInstance().superstructure_input_queue()),
+    : shooter_input_queue_(QueueManager::GetInstance().shooter_input_queue()),
+      trigger_input_queue_(QueueManager::GetInstance().trigger_input_queue()),
+      climber_input_queue_(QueueManager::GetInstance().climber_input_queue()),
+      magazine_input_queue_(QueueManager::GetInstance().magazine_input_queue()),
+      ground_gear_input_queue_(QueueManager::GetInstance().ground_gear_input_queue()),
       output_queue_(QueueManager::GetInstance().superstructure_output_queue()->MakeReader()), 
       shooter_motor_a_{ports::superstructure::kShooterMotorA}, 
       shooter_motor_b_{ports::superstructure::kShooterMotorB}, 
@@ -66,11 +70,18 @@ SuperStructureInterface::SuperStructureInterface(muan::wpilib::CanWrapper* can_w
 }
 
 void SuperStructureInterface::ReadSensors() {
-  c2017::wpilib::WpilibInputProto sensors;
+  c2017::shooter::ShooterInputProto shooter_sensors;
+  c2017::trigger::TriggerInputProto trigger_sensors;
+  c2017::climber::ClimberInputProto climber_sensors;
+
+  c2017::magazine::MagazineInputProto magazine_sensors;
+  c2017::ground_gear_intake::GroundGearIntakeInputProto ground_gear_sensors;
+
   constexpr double kRadiansPerClick = M_PI * 2  / 360.0;
 
-  sensors->set_shooter_encoder(shooter_encoder_.Get() * kRadiansPerClick);
-  sensors->set_trigger_encoder(trigger_encoder_.Get() * kRadiansPerClick);
+  shooter_sensors->set_encoder_position(shooter_encoder_.Get() * kRadiansPerClick);
+  trigger_sensors->set_encoder_position(trigger_encoder_.Get() * kRadiansPerClick);
+  climber_sensors->set_position(shooter_encoder_.Get() * kRadiansPerClick);
 
   auto current_reader = QueueManager::GetInstance().pdp_status_queue().MakeReader().ReadLastMessage();
 
@@ -78,11 +89,17 @@ void SuperStructureInterface::ReadSensors() {
     // Place holder for now
     // TODO: Kelly figure out what exactly needs current inputs and what ports it is in
     // Ground gear intake, climber
-    sensors->set_ground_gear_current((*current_reader)->current4()); 
-    sensors->set_climber_current((*current_reader)->current5()); 
+    ground_gear_sensors->set_current((*current_reader)->current4()); 
+    climber_sensors->set_current((*current_reader)->current5()); 
+    magazine_sensors->set_conveyor_current((*current_reader)->current6()); 
   }
 
-  input_queue_->WriteMessage(sensors);
+  shooter_input_queue_->WriteMessage(shooter_sensors);
+  trigger_input_queue_->WriteMessage(trigger_sensors);
+  climber_input_queue_->WriteMessage(climber_sensors);
+
+  magazine_input_queue_->WriteMessage(magazine_sensors);
+  ground_gear_input_queue_->WriteMessage(ground_gear_sensors);
 }
 
 void SuperStructureInterface::WriteActuators() {
