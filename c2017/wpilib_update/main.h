@@ -5,7 +5,7 @@
 
 namespace c2017 {
 
-namespace citrus_robot{
+namespace citrus_robot {
 
 class CitrusRobot {
  public:
