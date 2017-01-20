@@ -1,15 +1,15 @@
-#ifndef C2017_TELEOP_TELEOP_H_
-#define C2017_TELEOP_TELEOP_H_
+#ifndef C2017_WPILIB_UPDATE_MAIN_H_
+#define C2017_WPILIB_UPDATE_MAIN_H_
 
 #include "muan/teleop/joystick.h"
 
 namespace c2017 {
 
-namespace wpilib_update {
+namespace citrus_robot {
 
-class Main {
+class CitrusRobot {
  public:
-  Main();
+  CitrusRobot();
 
   // Call this to update at ~50hz (DS update rate)
   void Update();
@@ -25,8 +25,8 @@ class Main {
   void SendDSMessage();
 };
 
-}  // wpilib_update
+}  // citrus_robot 
 
 }  // c2017
 
-#endif  // C2017_TELEOP_TELEOP_H_
+#endif  // C2017_WPILIBUPDATE_MAIN_H_
