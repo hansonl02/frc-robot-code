@@ -15,7 +15,7 @@ TEST(GroundGearIntakeTest, CanPickupWithoutCurrentSpike) {
   for(int i = 0; i < 1000; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
-    EXPECT_TRUE(output->solenoid());
+    EXPECT_TRUE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), 12., 1e-5);
   }
 }
@@ -32,7 +32,7 @@ TEST(GroundGearIntakeTest, CanCarryWithoutCurrentSpike) {
   for(int i = 0; i < 1000; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
-    EXPECT_FALSE(output->solenoid());
+    EXPECT_FALSE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 }
@@ -49,7 +49,7 @@ TEST(GroundGearIntakeTest, CanScoreWithoutCurrentSpike) {
   for(int i = 0; i < 1000; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
-    EXPECT_FALSE(output->solenoid());
+    EXPECT_FALSE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), -12., 1e-5);
   }
 }
@@ -66,7 +66,7 @@ TEST(GroundGearIntakeTest, CanScoreWithCurrentSpike) {
   for(int i = 0; i < 1000; i++) {
     input->set_current(134.);
     output = gear_intake.Update(input);
-    EXPECT_FALSE(output->solenoid());
+    EXPECT_FALSE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), -12.,1e-5);
   }
 }
@@ -84,7 +84,7 @@ TEST(GroundGearIntakeTest, CanCarryAfterPickingUpStalls) {
   for(int i = 0; i < 600; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
-    EXPECT_TRUE(output->solenoid());
+    EXPECT_TRUE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), 12., 1e-5);
   }
 
@@ -94,7 +94,7 @@ TEST(GroundGearIntakeTest, CanCarryAfterPickingUpStalls) {
   for(int i = 0; i < 300; i++) {
     input->set_current(134.);
     output = gear_intake.Update(input);
-    EXPECT_FALSE(output->solenoid());
+    EXPECT_FALSE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 
@@ -104,7 +104,7 @@ TEST(GroundGearIntakeTest, CanCarryAfterPickingUpStalls) {
   for(int i = 0; i < 100; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
-    EXPECT_FALSE(output->solenoid());
+    EXPECT_FALSE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 }
@@ -121,7 +121,7 @@ TEST(GroundGearIntakeTest, CanScoreAfterCarrying) {
   for(int i = 0; i < 100; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
-    EXPECT_FALSE(output->solenoid());
+    EXPECT_FALSE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 
@@ -131,7 +131,7 @@ TEST(GroundGearIntakeTest, CanScoreAfterCarrying) {
   for(int i = 0; i < 1000; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
-    EXPECT_FALSE(output->solenoid());
+    EXPECT_FALSE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), -12., 1e-5);
 
   }
@@ -150,7 +150,7 @@ TEST(GroundGearIntakeTest, CanScoreAfterPickup) {
   for(int i = 0; i < 100; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
-    EXPECT_TRUE(output->solenoid());
+    EXPECT_TRUE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), 12., 1e-5);
   }
 
@@ -160,7 +160,7 @@ TEST(GroundGearIntakeTest, CanScoreAfterPickup) {
   for(int i = 0; i < 1000; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
-    EXPECT_FALSE(output->solenoid());
+    EXPECT_FALSE(output->intake_down());
     EXPECT_NEAR(output->roller_voltage(), -12., 1e-5);
 
   }

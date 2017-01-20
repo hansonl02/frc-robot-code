@@ -11,7 +11,7 @@ message GroundGearIntakeInput {
 message GroundGearIntakeOutput {
   //Positive is pulling in gear
   required double roller_voltage = 1;
-  required bool solenoid = 2;
+  required bool intake_down = 2;
 }
 
 message GroundGearIntakeStatus {
