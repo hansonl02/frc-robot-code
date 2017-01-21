@@ -1,0 +1,31 @@
+syntax = "proto2";
+
+package c2017.ball_intake;
+
+option cc_enable_arenas = true;
+   
+message IntakeOutput {
+  required double roller_voltage = 1;
+  //positive is forward
+  required double solenoid = 2;
+  //controls pneumatic cylinder
+}
+
+message IntakeStatus {
+   required double open_running = 1;
+}
+
+message IntakeGoal {
+  required bool intake = 1;
+  //intake can work as an outtake
+  required bool stir_hopper = 2;
+  //stirs up hooper
+  required bool off = 3;
+  enum Goal {
+    STOP = 0;
+    FORWARD = 1;
+    REVERSE = 2;
+  }
+
+}
+
