@@ -10,7 +10,11 @@ cc_library(
 cc_library(
   name = 'ground_gear_intake_queues',
   hdrs = ['queue_types.h'],
-  deps = ['ground_gear_intake_proto', '//muan/proto:stack_proto', '//muan/queues:queues'],
+  deps = [
+    'ground_gear_intake_proto',
+    '//muan/proto:stack_proto',
+    '//muan/queues:queues'
+  ],
   visibility = ['//visibility:public']
 )
 
