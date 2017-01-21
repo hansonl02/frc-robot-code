@@ -11,16 +11,15 @@ GroundGearIntake::GroundGearIntake() {
 }
 
 GroundGearIntakeOutputProto GroundGearIntake::Update(GroundGearIntakeInputProto input) {
-  auto ground_intake_goal = goal_->goal();
   double voltage = 0;
 
-  if (ground_intake_goal == GroundGearIntakeGoal::CARRY) {
+  if (goal_state_ == GroundGearIntakeGoal::CARRY) {
     voltage = 0;
     intake_down_ = false;
     has_current_spiked_ = false;
   }
 
-  if (ground_intake_goal == GroundGearIntakeGoal::PICKUP) {
+  if (goal_state_ == GroundGearIntakeGoal::PICKUP) {
     voltage = 12;
     intake_down_ = true;
     if (input->current() > 120) {  // the intake stalls when its current spikes
@@ -32,7 +31,7 @@ GroundGearIntakeOutputProto GroundGearIntake::Update(GroundGearIntakeInputProto 
     }
   }
 
-  if (ground_intake_goal == GroundGearIntakeGoal::SCORE) {
+  if (goal_state_ == GroundGearIntakeGoal::SCORE) {
     voltage = -12;  // outtake
     intake_down_ = false;
     has_current_spiked_ = false;
@@ -44,7 +43,7 @@ GroundGearIntakeOutputProto GroundGearIntake::Update(GroundGearIntakeInputProto 
   return output;
 }
 
-void GroundGearIntake::SetGoal(GroundGearIntakeGoalProto goal) { goal_ = goal; }
+void GroundGearIntake::SetGoal(GroundGearIntakeGoalProto goal) { goal_state_ = goal->goal(); }
 
 }  // ground_gear_intake
 
