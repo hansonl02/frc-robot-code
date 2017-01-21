@@ -9,7 +9,7 @@ namespace ground_gear_intake {
 
 class GroundGearIntake {
  public:
-  GroundGearIntake();
+  GroundGearIntake() = default;
   GroundGearIntakeOutputProto Update(GroundGearIntakeInputProto input);
   void SetGoal(GroundGearIntakeGoalProto goal);
 

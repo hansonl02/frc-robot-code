@@ -11,11 +11,11 @@ TEST(GroundGearIntakeTest, CanPickupWithoutCurrentSpike) {
   goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::PICKUP);
   gear_intake.SetGoal(goal);
 
-  if (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 1000; i++) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_TRUE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), 12.);
+    EXPECT_NEAR(output->roller_voltage(), 12., 1e-5);
   }
 }
 
@@ -32,7 +32,7 @@ TEST(GroundGearIntakeTest, CanCarryWithoutCurrentSpike) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), 0.);
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 }
 
@@ -49,7 +49,7 @@ TEST(GroundGearIntakeTest, CanScoreWithoutCurrentSpike) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), -12.);
+    EXPECT_NEAR(output->roller_voltage(), -12., 1e-5);
   }
 }
 
@@ -66,7 +66,7 @@ TEST(GroundGearIntakeTest, CanScoreWithCurrentSpike) {
     input->set_current(134.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), -12.);
+    EXPECT_NEAR(output->roller_voltage(), -12., 1e-5);
   }
 }
 
@@ -83,7 +83,7 @@ TEST(GroundGearIntakeTest, CanCarryAfterPickingUpStalls) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_TRUE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), 12.);
+    EXPECT_NEAR(output->roller_voltage(), 12., 1e-5);
   }
 
   goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::PICKUP);
@@ -93,7 +93,7 @@ TEST(GroundGearIntakeTest, CanCarryAfterPickingUpStalls) {
     input->set_current(134.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), 0.);
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 
   goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::CARRY);
@@ -103,7 +103,7 @@ TEST(GroundGearIntakeTest, CanCarryAfterPickingUpStalls) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), 0.);
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 }
 
@@ -120,7 +120,7 @@ TEST(GroundGearIntakeTest, CanScoreAfterCarrying) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), 0.);
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
   }
 
   goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::SCORE);
@@ -130,7 +130,7 @@ TEST(GroundGearIntakeTest, CanScoreAfterCarrying) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), -12.);
+    EXPECT_NEAR(output->roller_voltage(), -12., 1e-5);
   }
 }
 
@@ -147,7 +147,7 @@ TEST(GroundGearIntakeTest, CanScoreAfterPickup) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_TRUE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), 12.);
+    EXPECT_NEAR(output->roller_voltage(), 12., 1e-5);
   }
 
   goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::SCORE);
@@ -157,6 +157,53 @@ TEST(GroundGearIntakeTest, CanScoreAfterPickup) {
     input->set_current(20.);
     output = gear_intake.Update(input);
     EXPECT_FALSE(output->intake_down());
-    EXPECT_EQ(output->roller_voltage(), -12.);
+    EXPECT_NEAR(output->roller_voltage(), -12., 1e-5);
+  }
+}
+
+TEST(GroundGearIntakeTest, PickupStallCarryPickup) {
+  c2017::ground_gear_intake::GroundGearIntake gear_intake;
+  c2017::ground_gear_intake::GroundGearIntakeInputProto input;
+  c2017::ground_gear_intake::GroundGearIntakeGoalProto goal;
+  c2017::ground_gear_intake::GroundGearIntakeOutputProto output;
+
+  goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::PICKUP);
+  gear_intake.SetGoal(goal);
+
+  for (int i = 0; i < 100; i++) {
+    input->set_current(20.);
+    output = gear_intake.Update(input);
+    EXPECT_TRUE(output->intake_down());
+    EXPECT_NEAR(output->roller_voltage(), 12., 1e-5);
+  }
+
+  goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::PICKUP);
+  gear_intake.SetGoal(goal);
+
+  for (int i = 0; i < 100; i++) {
+    input->set_current(134.);
+    output = gear_intake.Update(input);
+    EXPECT_FALSE(output->intake_down());
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
+  }
+
+  goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::CARRY);
+  gear_intake.SetGoal(goal);
+
+  for (int i = 0; i < 100; i++) {
+    input->set_current(0.);
+    output = gear_intake.Update(input);
+    EXPECT_FALSE(output->intake_down());
+    EXPECT_NEAR(output->roller_voltage(), 0., 1e-5);
+  }
+
+  goal->set_goal(c2017::ground_gear_intake::GroundGearIntakeGoal::PICKUP);
+  gear_intake.SetGoal(goal);
+
+  for (int i = 0; i < 100; i++) {
+    input->set_current(20.);
+    output = gear_intake.Update(input);
+    EXPECT_TRUE(output->intake_down());
+    EXPECT_NEAR(output->roller_voltage(), 12., 1e-5);
   }
 }

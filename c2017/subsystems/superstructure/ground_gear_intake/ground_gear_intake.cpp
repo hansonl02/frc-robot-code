@@ -4,11 +4,6 @@ namespace c2017 {
 
 namespace ground_gear_intake {
 
-GroundGearIntake::GroundGearIntake() {
-  intake_down_ = true;  // will lift when intake stalls
-  has_current_spiked_ = false;
-}
-
 GroundGearIntakeOutputProto GroundGearIntake::Update(GroundGearIntakeInputProto input) {
   double voltage = 0;
 
