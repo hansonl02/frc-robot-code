@@ -1,5 +1,4 @@
 #include "ground_gear_intake.h"
-#include <iostream>
 
 namespace c2017 {
 
