@@ -15,12 +15,16 @@ CitrusRobot::CitrusRobot() : throttle_{1}, wheel_{0}, gamepad_{2} {
 
 void CitrusRobot::Update() {
   if (DriverStation::GetInstance().IsAutonomous()) {
+    lemonscript_.Start(); // Weird to call Start in a loop, but it's a setter so it's fine
 
-  } else if (DriverStation::GetInstance().IsOperatorControl())
-  // Update joysticks
-  throttle_.Update();
-  wheel_.Update();
-  gamepad_.Update();
+  } else if (DriverStation::GetInstance().IsOperatorControl()) {
+    lemonscript_.Stop(); // Weirder to do this, but it works :/
+
+    // Update joysticks
+    throttle_.Update();
+    wheel_.Update();
+    gamepad_.Update();
+  }
 
   SendDSMessage();
 }
@@ -45,6 +49,6 @@ void CitrusRobot::SendDSMessage() {
   c2017::QueueManager::GetInstance().driver_station_queue()->WriteMessage(status);
 }
 
-}  // citrus_robot 
+}  // citrus_robot
 
 }  // c2017

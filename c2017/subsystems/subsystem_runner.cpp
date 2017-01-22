@@ -10,17 +10,7 @@ SubsystemRunner::SubsystemRunner()
                   QueueManager::GetInstance().drivetrain_status_queue(),
                   QueueManager::GetInstance().driver_station_queue(),
                   QueueManager::GetInstance().gyro_queue()},
-      superstructure_{QueueManager::GetInstance().intake_group_goal_queue(),
-                  QueueManager::GetInstance().shooter_group_goal_queue(),
-                  QueueManager::GetInstance().climber_goal_queue(),
-                  QueueManager::GetInstance().shooter_input_queue(),
-                  QueueManager::GetInstance().trigger_input_queue(),
-                  QueueManager::GetInstance().magazine_input_queue(),
-                  QueueManager::GetInstance().ground_gear_input_queue(),
-                  QueueManager::GetInstance().ball_intake_input_queue(),
-                  QueueManager::GetInstance().climber_input_queue(),
-                  QueueManager::GetInstance().driver_station_queue(),
-                  } {}
+      superstructure_{} {}
 
 void SubsystemRunner::operator()() {
   aos::time::PhasedLoop phased_loop(std::chrono::milliseconds(5));

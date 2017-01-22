@@ -10,17 +10,15 @@ namespace c2017 {
 namespace ball_intake {
 
 using BallIntakeOutputProto = muan::proto::StackProto<BallIntakeOutput, 256>;
-using BallIntakeInputProto = muan::proto::StackProto<BallIntakeInput, 256>;
 using BallIntakeStatusProto = muan::proto::StackProto<BallIntakeStatus, 256>;
 using BallIntakeGoalProto = muan::proto::StackProto<BallIntakeGoal, 256>;
 
 using BallIntakeOutputQueue = muan::queues::MessageQueue<BallIntakeOutputProto, 100>;
-using BallIntakeInputQueue = muan::queues::MessageQueue<BallIntakeInputProto, 100>;
 using BallIntakeStatusQueue = muan::queues::MessageQueue<BallIntakeStatusProto, 100>;
 using BallIntakeGoalQueue = muan::queues::MessageQueue<BallIntakeGoalProto, 100>;
 
 }
 
-} 
+}
 
 #endif  // C2017_SUBSYSTEMS_SUPERSTRUCTURE_BALLINTAKE_QUEUETYPES_H_

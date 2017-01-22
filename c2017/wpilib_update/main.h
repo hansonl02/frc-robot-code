@@ -2,6 +2,7 @@
 #define C2017_WPILIB_UPDATE_MAIN_H_
 
 #include "muan/teleop/joystick.h"
+#include "c2017/lemonscript/lemonscript.h"
 
 namespace c2017 {
 
@@ -18,6 +19,9 @@ class CitrusRobot {
   muan::teleop::Joystick throttle_, wheel_;
   muan::teleop::Joystick gamepad_;
 
+  c2017::lemonscript::Lemonscript lemonscript_;
+  std::thread lemonscript_thread_{std::ref(lemonscript_)};
+
   bool high_gear_;
   muan::teleop::Button *shifting_high_, *shifting_low_;
   muan::teleop::Button* quickturn_;
@@ -25,7 +29,7 @@ class CitrusRobot {
   void SendDSMessage();
 };
 
-}  // citrus_robot 
+}  // citrus_robot
 
 }  // c2017
 
