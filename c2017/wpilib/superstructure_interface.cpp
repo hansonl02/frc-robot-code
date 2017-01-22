@@ -8,7 +8,6 @@ namespace ports {
 
 namespace superstructure {
 
-//TODO: Kelly figure out the correct ports for everything
 // Motor ports
 constexpr uint32_t kShooterMotor = 2;
 
@@ -24,6 +23,7 @@ constexpr uint32_t kGearIntakeMotor = 6;
 constexpr uint32_t kShooterEncoderA = 14, kShooterEncoderB = 15;
 constexpr uint32_t kTriggerEncoderA = 16, kTriggerEncoderB = 17;
 
+//TODO: Kelly figure out the correct ports for everything
 // Solenoid ports
 constexpr uint32_t kBallIntakeSolenoid = 1;
 constexpr uint32_t kGroundGearIntakeSolenoid = 2;
