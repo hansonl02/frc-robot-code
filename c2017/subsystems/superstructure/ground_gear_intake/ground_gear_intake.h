@@ -14,7 +14,7 @@ class GroundGearIntake {
   void SetGoal(GroundGearIntakeGoalProto goal);
 
  private:
-  GroundGearIntakeGoal::Goal goal_state_;
+  Goal goal_state_;  
   bool intake_down_ = true;  // will lift when intake stalls
   bool has_current_spiked_ = false;
 };

@@ -22,11 +22,13 @@ message GroundGearIntakeStatus {
   required bool running = 4;
 }
 
+
+enum Goal {
+  CARRY = 0;
+  PICKUP = 1;
+  SCORE = 2;
+}
+
 message GroundGearIntakeGoal {
-  enum Goal {
-    CARRY = 0;
-    PICKUP = 1;
-    SCORE = 2;
-  }
   required Goal goal = 1;
 }

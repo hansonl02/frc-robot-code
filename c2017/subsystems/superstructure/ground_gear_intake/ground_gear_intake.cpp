@@ -8,13 +8,13 @@ GroundGearIntakeOutputProto GroundGearIntake::Update(GroundGearIntakeInputProto 
   double voltage = 0;
 
   switch (goal_state_) {
-    case GroundGearIntakeGoal::CARRY:
+    case CARRY:
       voltage = 0;
       intake_down_ = false;
       has_current_spiked_ = false;
       break;
 
-    case GroundGearIntakeGoal::PICKUP:
+    case PICKUP:
       voltage = 12;
       intake_down_ = true;
       if (input->current() > 120) {  // the intake stalls when its current spikes
@@ -26,7 +26,7 @@ GroundGearIntakeOutputProto GroundGearIntake::Update(GroundGearIntakeInputProto 
       }
       break;
 
-    case GroundGearIntakeGoal::SCORE:
+    case SCORE:
       voltage = -12;  // outtake
       intake_down_ = false;
       has_current_spiked_ = false;
