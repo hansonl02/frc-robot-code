@@ -31,12 +31,13 @@ GroundGearIntakeOutputProto GroundGearIntake::Update(GroundGearIntakeInputProto 
       intake_down_ = false;
       has_current_spiked_ = false;
       break;
-  }  // sends voltage and solenoid output
-
+  }  
+  
   GroundGearIntakeOutputProto output;
   output->set_roller_voltage(voltage);
   output->set_intake_down(intake_down_);
-  return output;
+  return output; // sends voltage and solenoid output
+
 }
 
 void GroundGearIntake::SetGoal(GroundGearIntakeGoalProto goal) { goal_state_ = goal->goal(); }
