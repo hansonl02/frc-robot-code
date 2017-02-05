@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+option cc_enable_arenas = true;
+
+package c2014.cam;
+
+message CamInput {
+  required bool ready_to_shoot = 1;
+}
+
+message CamOutput {
+  required double cam_voltage = 1;
+}
+
+enum CamGoalState {
+  CAM_IDLE = 0;
+  CAM_PREPARE = 1;
+  CAM_SHOOT = 2;
+}
+
+message CamGoal {
+  required CamGoalState cam_goal = 1;
+}

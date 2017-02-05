@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+option cc_enable_arenas = true;
+
+package c2014.fingers;
+
+message FingersOutput {
+  required bool close_upper_fingers = 1;
+  required bool close_lower_fingers = 2;
+}
+
+enum FingersGoalState {
+  SHORT = 0;
+  LONG = 1;
+  INTAKING = 2;
+}
+
+message FingersGoal {
+  required FingersGoalState fingers_goal = 2;
+}

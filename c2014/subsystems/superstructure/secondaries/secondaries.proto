@@ -1,0 +1,21 @@
+syntax = "proto2";
+
+option cc_enable_arenas = true;
+
+package c2014.secondaries;
+
+message SecondariesOutput {
+  required double secondaries_voltage = 1;
+  required bool secondaries_open = 2;
+}
+
+enum SecondariesGoalState {
+  IDLE = 0;
+  SHOOT = 1;
+  SETTLE = 2;
+  BARF_BACK = 3;
+}
+
+message SecondariesGoal {
+  required SecondariesGoalState secondaries_goal = 1;
+}

@@ -1,0 +1,42 @@
+syntax = "proto2";
+
+option cc_enable_arenas = true;
+
+package c2014.intakes;
+
+message IntakesStatus {
+  required bool has_ball = 1;
+  required bool front_intake_down = 2;
+  required bool back_intake_down = 3;
+}
+
+message IntakesInput {
+  required bool front_intaking = 1;
+  required bool back_intaking = 2;
+}
+
+message IntakesOutput {
+  required double front_intake_voltage = 1;
+  required double back_intake_voltage = 2;
+  required bool front_down = 3;
+  required bool back_down = 4;
+}
+
+enum FrontIntakeGoalState {
+  FRONT_IDLE = 0;
+  FRONT_INTAKE = 1;
+  FRONT_OUTTAKE = 2;
+}
+
+enum BackIntakeGoalState {
+  BACK_IDLE = 0;
+  BACK_INTAKE = 1;
+  BACK_OUTTAKE = 2;
+}
+
+message IntakesGoal {
+  required FrontIntakeGoalState front_intake_goal = 1;
+  required BackIntakeGoalState back_intake_goal = 2;
+  required bool front_down = 3;
+  required bool back_down = 4;
+}
