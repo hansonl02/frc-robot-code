@@ -1,13 +1,13 @@
-#ifndef C2017_WPILIB_SUPERSTRUCTURE_INTERFACE_H_
-#define C2017_WPILIB_SUPERSTRUCTURE_INTERFACE_H_
+#ifndef C2014_WPILIB_SUPERSTRUCTURE_INTERFACE_H_
+#define C2014_WPILIB_SUPERSTRUCTURE_INTERFACE_H_
 
 #include "WPILib.h"
 #include "muan/wpilib/pcm_wrapper.h"
 #include "muan/wpilib/can_wrapper.h"
-#include "c2017/queue_manager/queue_manager.h"
+#include "c2014/queue_manager/queue_manager.h"
 #include "muan/utils/math_utils.h"
 
-namespace c2017 {
+namespace c2014 {
 namespace wpilib {
 
 class SuperStructureInterface {
@@ -18,14 +18,14 @@ class SuperStructureInterface {
   void ReadSensors();
 
  private:
-  c2017::shooter::ShooterInputQueue shooter_input_queue_;
-  c2017::trigger::TriggerInputQueue trigger_input_queue_;
-  c2017::climber::ClimberInputQueue climber_input_queue_;
+  c2014::shooter::ShooterInputQueue shooter_input_queue_;
+  c2014::trigger::TriggerInputQueue trigger_input_queue_;
+  c2014::climber::ClimberInputQueue climber_input_queue_;
 
-  c2017::magazine::MagazineInputQueue magazine_input_queue_;
-  c2017::ground_gear_intake::GroundGearIntakeInputQueue ground_gear_input_queue_;
+  c2014::magazine::MagazineInputQueue magazine_input_queue_;
+  c2014::ground_gear_intake::GroundGearIntakeInputQueue ground_gear_input_queue_;
 
-  c2017::wpilib::WpilibOutputQueue::QueueReader output_queue_;
+  c2014::wpilib::WpilibOutputQueue::QueueReader output_queue_;
 
   VictorSP shooter_motor_;
   VictorSP trigger_motor_;
@@ -40,6 +40,6 @@ class SuperStructureInterface {
 };
 
 }  // namespace wpilib
-}  // namespace c2017
+}  // namespace c2014
 
-#endif  // C2017_WPILIB_SUPERSTRUCTURE_INTERFACE_H_
+#endif  // C2014_WPILIB_SUPERSTRUCTURE_INTERFACE_H_

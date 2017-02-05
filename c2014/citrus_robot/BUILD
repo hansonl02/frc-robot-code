@@ -8,9 +8,9 @@ cc_library(
         # why it does this. Possibly a bazel bug.
         # TODO(Kyle) Figure this out and fix it.
         "//muan/teleop:joystick",
-        "//c2017/lemonscript",
-        "//c2017/queue_manager",
-        "//c2017/subsystems/drivetrain:drivetrain_base",
+        "//c2014/lemonscript",
+        "//c2014/queue_manager",
+        "//c2014/subsystems/drivetrain:drivetrain_base",
         "//third_party/lemonscript",
     ],
 )

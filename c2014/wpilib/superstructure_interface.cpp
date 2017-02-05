@@ -1,6 +1,6 @@
-#include "c2017/wpilib/superstructure_interface.h"
+#include "c2014/wpilib/superstructure_interface.h"
 
-namespace c2017 {
+namespace c2014 {
 
 namespace wpilib {
 
@@ -56,12 +56,12 @@ SuperStructureInterface::SuperStructureInterface(muan::wpilib::CanWrapper* can_w
 }
 
 void SuperStructureInterface::ReadSensors() {
-  c2017::shooter::ShooterInputProto shooter_sensors;
-  c2017::trigger::TriggerInputProto trigger_sensors;
-  c2017::climber::ClimberInputProto climber_sensors;
+  c2014::shooter::ShooterInputProto shooter_sensors;
+  c2014::trigger::TriggerInputProto trigger_sensors;
+  c2014::climber::ClimberInputProto climber_sensors;
 
-  c2017::magazine::MagazineInputProto magazine_sensors;
-  c2017::ground_gear_intake::GroundGearIntakeInputProto ground_gear_sensors;
+  c2014::magazine::MagazineInputProto magazine_sensors;
+  c2014::ground_gear_intake::GroundGearIntakeInputProto ground_gear_sensors;
 
   constexpr double kRadiansPerClick = M_PI * 2 / 512.0;
 
@@ -141,4 +141,4 @@ void SuperStructureInterface::WriteActuators() {
 }
 
 }  // namespace wpilib
-}  // namespace c2017
+}  // namespace c2014

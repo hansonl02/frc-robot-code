@@ -31,7 +31,7 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//c2017/queue_manager",
+        "//c2014/queue_manager",
         "//muan/utils:math_utils",
         "//muan/wpilib:can_wrapper",
         "//muan/wpilib:pcm_wrapper",
@@ -51,7 +51,7 @@ cc_library(
     deps = [
         ":drivetrain_interface",
         ":superstructure_interface",
-        "//c2017/queue_manager",
+        "//c2014/queue_manager",
         "//muan/wpilib:can_wrapper",
         "//muan/wpilib/gyro",
         "//third_party/wpilibsuite:wpilib",
@@ -67,7 +67,7 @@ cc_library(
         "drivetrain_interface.h",
     ],
     deps = [
-        "//c2017/queue_manager",
+        "//c2014/queue_manager",
         "//muan/utils:math_utils",
         "//muan/wpilib/gyro",
         "//third_party/wpilibsuite:wpilib",

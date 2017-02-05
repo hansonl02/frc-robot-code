@@ -4,12 +4,12 @@ cc_binary(
     name = "frc1678",
     srcs = ["main.cpp"],
     deps = [
-        "//c2017/subsystems:subsystem_runner",
-        "//c2017/wpilib_update:main",
+        "//c2014/subsystems:subsystem_runner",
+        "//c2014/wpilib_update:main",
         "//third_party/wpilibsuite:wpilib",
     ],
     data = [
-        "//c2017/lemonscript/auto:auto_modes",
+        "//c2014/lemonscript/auto:auto_modes",
     ]
 )
 

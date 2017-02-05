@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package c2017.wpilib;
+package c2014.wpilib;
 
 option cc_enable_arenas = true;
 
