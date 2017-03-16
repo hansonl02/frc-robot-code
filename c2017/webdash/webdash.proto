@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+option cc_enable_arenas = true;
+
+package c2017.webdash;
+
+message WebDash {
+  enum Auto {
+    NONE = 0;
+    TWO_GEAR = 1;
+    BLUE_HELLA_KPA = 2;
+    BLUE_HELLA_KPA_PLUS_GEAR = 3;
+    RED_HELLA_KPA = 4;
+    RED_HELLA_KPA_PLUS_GEAR = 5;
+  }
+  required uint64 timestamp = 1;
+  required Auto auto_mode = 2;
+}

@@ -1,14 +1,25 @@
-#include "lemonscript.h"
+#include "c2017/lemonscript/lemonscript.h"
+
+#include <string>
 
 namespace c2017 {
-
 namespace lemonscript {
+
+DEFINE_string(auto_mode, "none.auto", "What auto mode to default to if none is specified on the dashboard.");
 
 Lemonscript::Lemonscript() {
   state_ = new ::lemonscript::LemonScriptState();
-  decls_ = ::lemonscript::AvailableCppCommandDeclaration::parseCppCommands(AutoGenerator::GetAutoGenerators());
+  decls_ =
+      ::lemonscript::AvailableCppCommandDeclaration::parseCppCommands(AutoGenerator::GetAutoGenerators());
+  decls_ =
+      ::lemonscript::AvailableCppCommandDeclaration::parseCppCommands(AutoGenerator::GetAutoGenerators());
   state_->declareAvailableCppCommands(decls_);
-  compiler_ = new ::lemonscript::LemonScriptCompiler("test.auto", state_);
+
+  try {
+    compiler_ = new ::lemonscript::LemonScriptCompiler("c2017/lemonscript/auto/" + FLAGS_auto_mode, state_);
+  } catch (std::string e) {
+    std::cerr << e << std::endl;
+  }
 }
 
 Lemonscript::~Lemonscript() {
@@ -16,20 +27,60 @@ Lemonscript::~Lemonscript() {
   delete state_;
 }
 
+void Lemonscript::Start() { running_ = true; }
+void Lemonscript::Stop() { running_ = false; }
+void Lemonscript::Kill() { started_ = false; }
+
 void Lemonscript::operator()() {
-  aos::time::PhasedLoop phased_loop(aos::time::Time::InMS(5));
+  aos::time::PhasedLoop phased_loop(std::chrono::milliseconds(5));
 
   aos::SetCurrentThreadRealtimePriority(10);
   aos::SetCurrentThreadName("Lemonscript");
 
-  running_ = true;
-  while (running_) {
-    running_ = !compiler_->PeriodicUpdate();
+  running_ = false;
+  started_ = true;
+  while (started_) {
+    if (running_) {
+      running_ = !compiler_->PeriodicUpdate();
+    } else {
+      UpdateAutoRoutine();
+    }
     phased_loop.SleepUntilNext();
   }
-
 }
 
-} // lemonscript
+void Lemonscript::UpdateAutoRoutine() {
+  auto message = webdash_reader_.ReadMessage();
+  std::string filename = "none.auto";
+  if (message) {
+    switch (message.value()->auto_mode()) {
+      case c2017::webdash::WebDash::NONE:
+        filename = "none.auto";
+        break;
+      case c2017::webdash::WebDash::TWO_GEAR:
+        filename = "two_gear.auto";
+        break;
+      case c2017::webdash::WebDash::BLUE_HELLA_KPA:
+        filename = "blue_hella_kpa.auto";
+        break;
+      case c2017::webdash::WebDash::BLUE_HELLA_KPA_PLUS_GEAR:
+        filename = "blue_hella_kpa_plus_gear.auto";
+        break;
+      case c2017::webdash::WebDash::RED_HELLA_KPA:
+        filename = "red_hella_kpa.auto";
+        break;
+      case c2017::webdash::WebDash::RED_HELLA_KPA_PLUS_GEAR:
+        filename = "red_hella_kpa_plus_gear.auto";
+        break;
+      default:
+        filename = "none.auto";
+        break;
+    }
+    std::cout << filename << std::endl;
+    delete compiler_;
+    compiler_ = new ::lemonscript::LemonScriptCompiler("c2017/lemonscript/auto/" + filename, state_);
+  }
+}
 
-} // c2017
+}  // namespace lemonscript
+}  // namespace c2017

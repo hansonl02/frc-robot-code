@@ -1,5 +1,5 @@
-#include "button.h"
-#include "joystick.h"
+#include "muan/teleop/button.h"
+#include "muan/teleop/joystick.h"
 
 namespace muan {
 
@@ -20,6 +20,22 @@ void Button::Update(bool value) {
   current_ = value;
 }
 
-}  // teleop
+PovButton::PovButton(Joystick* joystick, uint32_t button, Pov position)
+    : Button(joystick, button), pov_position_(position) {}
 
-}  // muan
+void PovButton::Update() {
+  Button::Update(joystick_->wpilib_joystick()->GetPOV(id_) == static_cast<int>(pov_position_));
+}
+
+AxisButton::AxisButton(Joystick* joystick, uint32_t button, double trigger_threshold)
+    : Button(joystick, button) {
+  trigger_threshold_ = trigger_threshold;
+}
+
+void AxisButton::Update() {
+  Button::Update(std::abs(joystick_->wpilib_joystick()->GetRawAxis(id_)) >= trigger_threshold_);
+}
+
+}  // namespace teleop
+
+}  // namespace muan

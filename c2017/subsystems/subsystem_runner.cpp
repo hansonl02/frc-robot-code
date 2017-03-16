@@ -1,4 +1,4 @@
-#include "subsystem_runner.h"
+#include "c2017/subsystems/subsystem_runner.h"
 
 namespace c2017 {
 
@@ -9,20 +9,29 @@ SubsystemRunner::SubsystemRunner()
                   QueueManager::GetInstance().drivetrain_output_queue(),
                   QueueManager::GetInstance().drivetrain_status_queue(),
                   QueueManager::GetInstance().driver_station_queue(),
-                  QueueManager::GetInstance().gyro_queue()} {}
+                  QueueManager::GetInstance().gyro_queue()},
+      superstructure_{},
+      vision_{} {}
 
 void SubsystemRunner::operator()() {
-  aos::time::PhasedLoop phased_loop(aos::time::Time::InMS(5));
+  aos::time::PhasedLoop phased_loop(std::chrono::milliseconds(5));
 
   // TODO(Kyle or Wesley) Come up with some actual value for this...
-  aos::SetCurrentThreadRealtimePriority(10);
+  aos::SetCurrentThreadRealtimePriority(50);
   aos::SetCurrentThreadName("SubsystemRunner");
 
   running_ = true;
 
   while (running_) {
     wpilib_.ReadSensors();
-    // Update subsystems here
+
+    drivetrain_.Update();
+
+    superstructure_.Update();
+
+    lights_.Update();
+
+    vision_.Update();
 
     wpilib_.WriteActuators();
 
@@ -31,4 +40,5 @@ void SubsystemRunner::operator()() {
 }
 
 void SubsystemRunner::Stop() { running_ = false; }
-}
+
+}  // namespace c2017

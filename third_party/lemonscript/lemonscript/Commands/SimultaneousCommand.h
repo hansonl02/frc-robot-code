@@ -1,6 +1,6 @@
 //
 //  SimultaneousCommand.hpp
-//  FiniteStateMachine
+//  lemonscript
 //
 //  Created by Donald Pinckney on 1/16/16.
 //  Copyright © 2016 Donald Pinckney. All rights reserved.
@@ -21,7 +21,7 @@ typedef enum : unsigned int {
     AllRequiredComplete,
 } SimultaneousCommmandState;
 
-class lemonscript::SimultaneousCommand : Command {
+class lemonscript::SimultaneousCommand : public Command {
     
     SimultaneousCommmandState state = SimultaneousCommmandState::NoneComplete;
     
@@ -34,7 +34,8 @@ public:
     virtual ~SimultaneousCommand();
     
     bool Update();
-    
+    bool fastForward();
+
     SimultaneousCommmandState getState() const {
         return state;
     }

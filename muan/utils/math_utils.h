@@ -1,7 +1,7 @@
 #ifndef MUAN_UTILS_MATH_UTILS_H_
 #define MUAN_UTILS_MATH_UTILS_H_
 
-#include <iostream>
+#include <algorithm>
 #include <random>
 #include "Eigen/Core"
 
@@ -55,7 +55,18 @@ Eigen::Matrix<double, A, 1> GaussianNoise(
 // Perform a modulo operation that is relative to negative infinity, not 0
 uint32_t true_modulo(int a, int b);
 
-}  // utils
-}  // muan
+// Checks if b is either in [a, c] or [c, a]
+template <typename T>
+bool ordered(T a, T b, T c) {
+  return (a <= b && b <= c) || (c <= b && b <= a);
+}
 
-#endif /* MUAN_UTILS_MATH_UTILS_H_ */
+template <typename T>
+int signum(T val) {
+  return (T(0) < val) - (val < T(0));
+}
+
+}  // namespace utils
+}  // namespace muan
+
+#endif  // MUAN_UTILS_MATH_UTILS_H_

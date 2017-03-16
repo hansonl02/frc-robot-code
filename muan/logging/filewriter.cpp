@@ -1,7 +1,12 @@
-#include "filewriter.h"
+#include "muan/logging/filewriter.h"
+
+#include <string>
+#include <vector>
 
 namespace muan {
 namespace logging {
+
+DEFINE_string(log_dir, "", "What directory to put logs in. Defaults to the current unix timestamp.");
 
 FileWriter::FileWriter() { base_path_ = GetBasePath(); }
 
@@ -17,13 +22,14 @@ void FileWriter::WriteLine(const std::string &filename, const std::string &line)
 }
 
 std::string FileWriter::GetBasePath() {
-  std::vector<std::string> paths = {"/mnt/sda1/", "/home/lvuser/"};
+  std::vector<std::string> paths = {"/media/sda1/", "/home/lvuser/"};
 
   // TODO(Wesley) Check for space
   for (auto const path : paths) {
     if (boost::filesystem::is_directory(path)) {
       try {
-        auto final_path = path + "logs/" + std::to_string(std::time(0)) + "/";
+        std::string log_dir = FLAGS_log_dir.empty() ? std::to_string(std::time(0)) : FLAGS_log_dir;
+        auto final_path = path + "logs/" + log_dir + "/";
         boost::filesystem::create_directories(final_path);
         return final_path;
       } catch (const boost::filesystem::filesystem_error &e) {
@@ -32,8 +38,10 @@ std::string FileWriter::GetBasePath() {
     }
   }
 
-  std::cerr << "Could not find valid path for logging! Attempting to use /, but most likely no logs will be "
-               "created.\n";
+  std::cerr << "Could not find valid path for logging!\n"
+               "Attempting to use /, but most likely no logs will be created.\n"
+               "If you are seeing this error while running tests, use `bazel test` instead of `bazel run`, "
+               "or pass --copt='-DFRC1678_NO_QUEUE_LOGGING'.\n";
   return "/";
 }
 

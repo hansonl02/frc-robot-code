@@ -7,21 +7,20 @@ double Vision::CalculateDistance(std::vector<cv::Point> points, int rows) {
   // Average together height of each point
   double angle = 0;
   for (auto& p : points) {
-    angle += p.y;
+    // Stupid inverted y axis
+    angle -= p.y;
   }
   angle /= points.size();
   // Scale angle from -fov/2 to fov/2
-  angle = (angle / rows - 0.5) * constants_.kFovY;
+  angle = (angle / rows + 0.5) * constants_.kFovY;
 
-  double distance = constants_.kHeightDifference /
-                    std::tan(angle + constants_.kCameraAngle);
+  double distance = constants_.kHeightDifference / std::tan(angle + constants_.kCameraAngleY);
   return distance;
 }
 
-double Vision::CalculateSkew(std::vector<cv::Point> contour,
-                             std::vector<cv::Point>& out) {
-  out.resize(4);
-  std::vector<cv::Point>& quad = out;
+double Vision::CalculateSkew(std::vector<cv::Point> contour, std::vector<cv::Point>* out) {
+  out->resize(4);
+  std::vector<cv::Point>& quad = *out;
   // Find extrema for x + y and x - y to find the corners of the goal
   for (auto& p : contour) {
     if (p.x + p.y > quad[0].x + quad[0].y) {
@@ -50,7 +49,7 @@ Vision::Vision(ColorRange range, std::shared_ptr<VisionScorer> scorer, VisionCon
   range_ = range;
   scorer_ = scorer;
   constants_ = k;
-  last_pos_  = cv::Point2f();
+  last_pos_ = cv::Point2f();
   // It has to be set to something, right?
   last_pos_.x = 0;
   last_pos_.y = 0;
@@ -65,13 +64,13 @@ Vision::VisionStatus Vision::Update(cv::Mat raw) {
 
   cv::cvtColor(raw, image, range_.colorspace);
   cv::inRange(image, range_.lower_bound, range_.upper_bound, image);
+  scorer_->Morph(image);
 
   std::vector<std::vector<cv::Point>> contours;
   std::vector<cv::Vec4i> hierarchy;
 
   cv::cvtColor(image, image_canvas, CV_GRAY2BGR);
-  cv::findContours(image, contours, hierarchy, CV_RETR_TREE,
-                   CV_CHAIN_APPROX_SIMPLE);
+  cv::findContours(image, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 
   std::vector<std::vector<cv::Point>> hull(contours.size());
   std::vector<size_t> targets;
@@ -88,32 +87,28 @@ Vision::VisionStatus Vision::Update(cv::Mat raw) {
     cv::RotatedRect bounding = cv::minAreaRect(hull[i]);
 
     double area = cv::contourArea(contours[i]);
-    double hull_area = cv::contourArea(hull[i]);
-    // Fullness is the ratio of the contour's area to that of its convex hull
-    double fullness = area / hull_area;
 
     // A baseline score to determine whether or not it's even a target
-    double base_score = hull_area / (image.rows * image.cols);
+    double base_score = area / (image.rows * image.cols);
 
-    // Check anything with area at least .2% of the image
-    if (base_score > 0.002) {
+    if (base_score > constants_.kMinTargetArea) {
       targets.push_back(i);
+
+      double hull_area = cv::contourArea(hull[i]);
+      // Fullness is the ratio of the contour's area to that of its convex hull
+      double fullness = area / hull_area;
 
       std::vector<cv::Point> skewbox;
 
-      double skew = CalculateSkew(contours[i], skewbox);
+      double skew = CalculateSkew(contours[i], &skewbox);
       double distance_from_previous = cv::norm(bounding.center - last_pos_);
       double distance_to_target = CalculateDistance(contours[i], image.rows);
       double width = (skewbox[0] + skewbox[1] - skewbox[2] - skewbox[3]).x / 2;
       double height = (skewbox[0] - skewbox[1] - skewbox[2] + skewbox[3]).y / 2;
 
       // Formula subject to tuning
-      double target_score = scorer_->GetScore(distance_to_target,
-                                              distance_from_previous,
-                                              skew,
-                                              width,
-                                              height,
-                                              fullness);
+      double target_score =
+          scorer_->GetScore(distance_to_target, distance_from_previous, skew, width, height, fullness);
 
       if (target_score > best_score) {
         best_target = i;
@@ -122,9 +117,8 @@ Vision::VisionStatus Vision::Update(cv::Mat raw) {
 
         retval.target_exists = true;
         retval.distance_to_target = distance_to_target;
-        // average together points
-        double angle_to_target = (skewbox[0] + skewbox[1] + skewbox[2] + skewbox[3]).x / 4;
-        angle_to_target = (angle_to_target / image.cols - 0.5) * constants_.kFovX;
+        double angle_to_target = bounding.center.x;
+        angle_to_target = (angle_to_target / image.cols - 0.5) * constants_.kFovX + constants_.kCameraAngleX;
         retval.angle_to_target = angle_to_target;
       }
     }
@@ -144,4 +138,4 @@ Vision::VisionStatus Vision::Update(cv::Mat raw) {
   return retval;
 }
 
-}
+}  // namespace muan

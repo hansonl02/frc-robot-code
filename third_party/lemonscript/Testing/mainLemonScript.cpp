@@ -1,6 +1,6 @@
 //
 //  mainLemonScript.cpp
-//  FiniteStateMachine
+//  lemonscript
 //
 //  Created by Donald Pinckney on 12/24/15.
 //  Copyright © 2015 Donald Pinckney. All rights reserved.
@@ -26,8 +26,10 @@ int main() {
 
     try {
         lemonscript::LemonScriptState *state = PlayTestsShared::play_tests_make_state();
-        
-        std::string fileName = "wait.auto";
+//        state->setIMPORTs({"units.auto"});
+        std::string fileName = "test_underscore_var.auto";
+//        std::string fileName = "test_scope.auto";
+
         lemonscript::LemonScriptCompiler *compiler = new lemonscript::LemonScriptCompiler(fileName, state);
         
         int i = 0;

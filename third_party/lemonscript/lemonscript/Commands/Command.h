@@ -1,6 +1,6 @@
 //
 //  Command.hpp
-//  FiniteStateMachine
+//  lemonscript
 //
 //  Created by Donald Pinckney on 12/24/15.
 //  Copyright © 2015 Donald Pinckney. All rights reserved.
@@ -19,6 +19,11 @@
 
 class lemonscript::Command {
 
+protected:
+    // This needs to be set to true if the command runs code external to lemonscript. For example, a CppCommand.
+    // True prevents the command from being sequentially optimized.
+    bool _hasExternalCode = true;
+
 public:
     LemonScriptState *savedState;
     
@@ -28,6 +33,8 @@ public:
     int lineNumber;
     
     virtual bool Update() = 0;
+    virtual bool fastForward() = 0;
+    bool HasExternalCode() const { return _hasExternalCode; };
 };
 
 #endif /* Command_hpp */

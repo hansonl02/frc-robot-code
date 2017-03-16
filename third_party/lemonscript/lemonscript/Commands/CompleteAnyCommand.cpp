@@ -1,6 +1,6 @@
 //
 //  CompleteAnyToken.cpp
-//  FiniteStateMachine
+//  lemonscript
 //
 //  Created by Donald Pinckney on 1/16/16.
 //  Copyright © 2016 Donald Pinckney. All rights reserved.
@@ -28,6 +28,8 @@ lemonscript::CompleteAnyCommand::CompleteAnyCommand(int l, LemonScriptState *s, 
     anyCommands = new SimultaneousCommand(l, s, anyBody);
     anyScope = s->getScope();
     s->popScope();
+    
+    _hasExternalCode = anyCommands->HasExternalCode();
 }
 
 lemonscript::CompleteAnyCommand::~CompleteAnyCommand() {
@@ -44,4 +46,14 @@ bool lemonscript::CompleteAnyCommand::Update() {
     savedState->restoreScope(currentScope);
     
     return anyCommands->getState() == SimultaneousCommmandState::AnyRequiredComplete || anyCommands->getState() == SimultaneousCommmandState::AllRequiredComplete;
+}
+
+bool lemonscript::CompleteAnyCommand::fastForward() {
+    if(HasExternalCode()) {
+        return anyCommands->getState() == SimultaneousCommmandState::AnyRequiredComplete || anyCommands->getState() == SimultaneousCommmandState::AllRequiredComplete;
+    }
+    
+    while (Update() == false) { };
+    
+    return true;
 }

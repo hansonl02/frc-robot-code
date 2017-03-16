@@ -1,5 +1,5 @@
-#ifndef GENERICROBOT_TELEOP_TELEOP_H_
-#define GENERICROBOT_TELEOP_TELEOP_H_
+#ifndef GENERIC_ROBOT_WPILIB_UPDATE_MAIN_H_
+#define GENERIC_ROBOT_WPILIB_UPDATE_MAIN_H_
 
 #include "muan/teleop/joystick.h"
 
@@ -19,14 +19,14 @@ class Main {
   muan::teleop::Joystick gamepad_;
 
   bool high_gear_;
-  muan::teleop::Button *shifting_high_, *shifting_low_;
+  muan::teleop::Button* shifting_high_, *shifting_low_;
   muan::teleop::Button* quickturn_;
 
   void SendDSMessage();
 };
 
-}  // wpilib_update
+}  // namespace wpilib_update
 
-}  // generic_robot
+}  // namespace generic_robot
 
-#endif  // GENERICROBOT_TELEOP_TELEOP_H_
+#endif  // GENERIC_ROBOT_WPILIB_UPDATE_MAIN_H_

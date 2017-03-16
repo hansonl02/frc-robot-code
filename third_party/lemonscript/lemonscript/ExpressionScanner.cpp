@@ -45,6 +45,8 @@ Token ExpressionScanner::scan() {
         int c = getchar();
         
         if(c == 't') {
+            size_t startIndex = readIndex;
+            
             int cr = getchar();
             int cu = getchar();
             int ce = getchar();
@@ -52,8 +54,10 @@ Token ExpressionScanner::scan() {
                 return Token(TK::BOOLEAN_TRUE, "true");
             }
             
-            readIndex -= 3;
+            readIndex = startIndex;
         } else if(c == 'f') {
+            size_t startIndex = readIndex;
+
             int ca = getchar();
             int cl = getchar();
             int cs = getchar();
@@ -62,7 +66,7 @@ Token ExpressionScanner::scan() {
                 return Token(TK::BOOLEAN_FALSE, "false");
             }
             
-            readIndex -= 4;
+            readIndex = startIndex;
         }
         
         if (myisalpha((char)c)) {
@@ -72,6 +76,8 @@ Token ExpressionScanner::scan() {
         } else {
 // "(", ",", ")", "true", "false", digit, alpha, "/", "*", "=", "-", "+", "!", "%", "<", ">", "&", "|", "^"
             switch (c) {
+                case '_':
+                    return ccase1(c, TK::UNDERSCORE);
                 case '(':
                     return ccase1(c, TK::LPAREN);
                 case ',':

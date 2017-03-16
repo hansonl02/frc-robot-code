@@ -42,14 +42,15 @@ class Function(object):
         found_section = False
         text_in_section = []
         for line in self.text.split("\n"):
-            if not found_section and \
-               line.strip()[:len(section_name)] == section_name and \
-               line.strip()[-1] == "{":
-                found_section = True
-            elif found_section and not line[0] == "}":
-                text_in_section.append(line)
-            elif found_section:
-                return '\n'.join(text_in_section)
+            if line != "":
+                if not found_section and \
+                   line.strip()[:len(section_name)] == section_name and \
+                   line.strip()[-1] == "{":
+                    found_section = True
+                elif found_section and line[0] != "}":
+                    text_in_section.append(line)
+                elif found_section and line[0] == "}":
+                    return '\n'.join(text_in_section)
         Logger.warn("Section {0} not found in {1}!".format(section_name, self.get_name()))
         return '' #TODO(Wesley) Better way of indicating failure
 
@@ -61,9 +62,12 @@ class Function(object):
 
         for var in self.get_section("global").split("\n"):
             if var != "":
-                class_h_file.insert_text("vars", var + " = 0;")
+                class_h_file.insert_text("vars", var + ";")
 
-        class_cpp_skel_file = open(self.script_dir + "text_includes/auto_function_class.cpp.skel")
+        if len(self.get_args()) == 0:
+            class_cpp_skel_file = open(self.script_dir + "text_includes/auto_function_class_no_args.cpp.skel")
+        else:
+            class_cpp_skel_file = open(self.script_dir + "text_includes/auto_function_class.cpp.skel")
         class_cpp_file = File(class_cpp_skel_file.read())
 
         class_cpp_file.replace_text("name", self.get_name())

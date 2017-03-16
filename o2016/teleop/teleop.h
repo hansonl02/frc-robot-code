@@ -19,15 +19,15 @@ class Teleop {
   muan::teleop::Joystick gamepad_;
 
   bool high_gear_;
-  muan::teleop::Button *shifting_high_, *shifting_low_;
+  muan::teleop::Button* shifting_high_, *shifting_low_;
   muan::teleop::Button* quickturn_;
 
   void SendDSMessage();
   void SendDrivetrainMessage();
 };
 
-}  // teleop
+}  // namespace teleop
 
-}  // o2016
+}  // namespace o2016
 
 #endif  // O2016_TELEOP_TELEOP_H_

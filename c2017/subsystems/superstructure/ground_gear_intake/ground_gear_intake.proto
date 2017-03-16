@@ -5,27 +5,51 @@ option cc_enable_arenas = true;
 package c2017.ground_gear_intake;
 
 message GroundGearIntakeInput {
-  required double current = 1;
+  required uint64 timestamp = 1;
+  required double current = 2;
 }
 
 message GroundGearIntakeOutput {
-  //Positive is pulling in gear
-  required double roller_voltage = 1;
-  required bool solenoid = 2;
+  required uint64 timestamp = 1;
+  // Positive is pulling in gear
+  required double roller_voltage = 2;
+  required bool intake_down = 3;
+  // intake is controlled by a solenoid
+}
+
+enum State {
+  // Not actually running or holding a gear
+  IDLE = 0;
+  // Actively intaking a gear
+  INTAKING = 1;
+  // Picking up a gear (while the intake is moving)
+  PICKING_UP = 2;
+  // Carrying a gear
+  CARRYING = 3;
+  // Scoring a gear
+  SCORING = 4;
 }
 
 message GroundGearIntakeStatus {
-  required bool current_spiked = 1;
-  required bool has_gear = 2;
-  required bool down = 3;
+  required uint64 timestamp = 1;
+  required bool current_spiked = 2;
+  required State current_state = 3;
   required bool running = 4;
 }
 
+
+enum Goal {
+  // Let the state machine progress normally
+  NONE = 0;
+  // Force-drop the intake into INTAKING
+  DROP = 1;
+  // Pick the intake up into IDLE, but only if it's still down
+  RISE = 2;
+  // Score the gear if it's in CARRY
+  SCORE = 3;
+}
+
 message GroundGearIntakeGoal {
-  enum Goal {
-    CARRY = 0;
-    PICKUP = 1;
-    SCORE = 2;
-  }
-  required Goal goal = 1;
+  required uint64 timestamp = 1;
+  required Goal goal = 2;
 }

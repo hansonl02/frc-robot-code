@@ -5,28 +5,50 @@
 #include <memory>
 #include <vector>
 #include "WPILib.h"
-#include "button.h"
+#include "muan/teleop/button.h"
+#include "muan/teleop/queue_types.h"
 
 namespace muan {
 
 namespace teleop {
 
+enum class XBox {
+  A_BUTTON = 1,
+  B_BUTTON = 2,
+  X_BUTTON = 3,
+  Y_BUTTON = 4,
+  LEFT_BUMPER = 5,
+  RIGHT_BUMPER = 6,
+  BACK = 7,
+  START = 8,
+  LEFT_CLICK_IN = 9,
+  RIGHT_CLICK_IN = 10,
+};
+
 class Joystick {
  public:
-  Joystick(int32_t port);
+  explicit Joystick(int32_t port);
+  Joystick(int32_t port, JoystickStatusQueue* queue);
+
   void Update();
 
   muan::teleop::Button* MakeButton(uint32_t button);
+  muan::teleop::Button* MakePov(uint32_t pov, Pov position);
+  muan::teleop::Button* MakeAxis(uint32_t button);
 
   ::Joystick* wpilib_joystick();
 
  private:
-  std::vector<std::unique_ptr<muan::teleop::Button>> buttons_;
+  void LogButtons();
+
+  JoystickStatusQueue* queue_;
+
+  std::vector<std::unique_ptr<Button>> buttons_;
   ::Joystick wpilib_joystick_;
 };
 
-}  // teleop
+}  // namespace teleop
 
-}  // muan
+}  // namespace muan
 
 #endif  // MUAN_TELEOP_JOYSTICK_H_

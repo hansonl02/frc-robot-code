@@ -12,7 +12,7 @@ namespace wpilib {
 
 class PdpWrapper {
  public:
-  PdpWrapper() = default;
+  explicit PdpWrapper(int module = 0);
   ~PdpWrapper() = default;
 
   using PdpMessage = muan::proto::StackProto<PdpStatus, 512>;
@@ -23,17 +23,20 @@ class PdpWrapper {
  private:
   friend class CanWrapper;
 
+  int module_;
+
   // Read values from the PDP. This is not realtime and should only be called
   // from the CAN thread. It's private so it can only be called by friend
   // classes, like CanWrapper.
   void SendValues();
 
-  PowerDistributionPanel pdp_;
   Queue* queue_{nullptr};
+
+  int status_;
 };
 
-}  // wpilib
+}  // namespace wpilib
 
-}  // muan
+}  // namespace muan
 
 #endif  // MUAN_WPILIB_PDP_WRAPPER_H_
