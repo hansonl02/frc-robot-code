@@ -102,7 +102,13 @@ void Lemonscript::UpdateAutoRoutine() {
     }
     std::cout << filename << std::endl;
     delete compiler_;
-    compiler_ = new ::lemonscript::LemonScriptCompiler("c2017/lemonscript/auto/" + filename, state_);
+    try {
+      compiler_ = new ::lemonscript::LemonScriptCompiler("c2017/lemonscript/auto/" + filename, state_);
+    } catch (std::string err) {
+      std::cerr << err << std::endl;
+    } catch (char const* err) {
+      std::cerr << err << std::endl;
+    }
   }
 }
 
