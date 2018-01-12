@@ -18,6 +18,10 @@ void Climber::Update() {
         should_climb = false;
         Winch::Update(encoder, should_climb, outputs_enabled);
         Batter::Update(should_release, outputs_enabled);
+      case APPROACHING:
+        climber::ClimberGoalProto should_release;
+        goal->set_should_release(true);
+        Batter::Update(should_release, outputs_enabled);
       case CLIMBING:
         should_climb = true;
         Winch::Update(encoder, should_climb, outputs_enabled);

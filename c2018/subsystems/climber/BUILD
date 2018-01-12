@@ -15,10 +15,10 @@ cc_library(
     hdrs = ["climber.h"],
     visibility = ["//visibility:public"],
     deps = [
-        "//c2018/queue_manager",
-        "//c2018/subsystems/climber/climber",
-        "//c2018/subsystems/climber/batter",
-        "//c2018/subsystems/climber/winch",
+    	":climber_proto",
+    	":climber_queues",
+    	"//muan/wpilib:wpilib_queues",
+        "//muan/queues:queue_manager",
     ],
 )
 
@@ -26,7 +26,7 @@ cc_library(
     name = "climber_queues",
     hdrs = ["queue_types.h"],
     deps = [
-        "climber_proto",
+        ":climber_proto",
         "//muan/proto:stack_proto",
         "//muan/queues",
     ],
