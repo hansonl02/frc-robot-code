@@ -40,5 +40,5 @@ message ClimberGoal {
   required uint64 timestamp = 1;
   required bool should_climb = 2;
   required bool should_release = 3;
-  requried Goal climber_goal = 4;
+  required Goal climber_goal = 4;
 }
