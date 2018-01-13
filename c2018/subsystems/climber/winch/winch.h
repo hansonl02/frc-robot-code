@@ -4,6 +4,7 @@
 #include <cmath>
 #include "c2018/subsystems/climber/climber.pb.h"
 #include "c2018/subsystems/climber/queue_types.h"
+#include <iostream>
 
 namespace c2018 {
 
@@ -22,11 +23,13 @@ class Winch {
   double Update(c2018::climber::ClimberStatusProto *status, double encoder_i, bool should_climb, bool outputs_enabled);
 
   bool is_reset() { return reset_; }
+  bool has_climbed() { return has_climbed_; }
 
  private:
   double rope_climbed_;
   bool reset_ = true;
   double first_enc_pos_;
+  bool has_climbed_;
 };
 
 } // namespace winch
