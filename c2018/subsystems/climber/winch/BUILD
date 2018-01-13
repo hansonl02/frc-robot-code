@@ -5,6 +5,10 @@ cc_library(
   srcs = ["//c2018/subsystems/climber/winch:winch.cpp"],
   hdrs = ["//c2018/subsystems/climber/winch:winch.h"],
   visibility = ["//visibility:public"],
+  deps = [
+    "//c2018/subsystems/climber:climber_proto",
+    "//c2018/subsystems/climber:climber_queues",
+  ],
 )
 
 cc_test(
