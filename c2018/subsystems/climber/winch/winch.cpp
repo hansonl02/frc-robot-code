@@ -18,11 +18,9 @@ double Winch::Update(c2018::climber::ClimberStatusProto* status, double encoder_
     if (reset_) {
       first_enc_pos_ = encoder_i;
       has_climbed_ = false;
-      std::cout << "reset" << std::endl;
     }
 
     if (should_climb) {
-      std::cout << "set to climb" << std::endl;
       (*status)->set_climber_state(c2018::climber::State::CLIMB);
       voltage = kRunningVoltage;
       reset_ = false;
@@ -35,7 +33,6 @@ double Winch::Update(c2018::climber::ClimberStatusProto* status, double encoder_
     }
 
     if (rope_climbed_ >= kAmountToClimb) {
-      std::cout << "climbed amount" << std::endl;
       voltage = 0.;
       (*status)->set_climber_state(c2018::climber::State::IDLE);
       has_climbed_ = true;
