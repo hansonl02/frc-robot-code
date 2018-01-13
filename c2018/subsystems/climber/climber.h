@@ -2,7 +2,9 @@
 #define C2018_SUBSYSTEMS_CLIMBER_CLIMBER_H_
 
 #include "c2018/subsystems/climber/batter/batter.h"
+#include "c2018/subsystems/climber/winch/winch.h"
 #include "c2018/subsystems/climber/queue_types.h"
+#include "muan/wpilib/ds_sender.h"
 #include "muan/queues/queue_manager.h"
 #include "muan/wpilib/queue_types.h"
 
@@ -22,9 +24,13 @@ class Climber {
   ClimberGoalQueue::QueueReader goal_reader_;
   ClimberInputQueue::QueueReader input_reader_;
   ClimberOutputQueue* output_queue_;
+  ClimberGoalQueue* goal_queue_;
 
-  ClimberStatusProto* status_proto_;
-  ClimberOutputProto* output_proto_;
+  muan::wpilib::DriverStationQueue::QueueReader ds_status_;
+
+  ClimberStatusProto status_proto_;
+  ClimberOutputProto output_proto_;
+  ClimberGoalProto goal_proto_;
 };
 }  // namespace climber
 
