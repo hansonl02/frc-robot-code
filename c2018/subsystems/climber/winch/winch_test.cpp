@@ -60,7 +60,7 @@ TEST_F(WinchTest, ClimbReset) {
   EXPECT_NEAR(output, c2018::climber::winch::kRunningVoltage, 1e-3);
   EXPECT_FALSE(has_climbed());
 
-  for (int i = 0; i < 2; i++) {
+  for (int i = 200; i < 202; i++) {
     output = Update(i, true, 1, false);
   }
 
@@ -69,7 +69,7 @@ TEST_F(WinchTest, ClimbReset) {
   EXPECT_EQ(status_->climber_state(), c2018::climber::State::IDLE);
   EXPECT_FALSE(has_climbed());
 
-  for (int i = 0; i < 5000; i++) {
+  for (int i = 202; i < 5202; i++) {
     output = Update(i, true, 1, true);
   }
 
