@@ -45,8 +45,8 @@ void Climber::Update() {
         break;
     }
 
-    output_proto->set_release_solenoid(batter_output);
-    output_proto->set_voltage(winch_output);
+    output_proto_->set_release_solenoid(batter_output);
+    output_proto_->set_voltage(winch_output);
     if (winch_.has_climbed()) {
       status_proto_->set_climber_state(DONE);
     }
