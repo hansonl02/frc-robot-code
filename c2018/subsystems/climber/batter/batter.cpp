@@ -4,9 +4,7 @@ namespace c2018 {
 
 namespace batter {
 
-bool Batter::Update(bool put_down_batter, bool outputs_enabled) {
-  return put_down_batter && outputs_enabled;
-}
+bool Batter::Update(bool put_down_batter, bool outputs_enabled) { return put_down_batter && outputs_enabled; }
 
 }  // namespace batter
 

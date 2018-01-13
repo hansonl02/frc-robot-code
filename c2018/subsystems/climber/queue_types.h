@@ -16,6 +16,7 @@ using ClimberGoalProto = muan::proto::StackProto<ClimberGoal, 1024>;
 using ClimberGoalQueue = muan::queues::MessageQueue<ClimberGoalProto>;
 using ClimberInputQueue = muan::queues::MessageQueue<ClimberInputProto>;
 using ClimberStatusQueue = muan::queues::MessageQueue<ClimberStatusProto>;
+using ClimberOutputQueue = muan::queues::MessageQueue<ClimberOutputProto>;
 
 }  // namespace climber
 }  // namespace c2018

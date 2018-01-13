@@ -38,6 +38,6 @@ message ClimberStatus {
 
 message ClimberGoal {
   required uint64 timestamp = 1;
-  required bool should_release = 2;
+  required bool put_down_batter = 2;
   required Goal climber_goal = 3;
 }

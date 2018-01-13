@@ -19,6 +19,8 @@ cc_library(
     	":climber_queues",
     	"//muan/wpilib:wpilib_queues",
         "//muan/queues:queue_manager",
+        "//c2018/subsystems/climber/batter",
+        "//muan/wpilib:ds_sender"
     ],
 )
 
