@@ -29,6 +29,14 @@ TEST_F(WinchTest, Idle) {
   EXPECT_FALSE(has_climbed());
 }
 
+TEST_F(WinchTest, Disabled) {
+  double output = Update(0.0, false, 3000, true);
+
+  EXPECT_NEAR(output, 0.0, 1e-3);
+  EXPECT_EQ(status_->climber_state(), c2018::climber::State::IDLE);
+  EXPECT_FALSE(has_climbed());
+}
+
 TEST_F(WinchTest, Climb) {
   double output;
 
