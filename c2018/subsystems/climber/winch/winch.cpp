@@ -29,7 +29,9 @@ double Winch::Update(c2018::climber::ClimberStatusProto* status, double encoder_
     } else {
       (*status)->set_climber_state(c2018::climber::State::IDLE);
       voltage = 0.0;
-      reset_ = true;
+      if (!has_climbed_) {
+        reset_ = true;
+      }
     }
 
     if (rope_climbed_ >= kAmountToClimb) {
