@@ -20,7 +20,6 @@ cc_library(
         "//muan/queues:queue_manager",
         "//c2018/subsystems/climber/batter",
         "//c2018/subsystems/climber/winch",
-        "//muan/wpilib:ds_sender",
         "//muan/wpilib:state_protos"
     ],
 )
@@ -36,8 +35,8 @@ cc_library(
 )
 
 cc_test(
-    name = "climber_tests",
-    srcs = ["climber_tests.cpp"],
+    name = "climber_test",
+    srcs = ["climber_test.cpp"],
     deps = [
         ":climber_subsystem",
         "//third_party/google/googletest",
