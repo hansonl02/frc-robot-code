@@ -8,7 +8,7 @@ namespace winch {
 
 Winch::Winch() {}
 
-double Winch::Update(c2018::climber::ClimberStatusProto* status, double encoder_i, bool should_climb,
+double Winch::Update(double encoder_i, bool should_climb,
                      bool outputs_enabled) {
   double encoder = encoder_i - first_enc_pos_;
   double voltage = 0.;
@@ -21,11 +21,9 @@ double Winch::Update(c2018::climber::ClimberStatusProto* status, double encoder_
     }
 
     if (should_climb) {
-      (*status)->set_climber_state(c2018::climber::State::CLIMB);
       voltage = kRunningVoltage;
       reset_ = false;
     } else {
-      (*status)->set_climber_state(c2018::climber::State::IDLE);
       voltage = 0.0;
       if (!has_climbed_) {
         reset_ = true;
@@ -34,7 +32,6 @@ double Winch::Update(c2018::climber::ClimberStatusProto* status, double encoder_
 
     if (rope_climbed_ >= kAmountToClimb) {
       voltage = 0.;
-      (*status)->set_climber_state(c2018::climber::State::IDLE);
       has_climbed_ = true;
     }
   }
