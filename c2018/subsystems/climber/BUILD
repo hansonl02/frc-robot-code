@@ -19,9 +19,9 @@ cc_library(
     	"//muan/wpilib:wpilib_queues",
         "//muan/queues:queue_manager",
         "//c2018/subsystems/climber/batter",
-	"//c2018/subsystems/climber/winch",
+	    "//c2018/subsystems/climber/winch",
         "//muan/wpilib:ds_sender",
-	"//muan/wpilib:state_protos"
+	    "//muan/wpilib:state_protos"
     ],
 )
 
