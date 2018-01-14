@@ -14,12 +14,16 @@ void Climber::Update() {
   bool outputs_enabled = false;
   bool batter_output;
   double winch_output;
+
+  ClimberStatusProto status_proto;
+  ClimberOutputProto output_proto;
+  ClimberGoalProto goal_proto;
+
   ClimberGoal goal;
   ClimberInput input;
+
   if (!goal_reader_.ReadLastMessage()) {
-    goal_proto_->set_climber_goal(NONE);
-    goal_queue_->WriteMessage(goal_proto_);
-    // Set default goal values here
+    goal_proto->set_climber_goal(NONE);
   }
 
   if (input_reader_.ReadLastMessage()) {
@@ -28,31 +32,30 @@ void Climber::Update() {
     switch (goal.climber_goal()) {
       case NONE:
         should_climb = false;
-        winch_output = winch_.Update(&status_proto_, input.position(), should_climb, outputs_enabled);
-        batter_output = batter_.Update(goal.put_down_batter(), outputs_enabled);
-        status_proto_->set_climber_state(IDLE);
+        status_proto->set_climber_state(IDLE);
         break;
       case APPROACHING:
         goal.set_put_down_batter(true);
-        winch_output = winch_.Update(&status_proto_, input.position(), should_climb, outputs_enabled);
-        batter_output = batter_.Update(goal.put_down_batter(), outputs_enabled);
-        status_proto_->set_climber_state(APPROACH);
+        status_proto->set_climber_state(APPROACH);
         break;
       case CLIMBING:
         should_climb = true;
-        winch_output = winch_.Update(&status_proto_, input.position(), should_climb, outputs_enabled);
-        batter_output = batter_.Update(goal.put_down_batter(), outputs_enabled);
-        status_proto_->set_climber_state(CLIMB);
+        status_proto->set_climber_state(CLIMB);
         break;
     }
 
-    output_proto_->set_release_solenoid(batter_output);
-    output_proto_->set_voltage(winch_output);
+    winch_output = winch_.Update(&status_proto, input.position(), should_climb, outputs_enabled);
+    batter_output = batter_.Update(goal.put_down_batter(), outputs_enabled);
+
+    output_proto->set_release_solenoid(batter_output);
+    output_proto->set_voltage(winch_output);
+
     if (winch_.has_climbed()) {
-      status_proto_->set_climber_state(DONE);
+      status_proto->set_climber_state(DONE);
     }
-    status_queue_->WriteMessage(status_proto_);
-    output_queue_->WriteMessage(output_proto_);
+
+    status_queue_->WriteMessage(status_proto);
+    output_queue_->WriteMessage(output_proto);
   }
 }
 
