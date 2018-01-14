@@ -19,8 +19,7 @@ class Winch {
  public:
   Winch();
 
-  double Update(c2018::climber::ClimberStatusProto *status, double encoder_i, bool should_climb,
-                bool outputs_enabled);
+  double Update(double encoder_i, bool should_climb, bool outputs_enabled);
 
   bool is_reset() { return reset_; }
   bool has_climbed() { return has_climbed_; }
