@@ -8,12 +8,12 @@
 #include "muan/wpilib/queue_types.h"
 
 namespace c2018 {
-
 namespace climber {
 
 class Climber {
  public:
   Climber();
+
   void Update();
   winch::Winch winch_;
   batter::Batter batter_;
@@ -28,7 +28,6 @@ class Climber {
 };
 
 }  // namespace climber
-
 }  // namespace c2018
 
 #endif  // C2018_SUBSYSTEMS_CLIMBER_CLIMBER_H_

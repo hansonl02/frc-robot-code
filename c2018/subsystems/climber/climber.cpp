@@ -1,7 +1,6 @@
 #include "c2018/subsystems/climber/climber.h"
 
 namespace c2018 {
-
 namespace climber {
 
 using muan::queues::QueueManager;
@@ -66,5 +65,4 @@ void Climber::Update() {
 }
 
 }  // namespace climber
-
 }  // namespace c2018

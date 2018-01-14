@@ -20,7 +20,7 @@ cc_library(
         "//muan/queues:queue_manager",
         "//c2018/subsystems/climber/batter",
         "//c2018/subsystems/climber/winch",
-        "//muan/wpilib:state_protos"
+        "//muan/wpilib:state_protos",
     ],
 )
 
