@@ -2,8 +2,6 @@
 #define C2018_SUBSYSTEMS_CLIMBER_WINCH_WINCH_H_
 
 #include <cmath>
-#include "c2018/subsystems/climber/climber.pb.h"
-#include "c2018/subsystems/climber/queue_types.h"
 
 namespace c2018 {
 
