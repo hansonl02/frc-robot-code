@@ -1,4 +1,5 @@
 #include "c2018/subsystems/climber/climber.h"
+#include <iostream>
 
 namespace c2018 {
 namespace climber {
@@ -30,38 +31,40 @@ void Climber::Update() {
   if (input_reader_.ReadLastMessage()) {
     outputs_enabled = ds_status_.ReadLastMessage().value()->is_sys_active();
     // SETTING STATUS AND SHOULD_CLIMB GOAL
-    switch (goal_proto->climber_goal()) {
-      case NONE:
-        should_climb = false;
-        status_proto->set_climber_state(IDLE);
-        break;
-      case APPROACHING:
-        goal_proto->set_put_down_batter(true);
-        status_proto->set_climber_state(APPROACH);
-        break;
-      case CLIMBING:
-        should_climb = true;
-        status_proto->set_climber_state(CLIMB);
-        break;
+    if (outputs_enabled) {
+      switch (goal_proto->climber_goal()) {
+        case NONE:
+          should_climb = false;
+          status_proto->set_climber_state(IDLE);
+          break;
+        case APPROACHING:
+          goal_proto->set_put_down_batter(true);
+          status_proto->set_climber_state(APPROACH);
+          break;
+        case CLIMBING:
+          should_climb = true;
+          status_proto->set_climber_state(CLIMB);
+          break;
+      }
+      // SETTING STATUS
+      if (winch_.has_climbed()) {
+        status_proto->set_climber_state(DONE);
+      }
+    } else {
+      status_proto->set_climber_state(IDLE);
     }
-
-    // UPDATING MECHANISMS
-    winch_output = winch_.Update(input->position(), should_climb, outputs_enabled);
-    batter_output = batter_.Update(goal_proto->put_down_batter(), outputs_enabled);
-
-    // SETTING OUTPUTS
-    output_proto->set_release_solenoid(batter_output);
-    output_proto->set_voltage(winch_output);
-
-    // SETTING STATUS
-    if (winch_.has_climbed()) {
-      status_proto->set_climber_state(DONE);
-    }
-
-    // WRITING TO QUEUES
-    status_queue_->WriteMessage(status_proto);
-    output_queue_->WriteMessage(output_proto);
   }
+  // UPDATING MECHANISMS
+  winch_output = winch_.Update(input->position(), should_climb, outputs_enabled);
+  batter_output = batter_.Update(goal_proto->put_down_batter(), outputs_enabled);
+
+  // SETTING OUTPUTS
+  output_proto->set_release_solenoid(batter_output);
+  output_proto->set_voltage(winch_output);
+
+  // WRITING TO QUEUES
+  status_queue_->WriteMessage(status_proto);
+  output_queue_->WriteMessage(output_proto);
 }
 
 }  // namespace climber
