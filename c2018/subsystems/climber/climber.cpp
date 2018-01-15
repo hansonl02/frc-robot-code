@@ -1,5 +1,4 @@
 #include "c2018/subsystems/climber/climber.h"
-#include <iostream>
 
 namespace c2018 {
 namespace climber {
