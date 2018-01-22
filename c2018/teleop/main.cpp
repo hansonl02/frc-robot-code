@@ -41,9 +41,7 @@ void CitrusRobot::operator()() {
 void CitrusRobot::Stop() { running_ = false; }
 
 void CitrusRobot::Update() {
-  if (DriverStation::GetInstance().IsAutonomous()) {
-    // Run auto
-  } else if (DriverStation::GetInstance().IsOperatorControl()) {
+  if (DriverStation::GetInstance().IsOperatorControl()) {
     SendDrivetrainMessage();
   }
   ds_sender_.Send();
@@ -64,9 +62,8 @@ void CitrusRobot::SendDrivetrainMessage() {
     high_gear_ = false;
   }
 
-  drivetrain_goal->set_gear(high_gear_
-                            ? frc971::control_loops::drivetrain::Gear::kHighGear
-                            : frc971::control_loops::drivetrain::Gear::kLowGear);
+  drivetrain_goal->set_gear(high_gear_ ? frc971::control_loops::drivetrain::Gear::kHighGear
+                                       : frc971::control_loops::drivetrain::Gear::kLowGear);
   drivetrain_goal->mutable_teleop_command()->set_steering(wheel);
   drivetrain_goal->mutable_teleop_command()->set_throttle(throttle);
   drivetrain_goal->mutable_teleop_command()->set_quick_turn(quickturn);
