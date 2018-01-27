@@ -13,22 +13,25 @@ DEFINE_int32(gyro_time, 10, "How long to calibrate the gyro for.");
 
 WpilibInterface::WpilibInterface()
     : can_{QueueManager<PdpMessage>::Fetch()},
-      gyro_{QueueManager<GyroMessageProto>::Fetch(), QueueManager<DriverStationProto>::Fetch(),
-            FLAGS_gyro_time, true},
+      gyro_{QueueManager<GyroMessageProto>::Fetch(),
+            QueueManager<DriverStationProto>::Fetch(), FLAGS_gyro_time, true},
       drivetrain_{&can_},
-      superstructure_{&can_} {
+      score_{&can_} {
   std::thread can_thread(std::ref(can_));
   can_thread.detach();
+
+  std::thread gyro_thread(std::ref(gyro_));
+  gyro_thread.detach();
 }
 
 void WpilibInterface::WriteActuators() {
   drivetrain_.WriteActuators();
-  superstructure_.WriteActuators();
+  score_.WriteActuators();
 }
 
 void WpilibInterface::ReadSensors() {
   drivetrain_.ReadSensors();
-  superstructure_.ReadSensors();
+  score_.ReadSensors();
 }
 
 }  // namespace wpilib

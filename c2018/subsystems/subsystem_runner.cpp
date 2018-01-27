@@ -36,6 +36,8 @@ void SubsystemRunner::operator()() {
 
     drivetrain_.Update();
 
+    climber_.Update();
+
     wpilib_.WriteActuators();
 
     phased_loop.SleepUntilNext();
