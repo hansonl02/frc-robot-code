@@ -7,7 +7,7 @@
 namespace c2018 {
 namespace wpilib {
 
-constexpr double kPitchRadius = (1 + (1 / 16));
+constexpr double kPitchRadius = (1. + (1. / 16.));
 
 constexpr double kElevatorRPM = 2.14;
 constexpr double kWristRPM = 5.14;
