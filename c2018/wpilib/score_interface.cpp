@@ -7,6 +7,11 @@
 namespace c2018 {
 namespace wpilib {
 
+constexpr double kPitchRadius = (1 + (1 / 16));
+
+constexpr double kElevatorRPM = 2.14;
+constexpr double kWristRPM = 5.14;
+
 constexpr uint32_t kElevatorMotor = 4;
 constexpr uint32_t kIntakeMotor = 2;
 constexpr uint32_t kWristMotor = 3;
@@ -50,8 +55,10 @@ ScoreSubsystemInterface::ScoreSubsystemInterface(
 
 void ScoreSubsystemInterface::ReadSensors() {
   ScoreSubsystemInputProto sensors;
-  sensors->set_elevator_encoder(elevator_encoder_.Get() / 2.2222);
-  sensors->set_wrist_encoder(wrist_encoder_.Get() / 5.14);
+  sensors->set_elevator_encoder(elevator_encoder_.Get() /
+                                ((kPitchRadius * kElevatorRPM) / 512));
+  sensors->set_wrist_encoder(wrist_encoder_.Get() /
+                             ((kPitchRadius * kWristRPM) / 512));
   // These numbers come from the status to outpur ratios for the encoders.
   sensors->set_elevator_hall(elevator_hall_.Get());
   sensors->set_wrist_hall(wrist_hall_.Get());
