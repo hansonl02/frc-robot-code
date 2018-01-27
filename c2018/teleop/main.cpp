@@ -13,7 +13,7 @@ using muan::wpilib::DriverStationProto;
 using muan::teleop::JoystickStatusProto;
 using muan::queues::QueueManager;
 
-teleop::TeleopBase()
+TeleopBase::TeleopBase()
     : throttle_{1, QueueManager<JoystickStatusProto>::Fetch("throttle")},
       wheel_{0, QueueManager<JoystickStatusProto>::Fetch("wheel")},
       gamepad_{2, QueueManager<JoystickStatusProto>::Fetch("gamepad")},
@@ -23,7 +23,7 @@ teleop::TeleopBase()
   quickturn_ = wheel_.MakeButton(5);
 }
 
-void teleop::operator()() {
+void TeleopBase::operator()() {
   aos::time::PhasedLoop phased_loop(std::chrono::milliseconds(20));
   aos::SetCurrentThreadRealtimePriority(10);
   aos::SetCurrentThreadName("TeleopBase");
