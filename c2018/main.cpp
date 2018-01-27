@@ -15,11 +15,8 @@ class WpilibRobot : public IterativeRobot {
     std::thread subsystem_thread(std::ref(subsystem_runner_));
     subsystem_thread.detach();
 
-    std::thread citrus_robot_thread(std::ref(main_));
-    citrus_robot_thread.detach();
-
-    std::thread autonomous_thread(std::ref(auto_));
-    autonomous_thread.detach();
+    std::thread teleop_thread(std::ref(main_));
+    teleop_thread.detach();
   }
 
  private:
