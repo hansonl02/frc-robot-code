@@ -19,12 +19,30 @@ TeleopBase::TeleopBase()
     : throttle_{1, QueueManager<JoystickStatusProto>::Fetch("throttle")},
       wheel_{0, QueueManager<JoystickStatusProto>::Fetch("wheel")},
       gamepad_{2, QueueManager<JoystickStatusProto>::Fetch("gamepad")},
+
       ds_sender_{QueueManager<DriverStationProto>::Fetch(),
-                 QueueManager<GameSpecificStringProto>::Fetch()} {
-  shifting_low_ = throttle_.MakeButton(4);
-  shifting_high_ = throttle_.MakeButton(5);
-  quickturn_ = wheel_.MakeButton(5);
-}
+      QueueManager<GameSpecificStringProto>::Fetch()} {
+        first_level_score_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::A_BUTTON));
+        second_level_score_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::B_BUTTON));
+        third_level_score_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::X_BUTTON));
+        score_height_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::Y_BUTTON));
+        initialize_climb_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
+        climb_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
+        godmode_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_CLICK_IN));
+
+        godmode_elevator_down_ = gamepad_.MakeAxis(1, .7);  // Left Joystick South
+        godmode_elevator_up_ = gamepad_.MakeAxis(4, .7)  // TODO(David/Gemma/Anyone with any knowledge) Figure out what buttons correspond to what axis
+
+        intake_ = gamepad_.MakeAxis(3, .7);  // Right Trigger
+        outtake_ = gamepad_.MakeAxis(2, .7);  // Left Trigger
+
+        score_back_ = gamepad_.MakePov(0, muan::teleop::Pov::kSouth);
+        score_front_ = gamepad_.MakePov(0, muan::teleop::Pov::kNorth);
+
+        shifting_low_ = throttle_.MakeButton(4);
+        shifting_high_ = throttle_.MakeButton(5);
+        quickturn_ = wheel_.MakeButton(5);
+      }
 
 void TeleopBase::operator()() {
   aos::time::PhasedLoop phased_loop(std::chrono::milliseconds(20));
