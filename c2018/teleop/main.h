@@ -4,8 +4,8 @@
 #include <atomic>
 #include "muan/teleop/joystick.h"
 #include "muan/wpilib/ds_sender.h"
-#include "c2018/subsystems/climber/climber.h"
-#include "c2018/subsystems/score_subsystem/score_subsystem.h"
+#include "c2018/subsystems/climber/climber_queues.h"
+#include "c2018/subsystems/score_subsystem/score_subsystem_queues.h"
 #include "WPILib.h"
 #include "muan/queues/queue_manager.h"
 #include "muan/wpilib/queue_types.h"
