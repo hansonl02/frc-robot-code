@@ -17,11 +17,11 @@ TeleopBase::TeleopBase()
 
       ds_sender_{QueueManager<DriverStationProto>::Fetch(),
                  QueueManager<GameSpecificStringProto>::Fetch()} {
-  first_level_score_ =
+  first_level_height_ =
       gamepad_.MakeButton(uint32_t(muan::teleop::XBox::A_BUTTON));
-  second_level_score_ =
+  second_level_height_ =
       gamepad_.MakeButton(uint32_t(muan::teleop::XBox::B_BUTTON));
-  third_level_score_ =
+  third_level_height_ =
       gamepad_.MakeButton(uint32_t(muan::teleop::XBox::X_BUTTON));
   score_height_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::Y_BUTTON));
   initialize_climb_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
@@ -131,25 +131,25 @@ void TeleopBase::SendDrivetrainMessage() {
 }
 
 void TeleopBase::SendScoreSubsystemMessage() {
-  //Godmode
+  // Godmode
   god_mode_ = god_mode_ != godmode_->was_clicked();
 
   if (god_mode_ && godmode_elevator_up_->was_clicked()) {
-    //TODO(hanson/gemma/ellie) kyle pls
+    // TODO(hanson/gemma/ellie) kyle pls
   }
 
-  //Toggle elevator heights
-  if (first_level_score_->was_clicked()) {
+  // Toggle elevator heights
+  if (first_level_height_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_0);
-  } else if (second_level_score_->was_clicked()) {
+  } else if (second_level_height_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_1);
-  } else if (third_level_score->was_clicked()) {
+  } else if (third_level_height_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_2);
   } else if (score_height_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_SCORE);
   }
 
-  //Intake Modes
+  // Intake Modes
   if (intake_->is_pressed()){
     score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
   }
@@ -157,7 +157,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
     score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::OUTTAKE);
   }
 
-  //Scoring
+  // Scoring
   if (score_front_->is_pressed()) {
     score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_F);
   }
