@@ -4,8 +4,8 @@
 #include <atomic>
 #include "muan/teleop/joystick.h"
 #include "muan/wpilib/ds_sender.h"
-#include "c2018/subsystems/climber/climber_queues.h"
-#include "c2018/subsystems/score_subsystem/score_subsystem_queues.h"
+#include "c2018/subsystems/climber/queue_types.h"
+#include "c2018/subsystems/score_subsystem/queue_types.h"
 #include "WPILib.h"
 #include "muan/queues/queue_manager.h"
 #include "muan/wpilib/queue_types.h"
@@ -36,13 +36,15 @@ class TeleopBase {
 
   muan::teleop::Joystick throttle_, wheel_;
   muan::teleop::Joystick gamepad_;
+  c2018::climber::Climber climber_goal_;
+  c2018::score_subsystem::ScoreSubsystem score_subsystem_;
 
   bool high_gear_;
   muan::teleop::Button *shifting_high_, *shifting_low_;
   muan::teleop::Button *quickturn_;
 
   // Gamepad Buttons
-  muan::teleop::Button *first_level_height_, *second_level_height_, *third_level_height_, *score_height;
+  muan::teleop::Button *first_level_height_, *second_level_height_, *third_level_height_, *score_height_;
   muan::teleop::Button *initialize_climb_, *climb_, *godmode_;
   // Gamepad POVs
   muan::teleop::Button *score_back_, *score_front_;
@@ -56,8 +58,6 @@ class TeleopBase {
 
   bool log_name_set_ = false;
 
-  c2018::climber::ClimberGoalProto climber_goal_;
-  c2018::score_subsystem::ScoreSubsystemGoalProto score_subsystem_goal_;
 };
 
 }  // namespace teleop

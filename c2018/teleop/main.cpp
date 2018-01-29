@@ -9,12 +9,15 @@ using muan::wpilib::DriverStationProto;
 using muan::wpilib::GameSpecificStringProto;
 using muan::teleop::JoystickStatusProto;
 using muan::queues::QueueManager;
+using c2018::climber::ClimberGoalProto;
+using c2018::score_subsystem::ScoreSubsystemGoalProto;
 
 TeleopBase::TeleopBase()
     : throttle_{1, QueueManager<JoystickStatusProto>::Fetch("throttle")},
       wheel_{0, QueueManager<JoystickStatusProto>::Fetch("wheel")},
       gamepad_{2, QueueManager<JoystickStatusProto>::Fetch("gamepad")},
-
+      climber_goal_{QueueManager<ClimberGoalProto>::Fetch()},
+      score_subsystem_goal_{QueueManager<ScoreSubsystemGoalProto>::Fetch()},
       ds_sender_{QueueManager<DriverStationProto>::Fetch(),
                  QueueManager<GameSpecificStringProto>::Fetch()} {
   first_level_height_ =
@@ -32,7 +35,7 @@ TeleopBase::TeleopBase()
                                                      // intaking/outtaking
 
   godmode_elevator_down_ = gamepad_.MakeAxis(1, .7);  // Left Joystick South
-  godmode_elevator_up_ = gamepad_.MakeAxis(4, .7)     // TODO(David/Gemma/) Figure
+  godmode_elevator_up_ = gamepad_.MakeAxis(4, .7);    // TODO(David/Gemma/) Figure
                                                       // out what buttons
                                                       // correspond to what axis
 
@@ -131,6 +134,8 @@ void TeleopBase::SendDrivetrainMessage() {
 }
 
 void TeleopBase::SendScoreSubsystemMessage() {
+  using ScoreSubsystemGoal = c2018::score_subsystem::ScoreSubsystemGoalProto;
+  ScoreSubsystemGoal score_subsystem_goal;
   // Godmode
   god_mode_ = god_mode_ != godmode_->was_clicked();
 
@@ -140,39 +145,43 @@ void TeleopBase::SendScoreSubsystemMessage() {
 
   // Toggle elevator heights
   if (first_level_height_->was_clicked()) {
-    score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_0);
+    score_subsystem_goal->set_elevator_height(c2018::score_subsystem::HEIGHT_0);
   } else if (second_level_height_->was_clicked()) {
-    score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_1);
+    score_subsystem_goal->set_elevator_height(c2018::score_subsystem::HEIGHT_1);
   } else if (third_level_height_->was_clicked()) {
-    score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_2);
+    score_subsystem_goal->set_elevator_height(c2018::score_subsystem::HEIGHT_2);
   } else if (score_height_->was_clicked()) {
-    score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_SCORE);
+    score_subsystem_goal->set_elevator_height(c2018::score_subsystem::HEIGHT_SCORE);
   }
 
   // Intake Modes
   if (intake_->is_pressed()){
-    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
+    score_subsystem_goal->set_intake_mode(c2018::score_subsystem::INTAKE);
   }
   if (outtake_->is_pressed()){
-    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::OUTTAKE);
+    score_subsystem_goal->set_intake_mode(c2018::score_subsystem::OUTTAKE);
   }
 
   // Scoring
   if (score_front_->is_pressed()) {
-    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_F);
+    score_subsystem_goal->set_claw_mode(c2018::score_subsystem::SCORE_F);
   }
   if (score_back_->is_pressed()) {
-    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_B);
+    score_subsystem_goal->set_claw_mode(c2018::score_subsystem::SCORE_B);
   }
+  QueueManager<c2018::ScoreSubsystem::ScoreSubsystemGoal>::Fetch()->WriteMessage(score_subsystem_goal);
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
+  using ClimberGoal = c2018::climber::ClimberGoal;
+  ClimberGoal climber_goal;
   if (initialize_climb_->was_clicked()) {
-    climber_goal->set_climber_goal(c2018::climber::APPROACHING);
+    climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
     if (climb_->was_clicked()) {
-      climber_goal->set_climber_goal(c2018::climber::CLIMBING);
+      climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
     }
   }
+  QueueManager<c2018::Climber::ClimberGoal>::Fetch()->WriteMessage(climber_goal_);
 }
 
 }  // namespace teleop
