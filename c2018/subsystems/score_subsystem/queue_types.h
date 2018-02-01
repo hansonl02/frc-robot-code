@@ -22,6 +22,8 @@ using ScoreSubsystemInputQueue =
     muan::queues::MessageQueue<ScoreSubsystemInputProto>;
 using ScoreSubsystemStatusQueue =
     muan::queues::MessageQueue<ScoreSubsystemStatusProto>;
+using ScoreSubsystemGoalQueue =
+    muan::queues::MessageQueue<ScoreSubsystemGoalProto>;
 using ScoreSubsystemOutputQueue =
     muan::queues::MessageQueue<ScoreSubsystemOutputProto>;
 
