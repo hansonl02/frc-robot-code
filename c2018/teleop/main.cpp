@@ -16,10 +16,12 @@ TeleopBase::TeleopBase()
     : throttle_{1, QueueManager<JoystickStatusProto>::Fetch("throttle")},
       wheel_{0, QueueManager<JoystickStatusProto>::Fetch("wheel")},
       gamepad_{2, QueueManager<JoystickStatusProto>::Fetch("gamepad")},
-      climber_goal_{QueueManager<ClimberGoalProto>::Fetch()},
-      score_subsystem_goal_{QueueManager<ScoreSubsystemGoalProto>::Fetch()},
+      // score_subsystem_queue_{QueueManager<ScoreSubsystemGoalQueue>::Fetch()},
       ds_sender_{QueueManager<DriverStationProto>::Fetch(),
-                 QueueManager<GameSpecificStringProto>::Fetch()} {
+                 QueueManager<GameSpecificStringProto>::Fetch()},
+      climber_goal_queue_{QueueManager<ClimberGoalProto>::Fetch()},
+      score_subsystem_goal_queue_{
+          QueueManager<ScoreSubsystemGoalProto>::Fetch()} {
   first_level_height_ =
       gamepad_.MakeButton(uint32_t(muan::teleop::XBox::A_BUTTON));
   second_level_height_ =
@@ -35,12 +37,12 @@ TeleopBase::TeleopBase()
                                                      // intaking/outtaking
 
   godmode_elevator_down_ = gamepad_.MakeAxis(1, .7);  // Left Joystick South
-  godmode_elevator_up_ = gamepad_.MakeAxis(4, .7);    // TODO(David/Gemma/) Figure
-                                                      // out what buttons
-                                                      // correspond to what axis
+  godmode_elevator_up_ = gamepad_.MakeAxis(4, .7);  // TODO(David/Gemma/) Figure
+                                                    // out what buttons
+                                                    // correspond to what axis
 
-  intake_ = gamepad_.MakeAxis(3, .7);  // Right Trigger
-  outtake_ = gamepad_.MakeAxis(2, .7); // Left Trigger
+  intake_ = gamepad_.MakeAxis(3, .7);   // Right Trigger
+  outtake_ = gamepad_.MakeAxis(2, .7);  // Left Trigger
 
   score_back_ = gamepad_.MakePov(0, muan::teleop::Pov::kSouth);
   score_front_ = gamepad_.MakePov(0, muan::teleop::Pov::kNorth);
@@ -134,8 +136,7 @@ void TeleopBase::SendDrivetrainMessage() {
 }
 
 void TeleopBase::SendScoreSubsystemMessage() {
-  using ScoreSubsystemGoal = c2018::score_subsystem::ScoreSubsystemGoalProto;
-  ScoreSubsystemGoal score_subsystem_goal;
+  c2018::score_subsystem::ScoreSubsystemGoalProto score_subsystem_goal;
   // Godmode
   god_mode_ = god_mode_ != godmode_->was_clicked();
 
@@ -151,14 +152,15 @@ void TeleopBase::SendScoreSubsystemMessage() {
   } else if (third_level_height_->was_clicked()) {
     score_subsystem_goal->set_elevator_height(c2018::score_subsystem::HEIGHT_2);
   } else if (score_height_->was_clicked()) {
-    score_subsystem_goal->set_elevator_height(c2018::score_subsystem::HEIGHT_SCORE);
+    score_subsystem_goal->set_elevator_height(
+        c2018::score_subsystem::HEIGHT_SCORE);
   }
 
   // Intake Modes
-  if (intake_->is_pressed()){
+  if (intake_->is_pressed()) {
     score_subsystem_goal->set_intake_mode(c2018::score_subsystem::INTAKE);
   }
-  if (outtake_->is_pressed()){
+  if (outtake_->is_pressed()) {
     score_subsystem_goal->set_intake_mode(c2018::score_subsystem::OUTTAKE);
   }
 
@@ -169,19 +171,19 @@ void TeleopBase::SendScoreSubsystemMessage() {
   if (score_back_->is_pressed()) {
     score_subsystem_goal->set_claw_mode(c2018::score_subsystem::SCORE_B);
   }
-  QueueManager<c2018::ScoreSubsystem::ScoreSubsystemGoal>::Fetch()->WriteMessage(score_subsystem_goal);
+  score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal);
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
-  using ClimberGoal = c2018::climber::ClimberGoal;
-  ClimberGoal climber_goal;
+  c2018::climber::ClimberGoalProto climber_goal;
+
   if (initialize_climb_->was_clicked()) {
-    climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
+    climber_goal->set_climber_goal(c2018::climber::APPROACHING);
     if (climb_->was_clicked()) {
-      climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
+      climber_goal->set_climber_goal(c2018::climber::CLIMBING);
     }
   }
-  QueueManager<c2018::Climber::ClimberGoal>::Fetch()->WriteMessage(climber_goal_);
+  climber_goal_queue_->WriteMessage(climber_goal);
 }
 
 }  // namespace teleop
