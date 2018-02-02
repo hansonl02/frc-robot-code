@@ -16,7 +16,6 @@ TeleopBase::TeleopBase()
     : throttle_{1, QueueManager<JoystickStatusProto>::Fetch("throttle")},
       wheel_{0, QueueManager<JoystickStatusProto>::Fetch("wheel")},
       gamepad_{2, QueueManager<JoystickStatusProto>::Fetch("gamepad")},
-      // score_subsystem_queue_{QueueManager<ScoreSubsystemGoalQueue>::Fetch()},
       ds_sender_{QueueManager<DriverStationProto>::Fetch(),
                  QueueManager<GameSpecificStringProto>::Fetch()},
       climber_goal_queue_{QueueManager<ClimberGoalProto>::Fetch()},
@@ -136,10 +135,10 @@ void TeleopBase::SendDrivetrainMessage() {
 }
 
 void TeleopBase::SendScoreSubsystemMessage() {
-  c2018::score_subsystem::ScoreSubsystemGoalProto score_subsystem_goal;
   // Godmode
-  god_mode_ = god_mode_ != godmode_->was_clicked();
-
+  if (godmode_->was_clicked()) {
+    god_mode_ = !god_mode_;
+  }
   if (god_mode_ && godmode_elevator_up_->was_clicked()) {
     // TODO(hanson/gemma/ellie) kyle pls
   }
@@ -175,8 +174,6 @@ void TeleopBase::SendScoreSubsystemMessage() {
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
-  c2018::climber::ClimberGoalProto climber_goal;
-
   if (initialize_climb_->was_clicked()) {
     climber_goal->set_climber_goal(c2018::climber::APPROACHING);
     if (climb_->was_clicked()) {

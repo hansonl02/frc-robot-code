@@ -59,6 +59,9 @@ class TeleopBase {
 
   c2018::climber::ClimberGoalQueue *climber_goal_queue_;
   c2018::score_subsystem::ScoreSubsystemGoalQueue *score_subsystem_goal_queue_;
+
+  c2018::score_subsystem::ScoreSubsystemGoalProto score_subsystem_goal;
+  c2018::climber::ClimberGoalProto climber_goal;
 };
 
 }  // namespace teleop
