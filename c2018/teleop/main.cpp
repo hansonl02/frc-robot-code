@@ -30,6 +30,8 @@ TeleopBase::TeleopBase()
   score_height_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::Y_BUTTON));
   initialize_climb_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
   climb_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
+  stop_climb_ =
+      gamepad_.MakeButton(uint32_t(muan::teleop::XBox::RIGHT_CLICK_IN));
   godmode_ = gamepad_.MakeButton(
       uint32_t(muan::teleop::XBox::LEFT_CLICK_IN));  // TODO(hanson/gemma/ellie)
                                                      // add godmodes for
@@ -164,17 +166,19 @@ void TeleopBase::SendScoreSubsystemMessage() {
   // Intake Modes
   if (intake_->is_pressed()) {
     score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
-  }
-  if (outtake_->is_pressed()) {
+  } else if (outtake_->is_pressed()) {
     score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::OUTTAKE);
+  } else {
+    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
   }
 
   // Scoring
   if (score_front_->is_pressed()) {
     score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_F);
-  }
-  if (score_back_->is_pressed()) {
+  } else if (score_back_->is_pressed()) {
     score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_B);
+  } else {
+    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::VERTICAL);
   }
   score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal_);
 }
@@ -186,6 +190,8 @@ void TeleopBase::SendClimbSubsystemMessage() {
     if (climb_->was_clicked()) {
       climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
     }
+  } else if (stop_climb_->was_clicked()) {
+    climber_goal_->set_climber_goal(c2018::climber::NONE);
   }
   climber_goal_queue_->WriteMessage(climber_goal_);
 }
