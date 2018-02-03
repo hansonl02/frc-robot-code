@@ -145,42 +145,45 @@ void TeleopBase::SendScoreSubsystemMessage() {
 
   // Toggle elevator heights
   if (first_level_height_->was_clicked()) {
-    score_subsystem_goal->set_elevator_height(c2018::score_subsystem::HEIGHT_0);
+    score_subsystem_goal_->set_elevator_height(
+        c2018::score_subsystem::HEIGHT_0);
   } else if (second_level_height_->was_clicked()) {
-    score_subsystem_goal->set_elevator_height(c2018::score_subsystem::HEIGHT_1);
+    score_subsystem_goal_->set_elevator_height(
+        c2018::score_subsystem::HEIGHT_1);
   } else if (third_level_height_->was_clicked()) {
-    score_subsystem_goal->set_elevator_height(c2018::score_subsystem::HEIGHT_2);
+    score_subsystem_goal_->set_elevator_height(
+        c2018::score_subsystem::HEIGHT_2);
   } else if (score_height_->was_clicked()) {
-    score_subsystem_goal->set_elevator_height(
+    score_subsystem_goal_->set_elevator_height(
         c2018::score_subsystem::HEIGHT_SCORE);
   }
 
   // Intake Modes
   if (intake_->is_pressed()) {
-    score_subsystem_goal->set_intake_mode(c2018::score_subsystem::INTAKE);
+    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
   }
   if (outtake_->is_pressed()) {
-    score_subsystem_goal->set_intake_mode(c2018::score_subsystem::OUTTAKE);
+    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::OUTTAKE);
   }
 
   // Scoring
   if (score_front_->is_pressed()) {
-    score_subsystem_goal->set_claw_mode(c2018::score_subsystem::SCORE_F);
+    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_F);
   }
   if (score_back_->is_pressed()) {
-    score_subsystem_goal->set_claw_mode(c2018::score_subsystem::SCORE_B);
+    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_B);
   }
-  score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal);
+  score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal_);
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
   if (initialize_climb_->was_clicked()) {
-    climber_goal->set_climber_goal(c2018::climber::APPROACHING);
+    climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
     if (climb_->was_clicked()) {
-      climber_goal->set_climber_goal(c2018::climber::CLIMBING);
+      climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
     }
   }
-  climber_goal_queue_->WriteMessage(climber_goal);
+  climber_goal_queue_->WriteMessage(climber_goal_);
 }
 
 }  // namespace teleop
