@@ -52,6 +52,13 @@ TeleopBase::TeleopBase()
   shifting_high_ = throttle_.MakeButton(5);
 
   quickturn_ = wheel_.MakeButton(5);
+
+  // Default values
+  climber_goal_->set_climber_goal(c2018::climber::NONE);
+
+  score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_0);
+  score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
+  score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::VERTICAL);
 }
 
 void TeleopBase::operator()() {
@@ -137,9 +144,6 @@ void TeleopBase::SendDrivetrainMessage() {
 }
 
 void TeleopBase::SendScoreSubsystemMessage() {
-  score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_0);
-  score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
-  score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::VERTICAL);
   // Godmode
   if (godmode_->was_clicked()) {
     god_mode_ = !god_mode_;
@@ -184,7 +188,6 @@ void TeleopBase::SendScoreSubsystemMessage() {
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
-  climber_goal_->set_climber_goal(c2018::climber::NONE);
   if (initialize_climb_->was_clicked()) {
     climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
     if (climb_->was_clicked()) {
