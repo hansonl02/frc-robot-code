@@ -38,7 +38,7 @@ TeleopBase::TeleopBase()
                                                      // intaking/outtaking
 
   godmode_elevator_down_ = gamepad_.MakeAxis(1, .7);  // Left Joystick South
-  godmode_elevator_up_ = gamepad_.MakeAxis(4, .7);  // TODO(David/Gemma/) Figure
+  godmode_elevator_up_ = gamepad_.MakeAxis(4, .7);  // TODO(David/Gemma) Figure
                                                     // out what buttons
                                                     // correspond to what axis
 
@@ -149,10 +149,10 @@ void TeleopBase::SendScoreSubsystemMessage() {
     god_mode_ = !god_mode_;
   }
   if (god_mode_ && godmode_elevator_up_->was_clicked()) {
-    // TODO(hanson/gemma/ellie) kyle pls
+    // TODO(hanson/gemma/ellie) godmode logic
   }
 
-  // Toggle elevator heights
+  // Elevator heights
   if (first_level_height_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(
         c2018::score_subsystem::HEIGHT_0);
@@ -167,7 +167,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
         c2018::score_subsystem::HEIGHT_SCORE);
   }
 
-  // Intake Modes
+  // Intake modes
   if (intake_->is_pressed()) {
     score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
   } else if (outtake_->is_pressed()) {
@@ -176,7 +176,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
     score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
   }
 
-  // Scoring
+  // Scoring modes
   if (score_front_->is_pressed()) {
     score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_F);
   } else if (score_back_->is_pressed()) {
@@ -196,6 +196,7 @@ void TeleopBase::SendClimbSubsystemMessage() {
   } else if (stop_climb_->was_clicked()) {
     climber_goal_->set_climber_goal(c2018::climber::NONE);
   }
+
   climber_goal_queue_->WriteMessage(climber_goal_);
 }
 
