@@ -145,9 +145,7 @@ void TeleopBase::SendDrivetrainMessage() {
 
 void TeleopBase::SendScoreSubsystemMessage() {
   // Godmode
-  if (godmode_->was_clicked()) {
-    god_mode_ = !god_mode_;
-  }
+  god_mode_ = godmode_->is_pressed();
   if (god_mode_ && godmode_elevator_up_->was_clicked()) {
     // TODO(hanson/gemma/ellie) godmode logic
   }
