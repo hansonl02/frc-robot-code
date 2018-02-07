@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "muan/utils/math_utils.h"
+#include "muan/logging/logger.h"
 
 namespace c2018 {
 namespace wpilib {
@@ -59,7 +60,7 @@ void ScoreSubsystemInterface::ReadSensors() {
                                 (2 * M_PI) / 512 / kElevatorSensorRatio);
   sensors->set_wrist_encoder(wrist_encoder_.Get() * (2 * M_PI) / 512 /
                              kWristSensorRatio);
-  // These numbers come from the status to outpur ratios for the encoders.
+  // These numbers come from the status to output ratios for the encoders.
   sensors->set_elevator_hall(elevator_hall_.Get());
   sensors->set_wrist_hall(wrist_hall_.Get());
   sensors->set_has_cube(has_cube_.Get());
@@ -68,6 +69,8 @@ void ScoreSubsystemInterface::ReadSensors() {
   if (pdp_reader_.ReadLastMessage(&pdp_data)) {
     sensors->set_intake_current(
         std::max(pdp_data->current5(), pdp_data->current6()));
+  } else {
+    LOG_P("PDP data not available");
   }
 }
 
@@ -86,6 +89,7 @@ void ScoreSubsystemInterface::WriteActuators() {
     wrist_.Set(0);
     roller_.Set(0);
     pcm_->WriteSolenoid(kIntakeSolenoid, false);
+    LOG_P("No score output message available!");
   }
 }
 
