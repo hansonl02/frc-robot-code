@@ -21,13 +21,6 @@ TeleopBase::TeleopBase()
       climber_goal_queue_{QueueManager<ClimberGoalProto>::Fetch()},
       score_subsystem_goal_queue_{
           QueueManager<ScoreSubsystemGoalProto>::Fetch()} {
-  first_level_height_ =
-      gamepad_.MakeButton(uint32_t(muan::teleop::XBox::A_BUTTON));
-  second_level_height_ =
-      gamepad_.MakeButton(uint32_t(muan::teleop::XBox::B_BUTTON));
-  third_level_height_ =
-      gamepad_.MakeButton(uint32_t(muan::teleop::XBox::X_BUTTON));
-  score_height_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::Y_BUTTON));
   initialize_climb_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
   climb_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
   stop_climb_ =
@@ -36,17 +29,20 @@ TeleopBase::TeleopBase()
       uint32_t(muan::teleop::XBox::LEFT_CLICK_IN));  // TODO(hanson/gemma/ellie)
                                                      // add godmodes for
                                                      // intaking/outtaking
+  intake_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::A_BUTTON));
+  outtake_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::B_BUTTON));
+  score_back_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::RIGHT_BUMPER));
+  score_front_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_BUMPER));
 
-  godmode_elevator_down_ = gamepad_.MakeAxis(1, .7);  // Left Joystick South
-  godmode_elevator_up_ = gamepad_.MakeAxis(4, .7);  // TODO(David/Gemma) Figure
-                                                    // out what buttons
-                                                    // correspond to what axis
+  height_0_ = gamepad_.MakePov(0, muan::teleop::Pov::kSouth);
+  height_1_ = gamepad_.MakePov(0, muan::teleop::Pov::kEast);
+  height_2_ = gamepad_.MakePov(0, muan::teleop::Pov::kNorth);
 
-  intake_ = gamepad_.MakeAxis(3, .7);   // Right Trigger
-  outtake_ = gamepad_.MakeAxis(2, .7);  // Left Trigger
+  godmode_up_ = gamepad_.MakeAxis(5, .7);     // Right Joystick North
+  godmode_down_ = gamepad_.MakeAxis(5, -.7);  // Right Joystick South
 
-  score_back_ = gamepad_.MakePov(0, muan::teleop::Pov::kSouth);
-  score_front_ = gamepad_.MakePov(0, muan::teleop::Pov::kNorth);
+  top_mode_ = gamepad_.MakeAxis(1, .7);      // Left Joystick North
+  bottom_mode_ = gamepad_.MakeAxis(1, -.7);  // Left Joystick South
 
   shifting_low_ = throttle_.MakeButton(4);
   shifting_high_ = throttle_.MakeButton(5);
@@ -145,24 +141,40 @@ void TeleopBase::SendDrivetrainMessage() {
 
 void TeleopBase::SendScoreSubsystemMessage() {
   // Godmode
-  god_mode_ = godmode_->is_pressed();
-  if (god_mode_ && godmode_elevator_up_->was_clicked()) {
-    // TODO(hanson/gemma/ellie) godmode logic
+  if (godmode_->is_pressed()) {
+    if (godmode_up_->is_pressed()) {
+      // logic
+    } else if (godmode_down_->is_pressed()) {
+      // more logic
+    }
+    // room for more godmode buttons if needed
+  }
+
+  // Elevator heights + intakes
+  if (height_0_->is_pressed()) {
+    score_subsystem_goal_->set_elevator_height(
+        c2018::score_subsystem::HEIGHT_0);
+    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
+  } else if (height_1_->is_pressed()) {
+    score_subsystem_goal_->set_elevator_height(
+        c2018::score_subsystem::HEIGHT_1);
+    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
+  } else if (height_2_->is_pressed()) {
+    score_subsystem_goal_->set_elevator_height(
+        c2018::score_subsystem::HEIGHT_2);
+    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
   }
 
   // Elevator heights
-  if (first_level_height_->was_clicked()) {
+  if (height_0_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(
         c2018::score_subsystem::HEIGHT_0);
-  } else if (second_level_height_->was_clicked()) {
+  } else if (height_1_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(
         c2018::score_subsystem::HEIGHT_1);
-  } else if (third_level_height_->was_clicked()) {
+  } else if (height_2_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(
         c2018::score_subsystem::HEIGHT_2);
-  } else if (score_height_->was_clicked()) {
-    score_subsystem_goal_->set_elevator_height(
-        c2018::score_subsystem::HEIGHT_SCORE);
   }
 
   // Intake modes
@@ -177,12 +189,25 @@ void TeleopBase::SendScoreSubsystemMessage() {
   // Scoring modes
   if (score_front_->is_pressed()) {
     score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_F);
-  } else if (score_back_->is_pressed()) {
-    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_B);
-  } else {
-    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::VERTICAL);
+    if (top_mode_->is_pressed()) {
+      score_subsystem_goal_->set_elevator_height(
+          c2018::score_subsystem::HEIGHT_SCORE);
+    } else if (bottom_mode_->is_pressed()) {
+      score_subsystem_goal_->set_elevator_height(
+          c2018::score_subsystem::HEIGHT_0);
+    }
   }
-  score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal_);
+
+  if (score_back_->is_pressed()) {
+    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_B);
+    if (top_mode_->is_pressed()) {
+      score_subsystem_goal_->set_elevator_height(
+          c2018::score_subsystem::HEIGHT_SCORE);
+    } else if (bottom_mode_->is_pressed()) {
+      score_subsystem_goal_->set_elevator_height(
+          c2018::score_subsystem::HEIGHT_0);
+    }
+  }
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
