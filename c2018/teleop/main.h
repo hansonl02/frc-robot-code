@@ -42,14 +42,12 @@ class TeleopBase {
   muan::teleop::Button *quickturn_;
 
   // Gamepad Buttons
-  muan::teleop::Button *first_level_height_, *second_level_height_,
-      *third_level_height_, *score_height_;
+  muan::teleop::Button *outtake_, *intake_, *score_back_, *score_front_;
   muan::teleop::Button *initialize_climb_, *climb_, *stop_climb_, *godmode_;
   // Gamepad POVs
-  muan::teleop::Button *score_back_, *score_front_;
+  muan::teleop::Button *height_0_, *height_1_, *height_2_;
   // Gamepad Axes
-  muan::teleop::Button *intake_, *outtake_;
-  muan::teleop::Button *godmode_elevator_down_, *godmode_elevator_up_;
+  muan::teleop::Button *godmode_up_, *godmode_down_, *top_mode_, *bottom_mode_;
 
   bool god_mode_ = false;
 
