@@ -86,8 +86,9 @@ void TeleopBase::Stop() { running_ = false; }
 void TeleopBase::Update() {
   if (DriverStation::GetInstance().IsOperatorControl()) {
     SendDrivetrainMessage();
+    SendScoreSubsystemMessage();
+    SendClimbSubsystemMessage();
   }
-
   SetReadableLogName();
 
   ds_sender_.Send();
@@ -170,6 +171,8 @@ void TeleopBase::SendScoreSubsystemMessage() {
     score_subsystem_goal_->set_elevator_height(
         c2018::score_subsystem::HEIGHT_2);
     score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
+  } else {
+    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
   }
 
   // Elevator heights
