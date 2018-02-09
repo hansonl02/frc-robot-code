@@ -148,6 +148,8 @@ void TeleopBase::SendDrivetrainMessage() {
 }
 
 void TeleopBase::SendScoreSubsystemMessage() {
+  score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
+
   // Godmode
   if (godmode_->is_pressed()) {
     if (godmode_up_->is_pressed()) {
@@ -192,8 +194,6 @@ void TeleopBase::SendScoreSubsystemMessage() {
     score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
   } else if (outtake_->is_pressed()) {
     score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::OUTTAKE);
-  } else {
-    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
   }
 
   // Scoring modes
@@ -207,7 +207,6 @@ void TeleopBase::SendScoreSubsystemMessage() {
           c2018::score_subsystem::HEIGHT_0);
     }
   }
-
   if (score_back_->is_pressed()) {
     score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_B);
     if (top_mode_->is_pressed()) {
