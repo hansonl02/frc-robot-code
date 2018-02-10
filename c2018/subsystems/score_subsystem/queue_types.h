@@ -6,7 +6,6 @@
 #include "muan/queues/message_queue.h"
 
 namespace c2018 {
-
 namespace score_subsystem {
 
 using ScoreSubsystemInputProto =
@@ -26,6 +25,8 @@ using ScoreSubsystemGoalQueue =
     muan::queues::MessageQueue<ScoreSubsystemGoalProto>;
 using ScoreSubsystemOutputQueue =
     muan::queues::MessageQueue<ScoreSubsystemOutputProto>;
+using ScoreSubsystemGoalQueue =
+    muan::queues::MessageQueue<ScoreSubsystemGoalProto>;
 
 }  // namespace score_subsystem
 }  // namespace c2018

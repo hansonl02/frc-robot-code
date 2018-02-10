@@ -1,6 +1,8 @@
 #ifndef C2018_AUTONOMOUS_AUTONOMOUS_H_
 #define C2018_AUTONOMOUS_AUTONOMOUS_H_
 
+#include "c2018/subsystems/score_subsystem/queue_types.h"
+#include "c2018/subsystems/score_subsystem/score_subsystem.pb.h"
 #include "muan/wpilib/queue_types.h"
 #include "third_party/aos/common/util/phased_loop.h"
 #include "third_party/frc971/control_loops/drivetrain/drivetrain_config.h"
@@ -18,15 +20,29 @@ class AutonomousBase {
  protected:
   bool IsAutonomous();
 
-  void StartDriveAbsolute(double left, double right, bool follow_through = false);
-  void StartDriveRelative(double forward, double theta, bool follow_through = false);
-  void StartDrivePath(double x, double y, double heading, bool follow_through = false);
+  void StartDriveAbsolute(double left, double right,
+                          bool follow_through = false);
+  void StartDriveRelative(double forward, double theta,
+                          double final_velocity = 0.0);
+  // Direction: 1 => forwards, 0 => autodetect, -1 => backwards
+  void StartDrivePath(double x, double y, double heading,
+                      int force_direction = 0);
+  void StartDriveAtAngle(double distance, double theta_absolute,
+                         double final_velocity = 0.0);
 
   bool IsDriveComplete();
   void WaitUntilDriveComplete();
 
+  void Wait(uint32_t num_cycles);
+  void IntakeGround();
+  void StopIntakeGround();
+  void MoveToSwitch();
+  void MoveToScale(bool front);
+  void Score();
+  bool IsAtScoreHeight();
+
   double max_forward_velocity_ = 3.0, max_forward_acceleration_ = 3.0;
-  double max_angular_velocity_ = 3.0, max_angular_acceleration_ = 3.0;
+  double max_angular_velocity_ = 5.0, max_angular_acceleration_ = 4.0;
 
   // Follow through storage
   bool follow_through_ = false;
@@ -38,12 +54,16 @@ class AutonomousBase {
   frc971::control_loops::drivetrain::GoalQueue* drivetrain_goal_queue_;
   frc971::control_loops::drivetrain::StatusQueue::QueueReader
       drivetrain_status_reader_;
-
+  c2018::score_subsystem::ScoreSubsystemGoalQueue* score_goal_queue_;
+  c2018::score_subsystem::ScoreSubsystemStatusQueue::QueueReader score_status_reader_;
   muan::wpilib::DriverStationQueue::QueueReader driver_station_reader_;
   muan::wpilib::GameSpecificStringQueue::QueueReader
       game_specific_string_reader_;
 
   aos::time::PhasedLoop loop_{std::chrono::milliseconds(5)};
+
+  c2018::score_subsystem::ScoreSubsystemGoalProto score_goal_;
+  c2018::score_subsystem::ScoreSubsystemStatusProto score_status_;
 };
 
 }  // namespace autonomous
