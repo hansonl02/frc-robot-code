@@ -198,6 +198,8 @@ void TeleopBase::SendScoreSubsystemMessage() {
           c2018::score_subsystem::SCORE_MID_BACK);
     }
   }
+
+  score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal_);
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
