@@ -59,9 +59,7 @@ TeleopBase::TeleopBase()
   // Default values
   climber_goal_->set_climber_goal(c2018::climber::NONE);
 
-  score_subsystem_goal_->set_elevator_height(c2018::score_subsystem::HEIGHT_0);
-  score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
-  score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::VERTICAL);
+  score_subsystem_goal_->set_score_goal(c2018::score_subsystem::IDLE_BOTTOM);
 }
 
 void TeleopBase::operator()() {
@@ -148,7 +146,7 @@ void TeleopBase::SendDrivetrainMessage() {
 }
 
 void TeleopBase::SendScoreSubsystemMessage() {
-  score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
+  score_subsystem_goal_->set_score_goal(c2018::score_subsystem::IDLE_MANUAL);
 
   // Godmode
   if (godmode_->is_pressed()) {
@@ -162,59 +160,52 @@ void TeleopBase::SendScoreSubsystemMessage() {
 
   // Elevator heights + intakes
   if (height_0_->is_pressed()) {
-    score_subsystem_goal_->set_elevator_height(
-        c2018::score_subsystem::HEIGHT_0);
-    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
+    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::HEIGHT_0);
   } else if (height_1_->is_pressed()) {
-    score_subsystem_goal_->set_elevator_height(
-        c2018::score_subsystem::HEIGHT_1);
-    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
+    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::HEIGHT_1);
   } else if (height_2_->is_pressed()) {
-    score_subsystem_goal_->set_elevator_height(
-        c2018::score_subsystem::HEIGHT_2);
-    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
+    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::HEIGHT_2);
   } else {
-    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::IDLE);
+    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::IDLE_BOTTOM);
   }
 
   // Elevator heights
-  if (height_0_->was_clicked()) {
-    score_subsystem_goal_->set_elevator_height(
-        c2018::score_subsystem::HEIGHT_0);
+  /*if (height_0_->was_clicked()) {
+    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::HEIGHT_0);
   } else if (height_1_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(
         c2018::score_subsystem::HEIGHT_1);
   } else if (height_2_->was_clicked()) {
     score_subsystem_goal_->set_elevator_height(
         c2018::score_subsystem::HEIGHT_2);
-  }
+  }*/
 
   // Intake modes
   if (intake_->is_pressed()) {
-    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::INTAKE);
+    score_subsystem_goal_->set_score_goal(
+        c2018::score_subsystem::INTAKE_MANUAL);
   } else if (outtake_->is_pressed()) {
-    score_subsystem_goal_->set_intake_mode(c2018::score_subsystem::OUTTAKE);
-  }
+    score_subsystem_goal_->set_score_goal(
+        c2018::score_subsystem::OUTTAKE_MANUAL);
+  }  // Intake mode is set to idle if you're not pressing anything. See line 149
 
   // Scoring modes
   if (score_front_->is_pressed()) {
-    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_F);
     if (top_mode_->is_pressed()) {
-      score_subsystem_goal_->set_elevator_height(
-          c2018::score_subsystem::HEIGHT_SCORE);
+      score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SCORE_HIGH);
     } else if (bottom_mode_->is_pressed()) {
-      score_subsystem_goal_->set_elevator_height(
-          c2018::score_subsystem::HEIGHT_0);
+      score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SCORE_LOW);
+    } else {
+      score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SCORE_MID);
     }
   }
   if (score_back_->is_pressed()) {
-    score_subsystem_goal_->set_claw_mode(c2018::score_subsystem::SCORE_B);
     if (top_mode_->is_pressed()) {
-      score_subsystem_goal_->set_elevator_height(
-          c2018::score_subsystem::HEIGHT_SCORE);
-    } else if (bottom_mode_->is_pressed()) {
-      score_subsystem_goal_->set_elevator_height(
-          c2018::score_subsystem::HEIGHT_0);
+      score_subsystem_goal_->set_score_goal(
+          c2018::score_subsystem::SCORE_HIGH_BACK);
+    } else {
+      score_subsystem_goal_->set_score_goal(
+          c2018::score_subsystem::SCORE_MID_BACK);
     }
   }
 }
