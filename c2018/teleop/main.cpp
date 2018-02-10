@@ -1,4 +1,5 @@
 #include "c2018/teleop/main.h"
+
 #include <string>
 
 #include "WPILib.h"
@@ -187,7 +188,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
   } else if (outtake_->is_pressed()) {
     score_subsystem_goal_->set_score_goal(
         c2018::score_subsystem::OUTTAKE_MANUAL);
-  }  // Intake mode is set to idle if you're not pressing anything. See line 149
+  }  // Intake mode is set to idle if you're not pressing anything. See line 150
 
   // Scoring modes
   if (score_front_->is_pressed()) {
