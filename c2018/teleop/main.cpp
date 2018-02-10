@@ -170,17 +170,6 @@ void TeleopBase::SendScoreSubsystemMessage() {
     score_subsystem_goal_->set_score_goal(c2018::score_subsystem::IDLE_BOTTOM);
   }
 
-  // Elevator heights
-  /*if (height_0_->was_clicked()) {
-    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::HEIGHT_0);
-  } else if (height_1_->was_clicked()) {
-    score_subsystem_goal_->set_elevator_height(
-        c2018::score_subsystem::HEIGHT_1);
-  } else if (height_2_->was_clicked()) {
-    score_subsystem_goal_->set_elevator_height(
-        c2018::score_subsystem::HEIGHT_2);
-  }*/
-
   // Intake modes
   if (intake_->is_pressed()) {
     score_subsystem_goal_->set_score_goal(
