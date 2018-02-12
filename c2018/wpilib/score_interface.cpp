@@ -96,7 +96,6 @@ void ScoreSubsystemInterface::WriteActuators() {
     low_roller_.Set(muan::utils::Cap(-outputs->intake_voltage(), -kMaxVoltage,
                                      kMaxVoltage) /
                     12.0);
-    std::cout << outputs->intake_voltage() << std::endl;
     pcm_->WriteSolenoid(kIntakeSolenoidOpen, outputs->wrist_solenoid_open());
     pcm_->WriteSolenoid(kIntakeSolenoidClose, !outputs->wrist_solenoid_close());
   } else {
