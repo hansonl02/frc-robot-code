@@ -216,14 +216,12 @@ void TeleopBase::SendScoreSubsystemMessage() {
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
-  if (hook_up_->was_clicked()) {
+  if (hook_up_->is_pressed() && !batter_down_->is_pressed()) {
     climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
-    if (batter_down_->was_clicked()) {
-      climber_goal_->set_climber_goal(c2018::climber::BATTERING);
-      if (hook_up_->is_pressed() && batter_down_->is_pressed()) {
-        climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
-      }
-    }
+  } else if (!hook_up_->is_pressed() && batter_down_->is_pressed()) {
+    climber_goal_->set_climber_goal(c2018::climber::BATTERING);
+  } else if (hook_up_->is_pressed() && batter_down_->is_pressed()) {
+    climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
   } else {
     climber_goal_->set_climber_goal(c2018::climber::NONE);
   }
