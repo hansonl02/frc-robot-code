@@ -38,6 +38,9 @@ TeleopBase::TeleopBase()
                                                      // add godmodes for
                                                      // intaking/outtaking
   intake_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::A_BUTTON));
+
+  stow_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::X_BUTTON));
+
   outtake_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::B_BUTTON));
   score_back_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::RIGHT_BUMPER));
   score_front_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_BUMPER));
@@ -46,11 +49,11 @@ TeleopBase::TeleopBase()
   height_1_ = gamepad_.MakePov(0, muan::teleop::Pov::kEast);
   height_2_ = gamepad_.MakePov(0, muan::teleop::Pov::kNorth);
 
-  godmode_up_ = gamepad_.MakeAxis(5, .7);     // Right Joystick North
-  godmode_down_ = gamepad_.MakeAxis(5, -.7);  // Right Joystick South
+  godmode_up_ = gamepad_.MakeAxis(5, -.7);   // Right Joystick North
+  godmode_down_ = gamepad_.MakeAxis(5, .7);  // Right Joystick South
 
-  top_mode_ = gamepad_.MakeAxis(1, .7);      // Left Joystick North
-  bottom_mode_ = gamepad_.MakeAxis(1, -.7);  // Left Joystick South
+  top_mode_ = gamepad_.MakeAxis(1, -.7);    // Left Joystick North
+  bottom_mode_ = gamepad_.MakeAxis(1, .7);  // Left Joystick South
 
   shifting_low_ = throttle_.MakeButton(4);
   shifting_high_ = throttle_.MakeButton(5);
@@ -60,7 +63,8 @@ TeleopBase::TeleopBase()
   // Default values
   climber_goal_->set_climber_goal(c2018::climber::NONE);
 
-  score_subsystem_goal_->set_score_goal(c2018::score_subsystem::IDLE_BOTTOM);
+  score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SCORE_NONE);
+  score_subsystem_goal_->set_intake_goal(c2018::score_subsystem::INTAKE_NONE);
 }
 
 void TeleopBase::operator()() {
@@ -147,7 +151,8 @@ void TeleopBase::SendDrivetrainMessage() {
 }
 
 void TeleopBase::SendScoreSubsystemMessage() {
-  score_subsystem_goal_->set_score_goal(c2018::score_subsystem::IDLE_MANUAL);
+  score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SCORE_NONE);
+  score_subsystem_goal_->set_intake_goal(c2018::score_subsystem::INTAKE_NONE);
 
   // Godmode
   if (godmode_->is_pressed()) {
@@ -161,59 +166,68 @@ void TeleopBase::SendScoreSubsystemMessage() {
 
   // Elevator heights + intakes
   if (height_0_->is_pressed()) {
-    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::HEIGHT_0);
+    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::INTAKE_0);
   } else if (height_1_->is_pressed()) {
-    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::HEIGHT_1);
+    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::INTAKE_1);
   } else if (height_2_->is_pressed()) {
-    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::HEIGHT_2);
-  } else {
-    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::IDLE_BOTTOM);
+    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::INTAKE_2);
   }
 
   // Intake modes
   if (intake_->is_pressed()) {
-    score_subsystem_goal_->set_score_goal(
-        c2018::score_subsystem::INTAKE_MANUAL);
-  } else if (outtake_->is_pressed()) {
-    score_subsystem_goal_->set_score_goal(
-        c2018::score_subsystem::OUTTAKE_MANUAL);
-  }  // Intake mode is set to idle if you're not pressing anything. See line 150
+    score_subsystem_goal_->set_intake_goal(c2018::score_subsystem::INTAKE);
+  } else if (intake_->was_released()) {
+    score_subsystem_goal_->set_intake_goal(c2018::score_subsystem::FORCE_STOP);
+  }
+
+  if (stow_->was_clicked()) {
+    score_subsystem_goal_->set_score_goal(c2018::score_subsystem::FORCE_STOW);
+  }
+
+  if (outtake_->is_pressed()) {
+    score_subsystem_goal_->set_intake_goal(c2018::score_subsystem::OUTTAKE);
+  } else if (outtake_->was_released()) {
+    score_subsystem_goal_->set_intake_goal(c2018::score_subsystem::FORCE_STOP);
+  }
 
   // Scoring modes
   if (score_front_->is_pressed()) {
     if (top_mode_->is_pressed()) {
-      score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SCORE_HIGH);
+      score_subsystem_goal_->set_score_goal(
+          c2018::score_subsystem::SCALE_HIGH_FORWARD);
     } else if (bottom_mode_->is_pressed()) {
-      score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SCORE_LOW);
+      score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SWITCH);
     } else {
-      score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SCORE_MID);
+      score_subsystem_goal_->set_score_goal(
+          c2018::score_subsystem::SCALE_MID_FORWARD);
     }
   }
   if (score_back_->is_pressed()) {
     if (top_mode_->is_pressed()) {
       score_subsystem_goal_->set_score_goal(
-          c2018::score_subsystem::SCORE_HIGH_BACK);
+          c2018::score_subsystem::SCALE_HIGH_REVERSE);
+    } else if (bottom_mode_->is_pressed()) {
+      score_subsystem_goal_->set_score_goal(c2018::score_subsystem::EXCHANGE);
     } else {
       score_subsystem_goal_->set_score_goal(
-          c2018::score_subsystem::SCORE_MID_BACK);
+          c2018::score_subsystem::SCALE_MID_REVERSE);
     }
+
+    score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal_);
   }
 
-  score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal_);
-}
-
-void TeleopBase::SendClimbSubsystemMessage() {
-  if (initialize_climb_->was_clicked()) {
-    climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
-    if (climb_->was_clicked()) {
-      climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
+  void TeleopBase::SendClimbSubsystemMessage() {
+    if (initialize_climb_->was_clicked()) {
+      climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
+      if (climb_->was_clicked()) {
+        climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
+      }
+    } else if (stop_climb_->was_clicked()) {
+      climber_goal_->set_climber_goal(c2018::climber::NONE);
     }
-  } else if (stop_climb_->was_clicked()) {
-    climber_goal_->set_climber_goal(c2018::climber::NONE);
-  }
 
-  climber_goal_queue_->WriteMessage(climber_goal_);
-}
+    climber_goal_queue_->WriteMessage(climber_goal_);
+  }
 
 }  // namespace teleop
 }  // namespace c2018
