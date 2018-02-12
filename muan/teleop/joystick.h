@@ -36,8 +36,8 @@ class Joystick {
 
   muan::teleop::Button* MakeButton(uint32_t button);
   muan::teleop::Button* MakePov(uint32_t pov, Pov position);
-  muan::teleop::Button* MakePovRange(uint32_t pov, Pov position, int min,
-                                     int max);
+  muan::teleop::Button* MakePovRange(uint32_t pov, Pov position, int minimum,
+                                     int maximum);
   muan::teleop::Button* MakeAxis(uint32_t button, double threshold);
 
   ::Joystick* wpilib_joystick();

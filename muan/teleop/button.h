@@ -26,7 +26,7 @@ class Button {
   bool was_clicked();
   bool was_released();
   bool is_pressed();
-  bool is_down(Pov min, Pov max);
+  bool is_down(Pov minimum, Pov maximum);
 
   virtual void Update();
 
@@ -59,16 +59,17 @@ class PovRange : public Button {
  public:
   friend class muan::teleop::Joystick;
 
-  PovRange(Joystick* joystick, uint32_t button, Pov position, int min, int max);
+  PovRange(Joystick* joystick, uint32_t button, Pov position, int minimum,
+           int maximumimum);
 
   void Update();
 
   Pov pov_pos_;
 
-  int min;
-  int max;
+  int minimum;
+  int maximum;
 
-  int pos_ = int(pov_pos_);
+  int pos_ = static_cast<int>(pov_pos_);
 };
 
 class AxisButton : public Button {
