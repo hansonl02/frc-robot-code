@@ -29,10 +29,8 @@ TeleopBase::TeleopBase()
       climber_goal_queue_{QueueManager<ClimberGoalProto>::Fetch()},
       score_subsystem_goal_queue_{
           QueueManager<ScoreSubsystemGoalProto>::Fetch()} {
-  initialize_climb_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
-  climb_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
-  stop_climb_ =
-      gamepad_.MakeButton(uint32_t(muan::teleop::XBox::RIGHT_CLICK_IN));
+  hook_up_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
+  batter_down_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
   godmode_ = gamepad_.MakeButton(
       uint32_t(muan::teleop::XBox::LEFT_CLICK_IN));  // TODO(hanson/gemma/ellie)
                                                      // add godmodes for
@@ -45,9 +43,9 @@ TeleopBase::TeleopBase()
   score_back_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::RIGHT_BUMPER));
   score_front_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_BUMPER));
 
-  height_0_ = gamepad_.MakePov(0, muan::teleop::Pov::kSouth);
-  height_1_ = gamepad_.MakePov(0, muan::teleop::Pov::kEast);
-  height_2_ = gamepad_.MakePov(0, muan::teleop::Pov::kNorth);
+  height_0_ = gamepad_.MakePovRange(0, muan::teleop::Pov::kSouth, 315, 360);
+  height_1_ = gamepad_.MakePovRange(0, muan::teleop::Pov::kEast, 45, 135);
+  height_2_ = gamepad_.MakePovRange(0, muan::teleop::Pov::kNorth, 180, 225);
 
   godmode_up_ = gamepad_.MakeAxis(5, -.7);   // Right Joystick North
   godmode_down_ = gamepad_.MakeAxis(5, .7);  // Right Joystick South
@@ -215,19 +213,23 @@ void TeleopBase::SendScoreSubsystemMessage() {
 
     score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal_);
   }
+}
 
-  void TeleopBase::SendClimbSubsystemMessage() {
-    if (initialize_climb_->was_clicked()) {
-      climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
-      if (climb_->was_clicked()) {
+void TeleopBase::SendClimbSubsystemMessage() {
+  if (hook_up_->was_clicked()) {
+    climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
+    if (batter_down_->was_clicked()) {
+      climber_goal_->set_climber_goal(c2018::climber::BATTERING);
+      if (hook_up_->is_pressed() && batter_down_->is_pressed()) {
         climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
       }
-    } else if (stop_climb_->was_clicked()) {
-      climber_goal_->set_climber_goal(c2018::climber::NONE);
     }
-
-    climber_goal_queue_->WriteMessage(climber_goal_);
+  } else {
+    climber_goal_->set_climber_goal(c2018::climber::NONE);
   }
+
+  climber_goal_queue_->WriteMessage(climber_goal_);
+}
 
 }  // namespace teleop
 }  // namespace c2018
