@@ -1,8 +1,8 @@
 #include "c2018/wpilib/climber_interface.h"
 
 #include <algorithm>
-#include "muan/utils/math_utils.h"
 #include "muan/logging/logger.h"
+#include "muan/utils/math_utils.h"
 
 namespace c2018 {
 namespace wpilib {
@@ -13,7 +13,8 @@ constexpr uint32_t kWinchEncoderA = 16;
 constexpr uint32_t kWinchEncoderB = 17;
 constexpr uint32_t kWinchEncoderIndex = 5;
 
-constexpr uint32_t kBatterSolenoid = 2;
+constexpr uint32_t kBatterSolenoid = 4;
+constexpr uint32_t kHookSolenoid = 5;
 
 constexpr double kMaxVoltage = 12;
 
@@ -43,11 +44,14 @@ void ClimberInterface::ReadSensors() {
 void ClimberInterface::WriteActuators() {
   ClimberOutputProto outputs;
   if (output_reader_.ReadLastMessage(&outputs)) {
-    winch_.Set(muan::utils::Cap(outputs->voltage(), -kMaxVoltage, kMaxVoltage) / 12.0);
-    pcm_->WriteSolenoid(kBatterSolenoid, outputs->release_solenoid());
+    winch_.Set(muan::utils::Cap(outputs->voltage(), -kMaxVoltage, kMaxVoltage) /
+               12.0);
+    pcm_->WriteSolenoid(kBatterSolenoid, outputs->batter_solenoid());
+    pcm_->WriteSolenoid(kHookSolenoid, outputs->hook_solenoid());
   } else {
     winch_.Set(0);
     pcm_->WriteSolenoid(kBatterSolenoid, false);
+    pcm_->WriteSolenoid(kHookSolenoid, false);
     LOG_P("No output queue");
   }
 }

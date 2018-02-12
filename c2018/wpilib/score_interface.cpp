@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
-#include "muan/utils/math_utils.h"
 #include "muan/logging/logger.h"
+#include "muan/utils/math_utils.h"
 
 namespace c2018 {
 namespace wpilib {
@@ -32,7 +32,7 @@ constexpr uint32_t kIntakeSolenoidClose = 2;
 
 constexpr uint32_t kWristPotentiometer = 0;
 
-constexpr uint32_t kElevatorHall = 0;
+constexpr uint32_t kElevatorHall = 4;
 constexpr uint32_t kWristHall = 3;
 constexpr uint32_t kCubeProxy = 1;
 
@@ -85,7 +85,7 @@ void ScoreSubsystemInterface::WriteActuators() {
   ScoreSubsystemOutputProto outputs;
   if (output_reader_.ReadLastMessage(&outputs)) {
     elevator_.Set(-muan::utils::Cap(outputs->elevator_voltage(), -kMaxVoltage,
-                                   kMaxVoltage) /
+                                    kMaxVoltage) /
                   12.0);
     wrist_.Set(
         -muan::utils::Cap(outputs->wrist_voltage(), -kMaxVoltage, kMaxVoltage) /
@@ -96,6 +96,7 @@ void ScoreSubsystemInterface::WriteActuators() {
     low_roller_.Set(muan::utils::Cap(-outputs->intake_voltage(), -kMaxVoltage,
                                      kMaxVoltage) /
                     12.0);
+    std::cout << outputs->intake_voltage() << std::endl;
     pcm_->WriteSolenoid(kIntakeSolenoidOpen, outputs->wrist_solenoid_open());
     pcm_->WriteSolenoid(kIntakeSolenoidClose, !outputs->wrist_solenoid_close());
   } else {
