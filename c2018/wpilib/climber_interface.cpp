@@ -14,7 +14,7 @@ constexpr uint32_t kWinchEncoderB = 17;
 constexpr uint32_t kWinchEncoderIndex = 5;
 
 constexpr uint32_t kBatterSolenoid = 4;
-constexpr uint32_t kHookSolenoid = 5;
+constexpr uint32_t kHookSolenoid = 3;
 
 constexpr double kMaxVoltage = 12;
 
@@ -27,6 +27,7 @@ ClimberInterface::ClimberInterface(muan::wpilib::CanWrapper* can_wrapper)
       winch_encoder_{kWinchEncoderA, kWinchEncoderB},
       pcm_{can_wrapper->pcm()} {
   pcm_->CreateSolenoid(kBatterSolenoid);
+  pcm_->CreateSolenoid(kHookSolenoid);
 }
 
 void ClimberInterface::ReadSensors() {
@@ -34,11 +35,14 @@ void ClimberInterface::ReadSensors() {
 
   ClimberInputProto sensors;
   sensors->set_position(winch_encoder_.Get() * kWinchEncoderRatio);
+  std::cout << sensors->position() << std::endl;
 
   muan::wpilib::PdpMessage pdp_data;
   if (pdp_reader_.ReadLastMessage(&pdp_data)) {
     sensors->set_current(std::max(pdp_data->current5(), pdp_data->current6()));
   }
+
+  input_queue_->WriteMessage(sensors);
 }
 
 void ClimberInterface::WriteActuators() {
@@ -46,6 +50,9 @@ void ClimberInterface::WriteActuators() {
   if (output_reader_.ReadLastMessage(&outputs)) {
     winch_.Set(muan::utils::Cap(outputs->voltage(), -kMaxVoltage, kMaxVoltage) /
                12.0);
+
+    std::cout << outputs->batter_solenoid() << std::endl;
+    std::cout << outputs->hook_solenoid() << std::endl;
     pcm_->WriteSolenoid(kBatterSolenoid, outputs->batter_solenoid());
     pcm_->WriteSolenoid(kHookSolenoid, outputs->hook_solenoid());
   } else {

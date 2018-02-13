@@ -23,6 +23,9 @@ class Climber {
   ClimberInputQueue::QueueReader input_reader_;
   ClimberOutputQueue* output_queue_;
 
+  bool should_climb = false;
+  bool batter_output = false, hook_output = false;
+
   muan::wpilib::DriverStationQueue::QueueReader ds_status_;
 };
 

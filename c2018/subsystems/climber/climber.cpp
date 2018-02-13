@@ -14,9 +14,7 @@ Climber::Climber()
       ds_status_{QueueManager<DriverStationProto>::Fetch()->MakeReader()} {}
 
 void Climber::Update() {
-  bool should_climb = false;
   bool outputs_enabled = false;
-  bool batter_output = false, hook_output = false;
   double winch_output;
 
   ClimberStatusProto status;
@@ -39,8 +37,6 @@ void Climber::Update() {
   if (outputs_enabled) {
     switch (goal->climber_goal()) {
       case NONE:
-        batter_output = false;
-        hook_output = false;
         should_climb = false;
         status->set_climber_state(IDLE);
         break;
@@ -71,9 +67,16 @@ void Climber::Update() {
     status->set_climber_state(IDLE);
   }
 
+  if (should_climb) {
+    winch_output = 12.0;
+  } else {
+    winch_output = 0;
+  }
   // UPDATING MECHANISMS
+  /*
   winch_output =
       winch_.Update(input->position(), should_climb, outputs_enabled);
+  */
   batter_output = batter_.Update(batter_output, outputs_enabled);
 
   // SETTING OUTPUTS
