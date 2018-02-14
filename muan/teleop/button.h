@@ -62,8 +62,6 @@ class PovRange : public Button {
 
   void Update();
 
-  Pov pov_pos_;
-
   int minimum;
   int maximum;
 };
