@@ -35,9 +35,12 @@ PovRange::PovRange(Joystick* joystick, uint32_t button, int minimum,
                    int maximum)
     : Button(joystick, button), minimum(minimum), maximum(maximum) {}
 
-void PovRange::Update() {  // TODO(Hanson) handle wraparound?
+void PovRange::Update() {
   int pov_in_degrees = joystick_->wpilib_joystick()->GetPOV(id_);
-  bool pov_in_range = (pov_in_degrees > minimum && pov_in_degrees < maximum);
+  bool pov_in_range = ((minimum <= maximum && pov_in_degrees >= minimum &&
+                        pov_in_degrees <= maximum) ||
+                       (minimum > maximum && (pov_in_degrees >= minimum ||
+                                              pov_in_degrees <= maximum)));
   Button::Update(pov_in_range);
 }
 

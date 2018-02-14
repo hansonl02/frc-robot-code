@@ -43,9 +43,9 @@ TeleopBase::TeleopBase()
   score_back_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::RIGHT_BUMPER));
   score_front_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_BUMPER));
 
-  height_0_ = gamepad_.MakePovRange(0, 315, 360);
+  height_0_ = gamepad_.MakePovRange(0, 180, 225);
   height_1_ = gamepad_.MakePovRange(0, 45, 135);
-  height_2_ = gamepad_.MakePovRange(0, 180, 225);
+  height_2_ = gamepad_.MakePovRange(0, 315, 0);
 
   godmode_up_ = gamepad_.MakeAxis(5, -.7);   // Right Joystick North
   godmode_down_ = gamepad_.MakeAxis(5, .7);  // Right Joystick South
