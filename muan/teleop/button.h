@@ -58,8 +58,7 @@ class PovRange : public Button {
  public:
   friend class muan::teleop::Joystick;
 
-  PovRange(Joystick* joystick, uint32_t button, Pov position, int minimum,
-           int maximum);
+  PovRange(Joystick* joystick, uint32_t button, int minimum, int maximum);
 
   void Update();
 

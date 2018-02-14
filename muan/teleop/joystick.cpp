@@ -32,10 +32,10 @@ muan::teleop::Button* Joystick::MakePov(uint32_t button, Pov position) {
   return buttons_[buttons_.size() - 1].get();
 }
 
-muan::teleop::Button* Joystick::MakePovRange(uint32_t button, Pov position,
-                                             int minimum, int maximum) {
+muan::teleop::Button* Joystick::MakePovRange(uint32_t button, int minimum,
+                                             int maximum) {
   buttons_.emplace_back(
-      new muan::teleop::PovRange(this, button, position, minimum, maximum));
+      new muan::teleop::PovRange(this, button, minimum, maximum));
   return buttons_[buttons_.size() - 1].get();
 }
 

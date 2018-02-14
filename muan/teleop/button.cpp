@@ -31,12 +31,9 @@ void PovButton::Update() {
                  static_cast<int>(pov_position_));
 }
 
-PovRange::PovRange(Joystick* joystick, uint32_t button, Pov position,
-                   int minimum, int maximum)
-    : Button(joystick, button),
-      pov_pos_(position),
-      minimum(minimum),
-      maximum(maximum) {}
+PovRange::PovRange(Joystick* joystick, uint32_t button, int minimum,
+                   int maximum)
+    : Button(joystick, button), minimum(minimum), maximum(maximum) {}
 
 void PovRange::Update() {  // TODO(Hanson) handle wraparound?
   int pov_in_degrees = joystick_->wpilib_joystick()->GetPOV(id_);
