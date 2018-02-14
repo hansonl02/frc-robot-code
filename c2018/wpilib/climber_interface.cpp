@@ -35,7 +35,6 @@ void ClimberInterface::ReadSensors() {
 
   ClimberInputProto sensors;
   sensors->set_position(winch_encoder_.Get() * kWinchEncoderRatio);
-  std::cout << sensors->position() << std::endl;
 
   muan::wpilib::PdpMessage pdp_data;
   if (pdp_reader_.ReadLastMessage(&pdp_data)) {
@@ -50,9 +49,6 @@ void ClimberInterface::WriteActuators() {
   if (output_reader_.ReadLastMessage(&outputs)) {
     winch_.Set(muan::utils::Cap(outputs->voltage(), -kMaxVoltage, kMaxVoltage) /
                12.0);
-
-    std::cout << outputs->batter_solenoid() << std::endl;
-    std::cout << outputs->hook_solenoid() << std::endl;
     pcm_->WriteSolenoid(kBatterSolenoid, outputs->batter_solenoid());
     pcm_->WriteSolenoid(kHookSolenoid, outputs->hook_solenoid());
   } else {

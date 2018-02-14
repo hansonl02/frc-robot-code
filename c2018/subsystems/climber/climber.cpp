@@ -16,6 +16,7 @@ Climber::Climber()
 void Climber::Update() {
   bool outputs_enabled = false;
   double winch_output;
+  bool batter_output = false, hook_output = false;
 
   ClimberStatusProto status;
   ClimberOutputProto output;
