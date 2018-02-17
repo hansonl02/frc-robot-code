@@ -210,9 +210,8 @@ void TeleopBase::SendScoreSubsystemMessage() {
       score_subsystem_goal_->set_score_goal(
           c2018::score_subsystem::SCALE_MID_REVERSE);
     }
-
-    score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal_);
   }
+  score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal_);
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
