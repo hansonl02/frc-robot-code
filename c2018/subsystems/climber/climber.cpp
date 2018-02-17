@@ -16,7 +16,7 @@ Climber::Climber()
 void Climber::Update() {
   bool outputs_enabled = false;
   double winch_output;
-  bool batter_output = false, hook_output = false;
+  bool batter_output = false;
 
   ClimberStatusProto status;
   ClimberOutputProto output;
@@ -38,25 +38,25 @@ void Climber::Update() {
   if (outputs_enabled) {
     switch (goal->climber_goal()) {
       case NONE:
-        should_climb = false;
+        should_climb_ = false;
         status->set_climber_state(IDLE);
         break;
       case APPROACHING:
         batter_output = false;
-        hook_output = true;
-        should_climb = false;
+        hook_output_ = true;
+        should_climb_ = false;
         status->set_climber_state(APPROACH);
         break;
       case BATTERING:
         batter_output = true;
-        hook_output = true;
-        should_climb = false;
+        hook_output_ = true;
+        should_climb_ = false;
         status->set_climber_state(BATTER);
         break;
       case CLIMBING:
         batter_output = true;
-        hook_output = true;
-        should_climb = true;
+        hook_output_ = true;
+        should_climb_ = true;
         status->set_climber_state(CLIMB);
         break;
     }
@@ -68,7 +68,7 @@ void Climber::Update() {
     status->set_climber_state(IDLE);
   }
 
-  if (should_climb) {
+  if (should_climb_) {
     winch_output = 12.0;
   } else {
     winch_output = 0;
@@ -76,13 +76,13 @@ void Climber::Update() {
   // UPDATING MECHANISMS
   /*
   winch_output =
-      winch_.Update(input->position(), should_climb, outputs_enabled);
+      winch_.Update(input->position(), should_climb_, outputs_enabled);
   */
   batter_output = batter_.Update(batter_output, outputs_enabled);
 
   // SETTING OUTPUTS
   output->set_batter_solenoid(batter_output);
-  output->set_hook_solenoid(hook_output);
+  output->set_hook_solenoid(hook_output_);
   output->set_voltage(winch_output);
 
   // WRITING TO QUEUES
