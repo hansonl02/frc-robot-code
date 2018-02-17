@@ -29,8 +29,8 @@ TeleopBase::TeleopBase()
       climber_goal_queue_{QueueManager<ClimberGoalProto>::Fetch()},
       score_subsystem_goal_queue_{
           QueueManager<ScoreSubsystemGoalProto>::Fetch()} {
-  hook_up_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
-  batter_down_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
+  hook_up_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
+  batter_down_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
   godmode_ = gamepad_.MakeButton(
       uint32_t(muan::teleop::XBox::LEFT_CLICK_IN));  // TODO(hanson/gemma/ellie)
                                                      // add godmodes for
