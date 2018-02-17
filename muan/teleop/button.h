@@ -17,7 +17,8 @@ enum class Pov {
   kSouth = 180,
   kSouthWest = 225,
   kWest = 270,
-  kNorthWest = 315
+  kNorthWest = 315,
+  kNorthAgain = 360
 };
 
 class Button {
