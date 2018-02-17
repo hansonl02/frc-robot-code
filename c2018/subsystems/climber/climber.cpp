@@ -73,11 +73,7 @@ void Climber::Update() {
   } else {
     winch_output = 0;
   }
-  // UPDATING MECHANISMS
-  /*
-  winch_output =
-      winch_.Update(input->position(), should_climb_, outputs_enabled);
-  */
+
   batter_output = batter_.Update(batter_output, outputs_enabled);
 
   // SETTING OUTPUTS
