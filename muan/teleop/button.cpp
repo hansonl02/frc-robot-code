@@ -54,6 +54,16 @@ void AxisButton::Update() {
                      trigger_threshold_);
 }
 
+AxisRange::AxisRange(Joystick* joystick, uint32_t button, int minimum,
+                     int maximum)
+    : Button(joystick, button), minimum(minimum), maximum(maximum) {}
+
+void AxisRange::Update() {
+  int axis_in_degrees = joystick_->wpilib_joystick()->GetDirectionDegrees();
+  bool axis_in_range = (axis_in_degrees > minimum && axis_in_degrees < maximum);
+  Button::Update(axis_in_range);
+}
+
 }  // namespace teleop
 
 }  // namespace muan

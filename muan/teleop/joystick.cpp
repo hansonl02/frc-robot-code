@@ -44,6 +44,13 @@ muan::teleop::Button* Joystick::MakeAxis(uint32_t button, double threshold) {
   return buttons_[buttons_.size() - 1].get();
 }
 
+muan::teleop::Button* Joystick::MakeAxisRange(uint32_t button, int minimum,
+                                              int maximum) {
+  buttons_.emplace_back(
+      new muan::teleop::AxisRange(this, button, minimum, maximum));
+  return buttons_[buttons_.size() - 1].get();
+}
+
 void Joystick::Update() {
   for (auto& button : buttons_) {
     button->Update();
