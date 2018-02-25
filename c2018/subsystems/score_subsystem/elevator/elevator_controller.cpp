@@ -121,7 +121,7 @@ Eigen::Matrix<double, 2, 1> ElevatorController::UpdateProfiledGoal(
   if (outputs_enabled) {
     profiled_goal_ = trapezoid_profile_.Update(unprofiled_goal_, 0);
   } else {
-    profiled_goal_ = trapezoid_profile_.Update(elevator_observer_.x()(0, 0), 0);;
+    profiled_goal_ = trapezoid_profile_.Update(elevator_observer_.x()(0, 0), 0);
   }
   return profiled_goal_;
 }
