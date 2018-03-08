@@ -1,4 +1,5 @@
 #include "muan/teleop/button.h"
+#include <cmath>
 #include "muan/teleop/joystick.h"
 
 namespace muan {
@@ -33,11 +34,11 @@ void PovButton::Update() {
 
 PovRange::PovRange(Joystick* joystick, uint32_t button, int minimum,
                    int maximum)
-    : Button(joystick, button), minimum(minimum), maximum(maximum) {}
+    : Button(joystick, button), minimum_(minimum), maximum_(maximum) {}
 
 void PovRange::Update() {
   int pov_in_degrees = joystick_->wpilib_joystick()->GetPOV(id_);
-  bool pov_in_range = (pov_in_degrees > minimum && pov_in_degrees < maximum);
+  bool pov_in_range = (pov_in_degrees > minimum_ && pov_in_degrees < maximum_);
   Button::Update(pov_in_range);
 }
 
@@ -54,13 +55,19 @@ void AxisButton::Update() {
                      trigger_threshold_);
 }
 
-AxisRange::AxisRange(Joystick* joystick, uint32_t button, int minimum,
-                     int maximum)
-    : Button(joystick, button), minimum(minimum), maximum(maximum) {}
+AxisRange::AxisRange(Joystick* joystick, int minimum, int maximum, int xaxis,
+                     int yaxis)
+    : Button(joystick, xaxis),
+      minimum_(minimum),
+      maximum_(maximum),
+      yaxis_(yaxis) {}
 
 void AxisRange::Update() {
-  int axis_in_degrees = joystick_->wpilib_joystick()->GetDirectionDegrees();
-  bool axis_in_range = (axis_in_degrees > minimum && axis_in_degrees < maximum);
+  double xaxis = joystick_->wpilib_joystick()->GetRawAxis(id_);
+  double yaxis = joystick_->wpilib_joystick()->GetRawAxis(yaxis_);
+  double axis_in_degrees = atan2(yaxis, xaxis);
+  bool axis_in_range =
+      (axis_in_degrees > minimum_ && axis_in_degrees < maximum_);
   Button::Update(axis_in_range);
 }
 
