@@ -43,9 +43,9 @@ TeleopBase::TeleopBase()
   height_2_ = gamepad_.MakePov(0, muan::teleop::Pov::kNorth);
   height_portal_ = gamepad_.MakePov(0, muan::teleop::Pov::kWest);
 
-  low_ = gamepad_.MakeAxis(1, .85);
-  front_ = gamepad_.MakeAxis(0, .85);
-  back_ = gamepad_.MakeAxis(0, -.85);
+  low_ = gamepad_.MakeAxisRange(136, 225, 0, 1, 0.7);
+  front_ = gamepad_.MakeAxisRange(15, 135, 0, 1, 0.7);
+  back_ = gamepad_.MakeAxisRange(226, 345, 0, 1, 0.7);
 
   stow_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_BUMPER));
   intake_ = gamepad_.MakeAxis(3, 0.7);
@@ -214,12 +214,14 @@ void TeleopBase::SendScoreSubsystemMessage() {
 
   // Scoring modes
   if (low_->is_pressed()) {
+    std::cout << "low is pressed" << std::endl;
     if (pos_0_->is_pressed()) {
       score_subsystem_goal_->set_score_goal(c2018::score_subsystem::EXCHANGE);
     } else if (pos_1_->is_pressed()) {
       score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SWITCH);
     }
   } else if (front_->is_pressed()) {
+    std::cout << "front is pressed" << std::endl;
     if (pos_0_->is_pressed()) {
       score_subsystem_goal_->set_score_goal(
           c2018::score_subsystem::SCALE_LOW_FORWARD);
@@ -234,6 +236,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
           c2018::score_subsystem::SCALE_SUPER_HIGH_FORWARD);
     }
   } else if (back_->is_pressed()) {
+    std::cout << "back is pressed" << std::endl;
     if (pos_0_->is_pressed()) {
       score_subsystem_goal_->set_score_goal(
           c2018::score_subsystem::SCALE_LOW_REVERSE);
