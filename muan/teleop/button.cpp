@@ -32,8 +32,8 @@ void PovButton::Update() {
                  static_cast<int>(pov_position_));
 }
 
-PovRange::PovRange(Joystick* joystick, uint32_t button, int minimum,
-                   int maximum)
+PovRange::PovRange(Joystick* joystick, uint32_t button, double minimum,
+                   double maximum)
     : Button(joystick, button), minimum_(minimum), maximum_(maximum) {}
 
 void PovRange::Update() {
