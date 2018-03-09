@@ -82,13 +82,15 @@ class AxisRange : public Button {
  public:
   friend class muan::teleop::Joystick;
 
-  AxisRange(Joystick* joystick, int minimum, int maximum, int xaxis, int yaxis);
+  AxisRange(Joystick* joystick, double minimum, double maximum, double xaxis,
+            double yaxis, double threshold);
 
   void Update();
 
   int minimum_;
   int maximum_;
   int yaxis_;
+  int threshold_;
 };
 
 }  // namespace teleop
