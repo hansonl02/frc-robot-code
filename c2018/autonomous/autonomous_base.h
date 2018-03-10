@@ -1,5 +1,5 @@
-#ifndef C2018_AUTONOMOUS_AUTONOMOUS_H_
-#define C2018_AUTONOMOUS_AUTONOMOUS_H_
+#ifndef C2018_AUTONOMOUS_AUTONOMOUS_BASE_H_
+#define C2018_AUTONOMOUS_AUTONOMOUS_BASE_H_
 
 #include "c2018/subsystems/score_subsystem/queue_types.h"
 #include "c2018/subsystems/score_subsystem/score_subsystem.pb.h"
@@ -36,10 +36,12 @@ class AutonomousBase {
 
   void Wait(uint32_t num_cycles);
   void IntakeGround();
+  void GoToIntake();
   void StopIntakeGround();
   void MoveToSwitch();
   void MoveToScale(bool front);
-  void Score();
+  void MoveTo(c2018::score_subsystem::ScoreGoal goal);
+  void Score(bool fast = true);
   void StopScore();
   bool IsAtScoreHeight();
   bool HasCube();
@@ -62,9 +64,6 @@ class AutonomousBase {
   c2018::score_subsystem::ScoreSubsystemStatusQueue::QueueReader
       score_status_reader_;
   muan::wpilib::DriverStationQueue::QueueReader driver_station_reader_;
-  muan::wpilib::GameSpecificStringQueue::QueueReader
-      game_specific_string_reader_;
-
   aos::time::PhasedLoop loop_{std::chrono::milliseconds(5)};
 };
 
@@ -72,4 +71,4 @@ class AutonomousBase {
 
 }  // namespace c2018
 
-#endif  // C2018_AUTONOMOUS_AUTONOMOUS_H_
+#endif  // C2018_AUTONOMOUS_AUTONOMOUS_BASE_H_

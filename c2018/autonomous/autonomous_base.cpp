@@ -1,4 +1,4 @@
-#include "c2018/autonomous/autonomous.h"
+#include "c2018/autonomous/autonomous_base.h"
 
 #include <chrono>
 
@@ -29,9 +29,7 @@ AutonomousBase::AutonomousBase()
           QueueManager<score_subsystem::ScoreSubsystemStatusProto>::Fetch()
               ->MakeReader()),
       driver_station_reader_(
-          QueueManager<DriverStationProto>::Fetch()->MakeReader()),
-      game_specific_string_reader_(
-          QueueManager<GameSpecificStringProto>::Fetch()->MakeReader()) {}
+          QueueManager<DriverStationProto>::Fetch()->MakeReader()) {}
 
 bool AutonomousBase::IsAutonomous() {
   DriverStationProto driver_station;
@@ -202,322 +200,6 @@ void AutonomousBase::WaitForCube() {
   }
 }
 
-void AutonomousBase::operator()() {
-  aos::SetCurrentThreadRealtimePriority(10);
-  muan::utils::SetCurrentThreadName("Autonomous");
-
-  DriverStationProto driver_station;
-  GameSpecificStringProto game_specific_string;
-
-  while (!driver_station_reader_.ReadLastMessage(&driver_station)) {
-    LOG(WARNING, "No driver station message!");
-    loop_.SleepUntilNext();
-  }
-
-  while (driver_station_reader_.ReadLastMessage(&driver_station),
-         driver_station->mode() != RobotMode::AUTONOMOUS) {
-    loop_.SleepUntilNext();
-  }
-
-  while (!game_specific_string_reader_.ReadLastMessage(&game_specific_string)) {
-    LOG(ERROR, "Waiting on auto because there's no game specific message yet!");
-    loop_.SleepUntilNext();
-  }
-
-  // Start of autonomous. Grab the game specific string.
-  auto left_right_codes = game_specific_string->code();
-  LOG(INFO, "Starting autonomous with layout %s", left_right_codes.c_str());
-  if (left_right_codes[0] == 'L') {
-    if (left_right_codes[1] == 'L') {
-      // Switch is left, scale is left
-      LOG(INFO, "Running LEFT SWITCH LEFT SCALE auto");
-
-      MoveToSwitch();
-
-      // Start going back
-      StartDriveRelative(-3.0, 0.0, -2.0);
-      WaitUntilDriveComplete();
-
-      // Turn
-      StartDriveRelative(-2.0, M_PI * 0.5, -2.0);
-      WaitUntilDriveComplete();
-
-      // Go over bump
-      StartDriveAtAngle(-3.8, M_PI * 0.5, -1.5);
-      WaitUntilDriveComplete();
-
-      // Go to scale
-      StartDriveAtAngle(-1.6, M_PI * 0.1, -1.0);
-      Wait(50);
-      MoveToScale(false);
-      WaitUntilDriveComplete();
-      StartDriveAtAngle(-1.15, M_PI * -0.1, -1.0);
-      WaitUntilDriveComplete();
-
-      // Score on scale here
-      Score();
-      Wait(50);
-      StopScore();
-
-      IntakeGround();
-      Wait(200);
-
-      // Go to switch
-      StartDriveAtAngle(1.75, 0.15, 0.0);
-      WaitForCube();
-      Wait(25);
-
-      // Back up to prevent dragging cube against switch
-      StartDriveRelative(-0.15, 0.0);
-      MoveToSwitch();
-
-      Wait(150);
-
-      // Drive so bumpers get on switch
-      StartDriveRelative(0.2, 0.0, 1.5);
-      WaitUntilDriveComplete();
-
-      StopIntakeGround();
-
-      // Without wait it scores while driving back
-      Score();
-
-      // Quickturn to next cube
-      StartDriveAtAngle(-0.15, M_PI * 0.3);
-
-      // Not get intake caught on switch
-      Wait(125);
-
-      // Go to ground intake
-      IntakeGround();
-
-      WaitUntilDriveComplete();
-
-      // Drive to next cube
-      StartDriveAtAngle(.7, M_PI * 0.33, 0.0);
-      WaitForCube();
-
-      max_angular_acceleration_ = 5.5;
-      max_forward_acceleration_ = 2.0;
-      // Drive back to scale
-      StartDriveAtAngle(-2.2, -0.2, 0.0);
-      Wait(100);
-      MoveToScale(false);
-      WaitUntilDriveComplete();
-
-      Score();
-      Wait(50);
-      StopScore();
-
-      IntakeGround();
-    } else if (left_right_codes[1] == 'R') {
-      // Switch is left, scale is right
-      LOG(INFO, "Running LEFT SWITCH RIGHT SCALE auto");
-
-      StopIntakeGround();
-      MoveToScale(false);
-
-      // Start drive to scale
-      StartDriveRelative(-4.75, 0.0, 1.9);
-      WaitUntilDriveComplete();
-
-      // Turn and get to scale
-      StartDriveAtAngle(-2.8, 0.5, 0.0);
-      WaitForCube();
-
-      // Score on scale
-      Score();
-      Wait(50);
-      StopScore();
-
-      // Start backing off scale
-      StartDriveRelative(0.2, 0.0, 0.5);
-      WaitUntilDriveComplete();
-
-      // Sharp turn to switch
-      StartDriveAtAngle(1.5, M_PI * -0.5, 0.1);
-      WaitUntilDriveComplete();
-
-      // Go over bump
-      StartDriveAtAngle(3.0, M_PI * -0.5, 0.1);
-      WaitUntilDriveComplete();
-
-      // Turn to cube on switch
-      StartDriveAtAngle(1.0, 0.0, 0.0);
-      WaitUntilDriveComplete();
-
-      // Drive to cube
-      StartDriveRelative(0.2, 0.0, 0.0);
-      WaitForCube();
-
-      // Back up to prevent cube drag
-      StartDriveRelative(-0.15, 0.0);
-      Wait(100);
-      MoveToSwitch();
-
-      // Drive so bumpers get on switch
-      StartDriveRelative(0.2, 0.0, 1.5);
-      WaitUntilDriveComplete();
-
-      // Without wait it scores while driving back
-      Score();
-
-      // Quickturn towards other cube
-      StartDriveAtAngle(0.0, M_PI * 0.25, 0.0);
-      WaitUntilDriveComplete();
-      IntakeGround();
-      Wait(100);
-
-      // Drive to other cube
-      StartDriveRelative(0.2, 0.0, 0.0);
-      WaitForCube();
-
-      // Drive towards scale
-      StartDriveAtAngle(2.0, M_PI * 0.6, 0.6);
-      WaitUntilDriveComplete();
-
-      // Back to scale
-      StartDriveAtAngle(1.0, M_PI * 0.5, 1.5);
-      WaitUntilDriveComplete();
-
-      MoveToScale(true);
-      // To scale
-      StartDriveRelative(2.0, M_PI * 0.6, 0.0);
-      WaitUntilDriveComplete();
-
-      Score();
-      Wait(100);
-      StopScore();
-
-      StartDriveRelative(-0.5, 0.0);
-      IntakeGround();
-      WaitUntilDriveComplete();
-    }
-  } else if (left_right_codes[0] == 'R') {
-    if (left_right_codes[1] == 'L') {
-      LOG(INFO, "Running RIGHT SWITCH LEFT SCALE auto");
-
-      MoveToScale(false);
-      // Back up
-      StartDriveRelative(-2.5, M_PI * 0.025, 1.5);
-      WaitUntilDriveComplete();
-
-      // Turn to switch
-      StartDriveAtAngle(-1.5, M_PI * 0.5, 0.0);
-      WaitUntilDriveComplete();
-
-      Score();
-      Wait(50);
-      StopScore();
-      IntakeGround();
-
-      StartDriveAtAngle(1.0, M_PI * 1.65, 1.0);
-      WaitUntilDriveComplete();
-
-      // Go get cube boi
-      StartDriveRelative(0.5, 0.0, 0.0);
-      WaitForCube();
-
-      Wait(200);
-
-      // Quickturn to scale
-      StartDriveAtAngle(0.0, M_PI * 2.5, 0.0);
-      WaitUntilDriveComplete();
-
-    } else if (left_right_codes[1] == 'R') {
-      // Switch is right, scale is right
-      LOG(INFO, "Running RIGHT SWITCH RIGHT SCALE auto");
-
-      StopIntakeGround();
-      MoveToScale(false);
-
-      // Start drive to scale
-      StartDriveRelative(-4.375, 0.0, 2.5);
-      WaitUntilDriveComplete();
-
-      // Turn and get to scale
-      StartDriveAtAngle(-2.6, 0.5, -1.2);
-      WaitUntilDriveComplete();
-
-      // Score on scale
-      Score();
-      Wait(20);
-      StopScore();
-
-      // Lower intake
-      IntakeGround();
-      Wait(90);
-
-      // Drive to switch to pick up cube
-      StartDriveAtAngle(2.0, M_PI * -0.1);
-      WaitForCube();
-      Wait(25);
-
-      // Back up to prevent dragging cube against switch
-      StartDriveRelative(-0.15, 0.0);
-      MoveToSwitch();
-      // WaitUntilElevatorAtPosition();  // TODO(Livy) Make sure this actually
-      // works
-      Wait(100);
-      StopIntakeGround();
-
-      // Drive so bumpers get on switch
-      StartDriveRelative(0.2, 0.0, 1.5);
-      WaitUntilDriveComplete();
-
-      // Without wait it scores while driving back
-      Score();
-
-      // Turn to get in position to grab second cube
-      StartDriveAtAngle(-0.3, M_PI * -0.3141592, 0.01);
-      Wait(150);
-      StopScore();
-      IntakeGround();
-      WaitUntilDriveComplete();
-
-      // Drive forwards to 2nd cube
-      StartDriveRelative(1.0, 0.0, 0.01);
-      WaitForCube();
-
-      // TODO(Livy) If/when we can control elevator speed make it go way slower
-      // here
-      StopIntakeGround();
-
-      // Start drive to scale
-
-      max_forward_acceleration_ = 1.7;
-      StartDriveAtAngle(-1.5, 0.0, 1.7);
-      Wait(100);
-      MoveToScale(false);
-      WaitUntilDriveComplete();
-
-      StartDriveAtAngle(-0.8, M_PI * 0.1, 1.0);
-      WaitUntilDriveComplete();
-      Score();
-      Wait(100);
-      StopScore();
-
-      IntakeGround();
-      StartDriveRelative(0.5, 0.0);
-    }
-  }
-  LOG(INFO, "Finished with auto!");
-}
-
-/*void AutonomousBase::WaitUntilDriveComplete(int ticks) {
-  int c = 0;
-  if (ticks == -1) {
-    while (!IsDriveComplete() && IsAutonomous()) {
-      loop_.SleepUntilNext();
-    }
-  } else {
-    if (!IsDriveComplete() && IsAutonomous() && c < ticks) {
-      loop_.SleepUntilNext();
-      c++;
-    }
-  }
-}*/
-
 void AutonomousBase::WaitUntilDriveComplete() {
   while (!IsDriveComplete() && IsAutonomous()) {
     loop_.SleepUntilNext();
@@ -533,7 +215,14 @@ void AutonomousBase::WaitUntilElevatorAtPosition() {
 void AutonomousBase::IntakeGround() {
   score_subsystem::ScoreSubsystemGoalProto score_goal;
   score_goal->set_score_goal(score_subsystem::ScoreGoal::INTAKE_0);
-  score_goal->set_intake_goal(score_subsystem::IntakeGoal::INTAKE);
+  score_goal->set_intake_goal(score_subsystem::IntakeGoal::INTAKE_ONLY);
+  score_goal_queue_->WriteMessage(score_goal);
+}
+
+void AutonomousBase::GoToIntake() {
+  score_subsystem::ScoreSubsystemGoalProto score_goal;
+  score_goal->set_score_goal(score_subsystem::ScoreGoal::INTAKE_0);
+  score_goal->set_intake_goal(score_subsystem::IntakeGoal::INTAKE_NONE);
   score_goal_queue_->WriteMessage(score_goal);
 }
 
@@ -550,6 +239,13 @@ void AutonomousBase::MoveToSwitch() {
   score_goal_queue_->WriteMessage(score_goal);
 }
 
+void AutonomousBase::MoveTo(c2018::score_subsystem::ScoreGoal goal) {
+  score_subsystem::ScoreSubsystemGoalProto score_goal;
+  score_goal->set_score_goal(goal);
+  score_goal->set_intake_goal(score_subsystem::IntakeGoal::INTAKE_NONE);
+  score_goal_queue_->WriteMessage(score_goal);
+}
+
 void AutonomousBase::MoveToScale(bool front) {
   score_subsystem::ScoreSubsystemGoalProto score_goal;
   score_goal->set_score_goal(
@@ -559,9 +255,10 @@ void AutonomousBase::MoveToScale(bool front) {
   score_goal_queue_->WriteMessage(score_goal);
 }
 
-void AutonomousBase::Score() {
+void AutonomousBase::Score(bool fast) {
   score_subsystem::ScoreSubsystemGoalProto score_goal;
-  score_goal->set_intake_goal(score_subsystem::IntakeGoal::OUTTAKE);
+  score_goal->set_intake_goal(fast ? score_subsystem::IntakeGoal::OUTTAKE_FAST
+                                   : score_subsystem::IntakeGoal::OUTTAKE_SLOW);
   score_goal_queue_->WriteMessage(score_goal);
 }
 
