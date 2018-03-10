@@ -66,6 +66,7 @@ AxisRange::AxisRange(Joystick* joystick, double minimum, double maximum,
 void AxisRange::Update() {
   double xaxis = joystick_->wpilib_joystick()->GetRawAxis(id_);
   double yaxis = joystick_->wpilib_joystick()->GetRawAxis(yaxis_);
+  double magnitude = (xaxis * xaxis) + (yaxis * yaxis);
   double axis_in_degrees = (atan2(yaxis, xaxis)) * (180 / M_PI);
   if (axis_in_degrees > -90 && axis_in_degrees < 180) {
     axis_in_degrees += 90;
@@ -74,12 +75,8 @@ void AxisRange::Update() {
   }
   bool axis_in_range =
       (axis_in_degrees > minimum_ && axis_in_degrees < maximum_);
-  bool past_threshold =
-      (xaxis * xaxis) + (yaxis * yaxis) - 1 > (threshold_ * threshold_);
-  std::cout << xaxis << ", " << yaxis << " angle: " << axis_in_degrees
-            << " magnitude: " << ((xaxis * xaxis) + (yaxis_ * yaxis_)) - 1
-            << std::endl;
-  Button::Update(axis_in_range && past_threshold);
+  bool past_threshold = (xaxis * xaxis) + (yaxis * yaxis) > threshold_;
+  Button::Update(axis_in_range && past_threshold && (magnitude > 0.1));
 }
 
 }  // namespace teleop

@@ -214,14 +214,12 @@ void TeleopBase::SendScoreSubsystemMessage() {
 
   // Scoring modes
   if (low_->is_pressed()) {
-    std::cout << "low is pressed" << std::endl;
     if (pos_0_->is_pressed()) {
       score_subsystem_goal_->set_score_goal(c2018::score_subsystem::EXCHANGE);
     } else if (pos_1_->is_pressed()) {
       score_subsystem_goal_->set_score_goal(c2018::score_subsystem::SWITCH);
     }
   } else if (front_->is_pressed()) {
-    std::cout << "front is pressed" << std::endl;
     if (pos_0_->is_pressed()) {
       score_subsystem_goal_->set_score_goal(
           c2018::score_subsystem::SCALE_LOW_FORWARD);
@@ -236,7 +234,6 @@ void TeleopBase::SendScoreSubsystemMessage() {
           c2018::score_subsystem::SCALE_SUPER_HIGH_FORWARD);
     }
   } else if (back_->is_pressed()) {
-    std::cout << "back is pressed" << std::endl;
     if (pos_0_->is_pressed()) {
       score_subsystem_goal_->set_score_goal(
           c2018::score_subsystem::SCALE_LOW_REVERSE);
