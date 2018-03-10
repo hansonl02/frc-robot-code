@@ -50,9 +50,9 @@ class TeleopBase {
   // Gamepad POVs
   muan::teleop::Button *height_0_, *height_1_, *height_2_, *height_portal_;
   // Gamepad Axes
-  muan::teleop::Button *godmode_up_, *godmode_down_, *top_mode_, *bottom_mode_;
+  muan::teleop::Button *godmode_up_, *godmode_down_;
 
-  muan::teleop::Button *front_, *back_, *low_, *shoot_;
+  muan::teleop::Button *front_, *back_, *low_;
   muan::teleop::Button *pos_0_, *pos_1_, *pos_2_, *pos_3_;
 
   bool god_mode_ = false;
