@@ -68,7 +68,7 @@ void AxisRange::Update() {
   double yaxis = joystick_->wpilib_joystick()->GetRawAxis(yaxis_);
   double magnitude = sqrt((xaxis * xaxis) + (yaxis * yaxis));
   double axis_in_degrees = (atan2(yaxis, xaxis)) * (180 / M_PI);
-  if (axis_in_degrees > -90 && axis_in_degrees < 180) {  // wraparound
+  if (axis_in_degrees > -90 && axis_in_degrees < 180) {  // conform to wpilib
     axis_in_degrees += 90;
   } else {
     axis_in_degrees += 450;
