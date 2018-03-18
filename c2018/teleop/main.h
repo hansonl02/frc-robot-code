@@ -16,6 +16,9 @@ namespace c2018 {
 namespace teleop {
 
 constexpr int kNumRumbleTicks = 25;
+constexpr double kGodmodeElevatorMultiplier = .5;
+constexpr double kGodmodeWristMultiplier = .1;
+constexpr double kGodmodeThreshold = .2;
 
 class TeleopBase {
  public:
@@ -44,13 +47,13 @@ class TeleopBase {
   muan::teleop::Button *quickturn_;
 
   // Gamepad Buttons
-  muan::teleop::Button *outtake_fast_, *outtake_slow_, *intake_, *settle_, *intake_open_, *intake_close_;
+  muan::teleop::Button *outtake_fast_, *outtake_slow_, *intake_, *settle_,
+      *intake_open_, *intake_close_;
   muan::teleop::Button *batter_down_, *hook_up_, *godmode_;
 
   // Gamepad POVs
   muan::teleop::Button *height_0_, *height_1_, *height_2_, *height_portal_;
   // Gamepad Axes
-  muan::teleop::Button *godmode_up_, *godmode_down_;
 
   muan::teleop::Button *front_, *back_, *low_;
   muan::teleop::Button *pos_0_, *pos_1_, *pos_2_, *pos_3_;
