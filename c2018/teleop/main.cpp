@@ -175,18 +175,18 @@ void TeleopBase::SendScoreSubsystemMessage() {
   score_subsystem_goal->set_intake_goal(c2018::score_subsystem::INTAKE_NONE);
 
   // Godmode
-  double godmode_elevator =
-      gamepad_.wpilib_joystick()->GetY();  // right joystick default
-  double godmode_wrist =
-      gamepad_.wpilib_joystick()->GetX();  // right joystick default
+  double godmode_elevator = -gamepad_.wpilib_joystick()->GetRawAxis(5);
+  double godmode_wrist = gamepad_.wpilib_joystick()->GetRawAxis(4);
 
   if (std::abs(godmode_elevator) > kGodmodeThreshold) {
     score_subsystem_goal->set_elevator_god_mode_goal(
-        (godmode_elevator - kGodmodeThreshold) * kGodmodeElevatorMultiplier);
+        std::abs(godmode_elevator - kGodmodeThreshold) *
+        kGodmodeElevatorMultiplier * (godmode_elevator > 0 ? 1 : -1));
   }
   if (std::abs(godmode_wrist) > kGodmodeThreshold) {
     score_subsystem_goal->set_wrist_god_mode_goal(
-        (godmode_wrist - kGodmodeThreshold) * kGodmodeWristMultiplier);
+        std::abs(godmode_wrist - kGodmodeThreshold) * kGodmodeWristMultiplier *
+        (godmode_wrist > 0 ? 1 : -1));
   }
 
   // Elevator heights + intakes

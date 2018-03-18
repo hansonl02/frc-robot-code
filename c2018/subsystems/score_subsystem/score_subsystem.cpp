@@ -49,13 +49,13 @@ void ScoreSubsystem::Update() {
   while (goal_reader_.ReadMessage(&goal)) {
     // Bridge between score goal enumerator and the individual mechanism goals
     SetGoal(goal);
-  // All the logic in the state machine is in this function
+    // All the logic in the state machine is in this function
     RunStateMachine();
   }
 
   // These are the goals before they get safety-ized
-  double constrained_elevator_height = elevator_height_ + goal->elevator_god_mode_goal() * 0.005;
-  double constrained_wrist_angle = wrist_angle_ + goal->wrist_god_mode_goal() * 0.005;
+  double constrained_elevator_height = elevator_height_;
+  double constrained_wrist_angle = wrist_angle_;
 
   // Now we make them safe so stuff doesn't break
   BoundGoal(&constrained_elevator_height, &constrained_wrist_angle);
@@ -149,6 +149,9 @@ void ScoreSubsystem::SetGoal(const ScoreSubsystemGoalProto& goal) {
       wrist_angle_ = kWristPortalAngle;
       break;
   }
+
+  elevator_height_ += goal->elevator_god_mode_goal() * 0.005;
+  wrist_angle_ += goal->wrist_god_mode_goal() * 0.005;
 
   switch (goal->intake_goal()) {
     case IntakeGoal::INTAKE_NONE:
