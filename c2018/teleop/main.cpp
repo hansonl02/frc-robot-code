@@ -175,8 +175,11 @@ void TeleopBase::SendScoreSubsystemMessage() {
   score_subsystem_goal->set_intake_goal(c2018::score_subsystem::INTAKE_NONE);
 
   // Godmode
-  double godmode_elevator = gamepad_.wpilib_joystick()->GetY();
-  double godmode_wrist = gamepad_.wpilib_joystick()->GetX();
+  double godmode_elevator =
+      gamepad_.wpilib_joystick()->GetY();  // right joystick default
+  double godmode_wrist =
+      gamepad_.wpilib_joystick()->GetX();  // right joystick default
+
   if (std::abs(godmode_elevator) > kGodmodeThreshold) {
     score_subsystem_goal->set_elevator_god_mode_goal(
         (godmode_elevator - kGodmodeThreshold) * kGodmodeElevatorMultiplier);
