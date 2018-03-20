@@ -178,15 +178,15 @@ void TeleopBase::SendScoreSubsystemMessage() {
   double godmode_elevator = -gamepad_.wpilib_joystick()->GetRawAxis(5);
   double godmode_wrist = gamepad_.wpilib_joystick()->GetRawAxis(4);
 
-  if (std::abs(godmode_elevator) > kGodmodeThreshold) {
+  if ((godmode_elevator * godmode_elevator) > kGodmodeThreshold) {
     score_subsystem_goal->set_elevator_god_mode_goal(
-        std::abs(godmode_elevator - kGodmodeThreshold) *
+        std::abs((godmode_elevator * godmode_elevator) - kGodmodeThreshold) *
         kGodmodeElevatorMultiplier * (godmode_elevator > 0 ? 1 : -1));
   }
-  if (std::abs(godmode_wrist) > kGodmodeThreshold) {
+  if ((godmode_wrist * godmode_wrist) > kGodmodeThreshold) {
     score_subsystem_goal->set_wrist_god_mode_goal(
-        std::abs(godmode_wrist - kGodmodeThreshold) * kGodmodeWristMultiplier *
-        (godmode_wrist > 0 ? 1 : -1));
+        std::abs((godmode_wrist * godmode_wrist) - kGodmodeThreshold) *
+        kGodmodeWristMultiplier * (godmode_wrist > 0 ? 1 : -1));
   }
 
   // Elevator heights + intakes
@@ -204,7 +204,14 @@ void TeleopBase::SendScoreSubsystemMessage() {
   if (intake_->is_pressed()) {
     score_subsystem_goal->set_intake_goal(c2018::score_subsystem::INTAKE);
   } else if (intake_open_->is_pressed()) {
-    score_subsystem_goal->set_intake_goal(c2018::score_subsystem::INTAKE_OPEN);
+    ScoreSubsystemStatusProto score_status;
+    if (score_subsystem_status_queue_->ReadLastMessage(&score_status) &&
+        score_status->has_cube()) {
+      score_subsystem_goal->set_intake_goal(c2018::score_subsystem::DROP);
+    } else {
+      score_subsystem_goal->set_intake_goal(
+          c2018::score_subsystem::INTAKE_OPEN);
+    }
   } else if (intake_close_->is_pressed()) {
     score_subsystem_goal->set_intake_goal(c2018::score_subsystem::INTAKE_CLOSE);
   } else if (outtake_fast_->is_pressed()) {
