@@ -121,35 +121,6 @@ void TeleopBase::Update() {
   ds_sender_.Send();
 }
 
-void TeleopBase::SetReadableLogName() {
-  /*
-  if (DriverStation::GetInstance().GetMatchType() !=
-          DriverStation::MatchType::kNone &&
-      !log_name_set_) {
-    std::string name;
-    int match_num = DriverStation::GetInstance().GetMatchNumber();
-    std::string match_number = std::to_string(match_num);
-    // Figure out name for log file
-    switch (DriverStation::GetInstance().GetMatchType()) {
-      case DriverStation::MatchType::kNone:
-        name = "N" + match_number;
-        break;
-      case DriverStation::MatchType::kPractice:
-        name = "P" + match_number;
-        break;
-      case DriverStation::MatchType::kQualification:
-        name = "Q" + match_number;
-        break;
-      case DriverStation::MatchType::kElimination:
-        name = "E" + match_number;
-        break;
-    }
-    muan::logging::FileWriter::CreateReadableName(name);
-    log_name_set_ = true;
-  }
-  */
-}
-
 void TeleopBase::SendDrivetrainMessage() {
   using DrivetrainGoal = frc971::control_loops::drivetrain::GoalProto;
   DrivetrainGoal drivetrain_goal;
