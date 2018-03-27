@@ -32,6 +32,7 @@ void PovButton::Update() {
                  static_cast<int>(pov_position_));
 }
 
+// Custom button bounded to a range defined by a minimum and maximum
 PovRange::PovRange(Joystick* joystick, uint32_t button, double minimum,
                    double maximum)
     : Button(joystick, button), minimum_(minimum), maximum_(maximum) {}
@@ -55,6 +56,7 @@ void AxisButton::Update() {
                      trigger_threshold_);
 }
 
+// Custom button bounded to a range defined by a minimum and maximum
 AxisRange::AxisRange(Joystick* joystick, double minimum, double maximum,
                      double xaxis, double yaxis, double threshold)
     : Button(joystick, xaxis),
@@ -64,19 +66,30 @@ AxisRange::AxisRange(Joystick* joystick, double minimum, double maximum,
       threshold_(threshold) {}
 
 void AxisRange::Update() {
+  // Get x and y position of button
   double xaxis = joystick_->wpilib_joystick()->GetRawAxis(id_);
   double yaxis = joystick_->wpilib_joystick()->GetRawAxis(yaxis_);
+
+  // Pythagorean theorem to determine button magnitude
   double magnitude = sqrt((xaxis * xaxis) + (yaxis * yaxis));
+
+  // Simple trig to determine button angle
   double axis_in_degrees = (atan2(yaxis, xaxis)) * (180 / M_PI);
-  if (axis_in_degrees > -90 && axis_in_degrees < 180) {  // conform to wpilib
+
+  // Conform to wpilib's angle system
+  if (axis_in_degrees > -90 && axis_in_degrees < 180) {
     axis_in_degrees += 90;
   } else {
     axis_in_degrees += 450;
   }
+
   bool axis_in_range =
       (axis_in_degrees > minimum_ && axis_in_degrees < maximum_);
   bool past_threshold =
       (xaxis * xaxis) + (yaxis * yaxis) > (threshold_ * threshold_);
+
+  // If button is in the angle range and above threshold then it is pressed
+  // It also needs (magnitude > 0.1) because we have a sketchy Xbox controller
   Button::Update(axis_in_range && past_threshold && (magnitude > 0.1));
 }
 
