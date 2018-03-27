@@ -96,7 +96,6 @@ void TeleopBase::Update() {
     SendScoreSubsystemMessage();
     SendClimbSubsystemMessage();
   }
-  SetReadableLogName();
 
   ScoreSubsystemStatusProto score_status;
   score_subsystem_status_queue_->ReadLastMessage(&score_status);
@@ -123,12 +122,14 @@ void TeleopBase::Update() {
 
 void TeleopBase::SendDrivetrainMessage() {
   using DrivetrainGoal = frc971::control_loops::drivetrain::GoalProto;
+
   DrivetrainGoal drivetrain_goal;
 
   double throttle = -throttle_.wpilib_joystick()->GetRawAxis(1);
   double wheel = -wheel_.wpilib_joystick()->GetRawAxis(0);
   bool quickturn = quickturn_->is_pressed();
 
+  // Shifting gears
   if (shifting_high_->was_clicked()) {
     high_gear_ = true;
   }
@@ -140,6 +141,7 @@ void TeleopBase::SendDrivetrainMessage() {
       high_gear_ ? frc971::control_loops::drivetrain::Gear::kHighGear
                  : frc971::control_loops::drivetrain::Gear::kLowGear);
 
+  // Drive controls
   drivetrain_goal->mutable_teleop_command()->set_steering(wheel);
   drivetrain_goal->mutable_teleop_command()->set_throttle(throttle);
   drivetrain_goal->mutable_teleop_command()->set_quick_turn(quickturn);
