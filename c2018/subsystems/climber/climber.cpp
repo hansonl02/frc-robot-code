@@ -15,7 +15,7 @@ Climber::Climber()
 
 void Climber::Update() {
   bool outputs_enabled = false;
-  double winch_output;
+  double winch_output = false;
   bool batter_output = false;
 
   ClimberStatusProto status;
@@ -41,19 +41,19 @@ void Climber::Update() {
         should_climb_ = false;
         status->set_climber_state(IDLE);
         break;
-      case APPROACHING:
+      case APPROACHING:  // Hook up
         batter_output = false;
         hook_output_ = true;
         should_climb_ = false;
         status->set_climber_state(APPROACH);
         break;
-      case BATTERING:
+      case BATTERING:  // Ramp down, hook down
         batter_output = true;
         hook_output_ = false;
         should_climb_ = false;
         status->set_climber_state(BATTER);
         break;
-      case CLIMBING:
+      case CLIMBING:  // Climb up with another robot
         batter_output = true;
         hook_output_ = false;
         should_climb_ = true;
