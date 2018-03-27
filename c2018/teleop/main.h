@@ -18,10 +18,6 @@ namespace teleop {
 
 constexpr int kNumRumbleTicks = 25;
 
-constexpr double kGodmodeElevatorMultiplier = 6;  // tentative
-constexpr double kGodmodeWristMultiplier = 10;    // tentative
-constexpr double kGodmodeThreshold = .25;         // tentative
-
 class TeleopBase {
  public:
   TeleopBase();
@@ -35,12 +31,11 @@ class TeleopBase {
   // Runs at ~200hz
   void Update();
 
-  void SetReadableLogName();
-
   void SendDrivetrainMessage();
   void SendScoreSubsystemMessage();
   void SendClimbSubsystemMessage();
 
+  // Driving controls
   muan::teleop::Joystick throttle_, wheel_;
   muan::teleop::Joystick gamepad_;
 
@@ -62,22 +57,25 @@ class TeleopBase {
   muan::teleop::Button *front_, *back_, *low_;
   muan::teleop::Button *pos_0_, *pos_1_, *pos_2_, *pos_3_;
 
-  bool god_mode_ = false;
-
   muan::wpilib::DriverStationSender ds_sender_;
-
-  bool log_name_set_ = false;
 
   c2018::climber::ClimberGoalProto climber_goal_;
 
   c2018::climber::ClimberGoalQueue *climber_goal_queue_;
   c2018::score_subsystem::ScoreSubsystemGoalQueue *score_subsystem_goal_queue_;
+
   c2018::score_subsystem::ScoreSubsystemStatusQueue
       *score_subsystem_status_queue_;
+
   c2018::lights::LightsGoalQueue *lights_goal_queue_;
 
   int rumble_ticks_left_ = 0;
   bool had_cube_ = false;
+
+  // Godmode constants
+  double kGodmodeElevatorMultiplier = 6;  // tentative
+  double kGodmodeWristMultiplier = 10;    // tentative
+  double kGodmodeThreshold = .25;         // tentative
 };
 
 }  // namespace teleop
