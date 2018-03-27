@@ -66,9 +66,6 @@ TeleopBase::TeleopBase()
   shifting_high_ = throttle_.MakeButton(5);
 
   quickturn_ = wheel_.MakeButton(5);
-
-  // Default values
-  climber_goal_->set_climber_goal(c2018::climber::NONE);
 }
 
 void TeleopBase::operator()() {
@@ -169,7 +166,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
          kGodmodeWristMultiplier * (godmode_wrist > 0 ? 1 : -1)));
   }
 
-  // Elevator heights + intakes
+  // Pyramid intakes
   if (height_0_->is_pressed()) {
     score_subsystem_goal->set_score_goal(c2018::score_subsystem::INTAKE_0);
   } else if (height_1_->is_pressed()) {
@@ -240,10 +237,12 @@ void TeleopBase::SendScoreSubsystemMessage() {
           c2018::score_subsystem::SCALE_SUPER_HIGH_REVERSE);
     }
   }
+
   score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal);
 }
 
 void TeleopBase::SendClimbSubsystemMessage() {
+  // Climbing procedure
   if (hook_up_->is_pressed() && !batter_down_->is_pressed()) {
     climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
   } else if (!hook_up_->is_pressed() && batter_down_->is_pressed()) {
