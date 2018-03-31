@@ -41,13 +41,13 @@ void Climber::Update() {
         should_climb_ = false;
         status->set_climber_state(IDLE);
         break;
-      case APPROACHING:  // Hook up
+      case APPROACHING:  // Hook up, drive forward to latch hook
         batter_output = false;
         hook_output_ = true;
         should_climb_ = false;
         status->set_climber_state(APPROACH);
         break;
-      case BATTERING:  // Ramp down, hook down
+      case BATTERING:  // Ramp down, arm down
         batter_output = true;
         hook_output_ = false;
         should_climb_ = false;
