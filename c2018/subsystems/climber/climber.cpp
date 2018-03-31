@@ -37,7 +37,7 @@ void Climber::Update() {
   // SETTING STATUS AND SHOULD_CLIMB GOAL
   if (outputs_enabled) {
     switch (goal->climber_goal()) {
-      case NONE:
+      case NONE:  // If not endgame
         should_climb_ = false;
         status->set_climber_state(IDLE);
         break;
