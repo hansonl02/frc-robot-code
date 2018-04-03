@@ -151,7 +151,8 @@ void TeleopBase::SendScoreSubsystemMessage() {
   score_subsystem_goal->set_score_goal(c2018::score_subsystem::SCORE_NONE);
   score_subsystem_goal->set_intake_goal(c2018::score_subsystem::INTAKE_NONE);
 
-  // Godmode
+  // Godmode - enables operator to freely move elevator and wrist on command by
+  // adding values directly to the goal
   double godmode_elevator = -gamepad_.wpilib_joystick()->GetRawAxis(5);
   double godmode_wrist = gamepad_.wpilib_joystick()->GetRawAxis(4);
 
