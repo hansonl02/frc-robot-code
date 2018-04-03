@@ -89,7 +89,7 @@ void AxisRange::Update() {
       (x_axis * x_axis) + (y_axis * y_axis) > (threshold_ * threshold_);
 
   // If button is in the angle range and above threshold then it is pressed
-  // It also needs (magnitude > 0.1) because we have a sketchy Xbox controller
+  // It needs (magnitude > 0.1) as a condition because sketchy Xbox controller
   Button::Update(axis_in_range && past_threshold && (magnitude > 0.1));
 }
 
