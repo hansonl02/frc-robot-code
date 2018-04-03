@@ -166,7 +166,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
          kGodmodeWristMultiplier * (godmode_wrist > 0 ? 1 : -1)));
   }
 
-  // Pyramid intakes
+  // Intake heights for ground and pyramid
   if (height_0_->is_pressed()) {
     score_subsystem_goal->set_score_goal(c2018::score_subsystem::INTAKE_0);
   } else if (height_1_->is_pressed()) {
