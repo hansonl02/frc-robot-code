@@ -230,7 +230,17 @@ void TeleopBase::SendScoreSubsystemMessage() {
   }
 
   // Scoring modes
-  if (front_->is_pressed()) {  // Front mode
+  if (!front_->is_pressed() && !back_->is_pressed()) {  // Low mode (default)
+    if (pos_0_->is_pressed()) {
+      score_subsystem_goal->set_score_goal(c2018::score_subsystem::EXCHANGE);
+    } else if (pos_1_->is_pressed()) {
+      score_subsystem_goal->set_score_goal(c2018::score_subsystem::SWITCH);
+    } else if (pos_2_->is_pressed()) {
+      score_subsystem_goal->set_score_goal(c2018::score_subsystem::STOW);
+    } else if (pos_3_->is_pressed()) {
+      score_subsystem_goal->set_score_goal(c2018::score_subsystem::SCALE_SHOOT);
+    }
+  } else if (front_->is_pressed()) {  // Front mode
     if (pos_0_->is_pressed()) {
       score_subsystem_goal->set_score_goal(
           c2018::score_subsystem::SCALE_LOW_FORWARD);
@@ -257,16 +267,6 @@ void TeleopBase::SendScoreSubsystemMessage() {
     } else if (pos_3_->is_pressed()) {
       score_subsystem_goal->set_score_goal(
           c2018::score_subsystem::SCALE_SUPER_HIGH_REVERSE);
-    }
-  } else {
-    if (pos_0_->is_pressed()) {  // Low mode (default)
-      score_subsystem_goal->set_score_goal(c2018::score_subsystem::EXCHANGE);
-    } else if (pos_1_->is_pressed()) {
-      score_subsystem_goal->set_score_goal(c2018::score_subsystem::SWITCH);
-    } else if (pos_2_->is_pressed()) {
-      score_subsystem_goal->set_score_goal(c2018::score_subsystem::STOW);
-    } else if (pos_3_->is_pressed()) {
-      score_subsystem_goal->set_score_goal(c2018::score_subsystem::SCALE_SHOOT);
     }
   }
 
