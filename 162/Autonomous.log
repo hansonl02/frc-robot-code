@@ -1,4 +1,0 @@
-[WARNING]30:c2018/autonomous/autonomous_runner.cpp:32: No driver station message!
-[WARNING]32:c2018/autonomous/autonomous_runner.cpp:32: No driver station message!
-[INFO]120452:c2018/autonomous/autonomous_runner.cpp:56: Starting autonomous with layout LLL
-[INFO]120452:c2018/autonomous/scale_only.cpp:84: Running LEFT SCALE ONLY auto
