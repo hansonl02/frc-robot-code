@@ -43,9 +43,8 @@ TeleopBase::TeleopBase()
 
   request_cube_ = gamepad_.MakePov(0, muan::teleop::Pov::kWest);
 
-  low_ = gamepad_.MakeAxisRange(136, 225, 0, 1, 0.7);
-  front_ = gamepad_.MakeAxisRange(15, 135, 0, 1, 0.7);
-  back_ = gamepad_.MakeAxisRange(226, 345, 0, 1, 0.7);
+  front_ = gamepad_.MakeAxisRange(15, 165, 0, 1, 0.8);
+  back_ = gamepad_.MakeAxisRange(195, 345, 0, 1, 0.8);
 
   intake_ = gamepad_.MakeAxis(3, 0.3);
   settle_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_CLICK_IN));
@@ -199,7 +198,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
   }
 
   // Scoring modes
-  if (low_->is_pressed()) {
+  if (!front_->is_pressed() && !back_->is_pressed()) {  // Low mode (default)
     if (pos_0_->is_pressed()) {
       score_subsystem_goal->set_score_goal(c2018::score_subsystem::EXCHANGE);
     } else if (pos_1_->is_pressed()) {
@@ -209,7 +208,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
     } else if (pos_3_->is_pressed()) {
       score_subsystem_goal->set_score_goal(c2018::score_subsystem::SCALE_SHOOT);
     }
-  } else if (front_->is_pressed()) {
+  } else if (front_->is_pressed()) {  // Front mode
     if (pos_0_->is_pressed()) {
       score_subsystem_goal->set_score_goal(
           c2018::score_subsystem::SCALE_LOW_FORWARD);
@@ -223,7 +222,7 @@ void TeleopBase::SendScoreSubsystemMessage() {
       score_subsystem_goal->set_score_goal(
           c2018::score_subsystem::SCALE_SUPER_HIGH_FORWARD);
     }
-  } else if (back_->is_pressed()) {
+  } else if (back_->is_pressed()) {  // Back mode
     if (pos_0_->is_pressed()) {
       score_subsystem_goal->set_score_goal(
           c2018::score_subsystem::SCALE_LOW_REVERSE);

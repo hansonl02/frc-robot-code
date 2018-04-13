@@ -56,7 +56,7 @@ class TeleopBase {
   muan::teleop::Button *request_cube_;
 
   // Gamepad Axes
-  muan::teleop::Button *front_, *back_, *low_;
+  muan::teleop::Button *front_, *back_;
   muan::teleop::Button *pos_0_, *pos_1_, *pos_2_, *pos_3_;
 
   muan::wpilib::DriverStationSender ds_sender_;

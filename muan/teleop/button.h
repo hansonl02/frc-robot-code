@@ -90,7 +90,7 @@ class AxisRange : public Button {
   int minimum_;
   int maximum_;
   int y_axis_;
-  int threshold_;
+  double threshold_;
 };
 
 }  // namespace teleop
