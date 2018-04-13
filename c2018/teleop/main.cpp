@@ -34,36 +34,44 @@ TeleopBase::TeleopBase()
       score_subsystem_status_queue_{
           QueueManager<ScoreSubsystemStatusProto>::Fetch()},
       lights_goal_queue_{QueueManager<LightsGoalProto>::Fetch()} {
+  // Climbing buttons - back and start
   hook_up_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
   batter_down_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
 
+  // Intake heights - D-pad
   height_0_ = gamepad_.MakePov(0, muan::teleop::Pov::kSouth);
   height_1_ = gamepad_.MakePov(0, muan::teleop::Pov::kEast);
   height_2_ = gamepad_.MakePov(0, muan::teleop::Pov::kNorth);
 
   request_cube_ = gamepad_.MakePov(0, muan::teleop::Pov::kWest);
 
+  // Scoring modes - left joystick
   front_ = gamepad_.MakeAxisRange(15, 165, 0, 1, 0.8);
   back_ = gamepad_.MakeAxisRange(195, 345, 0, 1, 0.8);
 
+  // Various intake type buttons
   intake_ = gamepad_.MakeAxis(3, 0.3);
   settle_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_CLICK_IN));
   intake_open_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_BUMPER));
   intake_close_ =
       gamepad_.MakeButton(uint32_t(muan::teleop::XBox::RIGHT_BUMPER));
 
+  // Outtake buttons
   outtake_slow_ = gamepad_.MakeAxis(2, 0.7);
   outtake_fast_ =
       gamepad_.MakeButton(uint32_t(muan::teleop::XBox::RIGHT_CLICK_IN));
 
+  // Scoring positions - A B X Y
   pos_0_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::A_BUTTON));
   pos_1_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::B_BUTTON));
   pos_2_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::X_BUTTON));
   pos_3_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::Y_BUTTON));
 
+  // Gear shifting - throttle buttons
   shifting_low_ = throttle_.MakeButton(4);
   shifting_high_ = throttle_.MakeButton(5);
 
+  // Quickturn - lever behind wheel on the left
   quickturn_ = wheel_.MakeButton(5);
 }
 

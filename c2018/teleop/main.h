@@ -59,19 +59,20 @@ class TeleopBase {
   muan::teleop::Button *front_, *back_;
   muan::teleop::Button *pos_0_, *pos_1_, *pos_2_, *pos_3_;
 
+  // Self-explanatory
   muan::wpilib::DriverStationSender ds_sender_;
 
   c2018::climber::ClimberGoalProto climber_goal_;
 
   c2018::climber::ClimberGoalQueue *climber_goal_queue_;
   c2018::score_subsystem::ScoreSubsystemGoalQueue *score_subsystem_goal_queue_;
+  c2018::lights::LightsGoalQueue *lights_goal_queue_;
 
   c2018::score_subsystem::ScoreSubsystemStatusQueue
       *score_subsystem_status_queue_;
 
-  c2018::lights::LightsGoalQueue *lights_goal_queue_;
-
   int rumble_ticks_left_ = 0;
+
   bool had_cube_ = false;
 
   // Godmode constants
