@@ -114,7 +114,7 @@ void AutonomousBase::StartDriveAtAngle(double distance, double theta_absolute,
 void AutonomousBase::StartDrivePath(
     double x, double y, double heading, int direction,
     frc971::control_loops::drivetrain::Gear gear, double extra_distance_initial,
-    double extra_distance_final) {
+    double extra_distance_final, double path_voltage) {
   follow_through_ = false;
   DrivetrainGoal goal;
 
@@ -124,7 +124,7 @@ void AutonomousBase::StartDrivePath(
   goal->mutable_path_command()->set_x_goal(goal_local(0));
   goal->mutable_path_command()->set_y_goal(goal_local(1));
   goal->mutable_path_command()->set_theta_goal(heading + theta_offset_);
-  goal->mutable_path_command()->set_max_voltage(9.0);
+  goal->mutable_path_command()->set_max_voltage(path_voltage);
   goal->mutable_path_command()->set_extra_distance_initial(
       extra_distance_initial);
   goal->mutable_path_command()->set_extra_distance_final(extra_distance_final);
@@ -170,11 +170,11 @@ bool AutonomousBase::IsDriveComplete() {
     }
 
     if (goal->has_path_command()) {
-      if (std::abs(status->profiled_x_goal() - goal->path_command().x_goal()) <
-              1e-1 &&
-          std::abs(status->profiled_y_goal() - goal->path_command().y_goal()) <
-              1e-1 &&
-          status->profile_complete()) {
+      if (std::abs(status->path_status().profiled_x_goal() -
+                   goal->path_command().x_goal()) < 1e-1 &&
+          std::abs(status->path_status().profiled_y_goal() -
+                   goal->path_command().y_goal()) < 1e-1 &&
+          status->path_status().profile_complete()) {
         return true;
       }
     }
@@ -189,8 +189,8 @@ bool AutonomousBase::IsDrivetrainNear(double x, double y, double distance) {
   if (drivetrain_status_reader_.ReadLastMessage(&status)) {
     Eigen::Vector2d field_position =
         transform_f0_ *
-        (Eigen::Vector2d() << status->estimated_x_position(),
-         status->estimated_y_position())
+        (Eigen::Vector2d() << status->path_status().profiled_x_goal(),
+         status->path_status().profiled_y_goal())
             .finished();
     if ((field_position(0) - x) * (field_position(0) - x) +
             (field_position(1) - y) * (field_position(1) - y) <
@@ -201,9 +201,28 @@ bool AutonomousBase::IsDrivetrainNear(double x, double y, double distance) {
   return false;
 }
 
+bool AutonomousBase::IsDrivetrainNear(double distance) {
+  DrivetrainStatus status;
+  if (drivetrain_status_reader_.ReadLastMessage(&status)) {
+    return std::abs(status->path_status().distance_remaining()) < distance;
+  }
+  return false;
+}
+
 void AutonomousBase::WaitUntilDrivetrainNear(double x, double y,
                                              double distance) {
   while (!IsDrivetrainNear(x, y, distance)) {
+    loop_.SleepUntilNext();
+  }
+}
+
+void AutonomousBase::WaitUntilDrivetrainNear(double distance) {
+  // Need to wait for status to come so we don't use a status
+  // from a nonexistant or already complete path
+  loop_.SleepUntilNext();
+  // Sleep two iterations because generating trajectory is very slow
+  loop_.SleepUntilNext();
+  while (!IsDrivetrainNear(distance)) {
     loop_.SleepUntilNext();
   }
 }
@@ -229,6 +248,13 @@ void AutonomousBase::WaitForCube() {
   }
 }
 
+bool AutonomousBase::WaitForCubeOrTimeout(int ticks) {
+  for (int i = 0; i < ticks && !HasCube() && IsAutonomous(); i++) {
+    loop_.SleepUntilNext();
+  }
+  return HasCube();
+}
+
 void AutonomousBase::WaitUntilDriveComplete() {
   while (!IsDriveComplete() && IsAutonomous()) {
     loop_.SleepUntilNext();
@@ -239,6 +265,13 @@ void AutonomousBase::WaitUntilElevatorAtPosition() {
   while (!IsAtScoreHeight() && IsAutonomous()) {
     loop_.SleepUntilNext();
   }
+}
+
+void AutonomousBase::ForceIntake() {
+  // Intake without setting height
+  score_subsystem::ScoreSubsystemGoalProto score_goal;
+  score_goal->set_intake_goal(score_subsystem::IntakeGoal::INTAKE);
+  score_goal_queue_->WriteMessage(score_goal);
 }
 
 void AutonomousBase::IntakeGround() {
