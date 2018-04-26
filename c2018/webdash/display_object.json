@@ -10,22 +10,36 @@
         "LL": [
           "SWITCH_ONLY",
           "SCALE_ONLY",
-          "SCALE_PLUS_SWITCH"
+          "SCALE_PLUS_SWITCH",
+          "BACKSIDE_SWITCH",
+          "DRIVE",
+          "SNEAK",
+          "NONE"
         ],
         "LR": [
           "SWITCH_ONLY",
           "SCALE_ONLY",
-          "SCALE_PLUS_SWITCH"
+          "SCALE_PLUS_SWITCH",
+          "BACKSIDE_SWITCH",
+          "DRIVE",
+          "SNEAK",
+          "NONE"
         ],
         "RR": [
           "SWITCH_ONLY",
           "SCALE_ONLY",
-          "SCALE_PLUS_SWITCH"
+          "SCALE_PLUS_SWITCH",
+          "DRIVE",
+          "SNEAK",
+          "NONE"
         ],
         "RL": [
           "SWITCH_ONLY",
           "SCALE_ONLY",
-          "SCALE_PLUS_SWITCH"
+          "SCALE_PLUS_SWITCH",
+          "DRIVE",
+          "SNEAK",
+          "NONE"
         ]
       }
     },

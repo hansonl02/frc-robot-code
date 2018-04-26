@@ -1,6 +1,6 @@
+#include <sstream>
 #include <string>
 #include <vector>
-#include <sstream>
 
 #include "c2018/autonomous/autonomous_runner.h"
 
@@ -15,8 +15,9 @@ using muan::webdash::WebDashQueueWrapper;
 AutonomousRunner::AutonomousRunner()
     : driver_station_reader_(
           QueueManager<DriverStationProto>::Fetch()->MakeReader()),
-      auto_mode_reader_(
-          WebDashQueueWrapper::GetInstance().auto_selection_queue().MakeReader()),
+      auto_mode_reader_(WebDashQueueWrapper::GetInstance()
+                            .auto_selection_queue()
+                            .MakeReader()),
       game_specific_string_reader_(
           QueueManager<muan::wpilib::GameSpecificStringProto>::Fetch()
               ->MakeReader()) {}
@@ -47,8 +48,16 @@ void AutonomousRunner::operator()() {
     switch_only_ = true;
   } else if (AutonomousRunner::AutoMode() == "SCALE_ONLY") {
     scale_only_ = true;
-  } else {
+  } else if (AutonomousRunner::AutoMode() == "SWITCH_AND_SCALE") {
     switch_and_scale_ = true;
+  } else if (AutonomousRunner::AutoMode() == "BACKSIDE_SWITCH") {
+    backside_switch_ = true;
+  } else if (AutonomousRunner::AutoMode() == "DRIVE") {
+    drive_ = true;
+  } else if (AutonomousRunner::AutoMode() == "SNEAK") {
+    sneak_ = true;
+  } else {
+    none_ = true;
   }
 
   // Start of autonomous. Grab the game specific string.
@@ -72,19 +81,42 @@ void AutonomousRunner::operator()() {
     c2018::autonomous::SwitchAndScale switch_and_scale;
     if (left_right_codes[0] == 'L') {
       if (left_right_codes[1] == 'L') {
-        switch_and_scale.LeftSwitchLeftScale();
+        switch_and_scale.LeftLeftSwitch();
       } else if (left_right_codes[1] == 'R') {
-        switch_and_scale.LeftSwitchRightScale();
+        switch_and_scale.LeftRightSwitch();
       }
     } else if (left_right_codes[0] == 'R') {
       if (left_right_codes[1] == 'L') {
-        switch_and_scale.RightSwitchLeftScale();
+        switch_and_scale.RightLeftSwitch();
       } else if (left_right_codes[1] == 'R') {
-        switch_and_scale.RightSwitchRightScale();
+        switch_and_scale.RightRightSwitch();
       }
     }
-  } else {
-    LOG(WARNING, "No auto mode found!");
+  } else if (backside_switch_) {
+    if (left_right_codes[0] == 'L') {
+      c2018::autonomous::BacksideSwitch backside_switch;
+      backside_switch.SwitchBack();
+    } else {
+      c2018::autonomous::Drive drive;
+      drive.DriveBackwards();
+    }
+  } else if (drive_) {
+    c2018::autonomous::Drive drive;
+    drive.DriveBackwards();
+  } else if (sneak_) {
+    c2018::autonomous::Sneak sneak;
+    if (left_right_codes[1] == 'L') {
+      sneak.SneakLeft();
+    } else {
+      sneak.SneakRight();
+    }
+  } else if (none_) {
+    c2018::autonomous::None none;
+    none.NoneAuto();
+  } else {  // Keeping this so we know if webdash selector somehow broke itself
+    LOG(WARNING, "No auto mode selected, running none auto!");
+    c2018::autonomous::None none;
+    none.NoneAuto();
   }
   LOG(INFO, "Finished with auto!");
 }
@@ -102,13 +134,14 @@ std::string AutonomousRunner::AutoMode() {
       autos.push_back(each_auto);
     }
     for (std::string &autonomous_mode : autos) {
-      if (game_specific_string->code().substr(0, 2) == autonomous_mode.substr(0, 2)) {
+      if (game_specific_string->code().substr(0, 2) ==
+          autonomous_mode.substr(0, 2)) {
         final_auto_mode = autonomous_mode.substr(3, autonomous_mode.size() - 3);
       }
     }
     return final_auto_mode;
   } else {
-    return "SCALE_PLUS_SWITCH";
+    return "DRIVE";
   }
 }
 

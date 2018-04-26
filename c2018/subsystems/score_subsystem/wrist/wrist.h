@@ -37,7 +37,7 @@ static constexpr double kCalibVoltage = 4;
 static constexpr double kHallEffectAngle = 0.23;
 
 // Intake Voltage constants
-static constexpr double kSlowOuttakeVoltage = -5;
+static constexpr double kSlowOuttakeVoltage = -6;
 static constexpr double kFastOuttakeVoltage = -9;
 static constexpr double kIntakeVoltage = 12;
 
@@ -68,10 +68,8 @@ class WristController {
  private:
   // Motion Profile
   muan::control::MotionProfilePosition UpdateProfiledGoal(bool outputs_enabled);
-  muan::control::MotionProfilePosition profile_initial_;
   muan::control::MotionProfilePosition unprofiled_goal_;
   muan::control::MotionProfilePosition profiled_goal_;
-  muan::units::Time profile_time_;
 
   // Hall Calibration
   muan::control::HallCalibration hall_calibration_{kHallEffectAngle};

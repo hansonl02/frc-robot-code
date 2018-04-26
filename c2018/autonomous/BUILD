@@ -6,6 +6,10 @@ cc_library(
         ":switch_and_scale",
         ":switch_only",
         ":scale_only",
+        ":backside_switch",
+        ":drive",
+        ":none",
+        ":sneak",
         "//muan/queues:queue_manager",
         "//muan/logging:logger",
     ],
@@ -77,6 +81,50 @@ cc_library(
     name = "scale_only",
     srcs = ["scale_only.cpp"],
     hdrs = ["scale_only.h"],
+    deps = [
+        ":autonomous_base",
+    ],
+    visibility = ["//visibility:public"],
+    restricted_to = ["//tools:roborio"],
+)
+
+cc_library(
+    name = "backside_switch",
+    srcs = ["backside_switch.cpp"],
+    hdrs = ["backside_switch.h"],
+    deps = [
+        ":autonomous_base",
+    ],
+    visibility = ["//visibility:public"],
+    restricted_to = ["//tools:roborio"],
+)
+
+cc_library(
+    name = "drive",
+    srcs = ["drive.cpp"],
+    hdrs = ["drive.h"],
+    deps = [
+        ":autonomous_base",
+    ],
+    visibility = ["//visibility:public"],
+    restricted_to = ["//tools:roborio"],
+)
+
+cc_library(
+    name = "none",
+    srcs = ["none.cpp"],
+    hdrs = ["none.h"],
+    deps = [
+        ":autonomous_base",
+    ],
+    visibility = ["//visibility:public"],
+    restricted_to = ["//tools:roborio"],
+)
+
+cc_library(
+    name = "sneak",
+    srcs = ["sneak.cpp"],
+    hdrs = ["sneak.h"],
     deps = [
         ":autonomous_base",
     ],
