@@ -44,7 +44,7 @@ bool AutonomousBase::IsAutonomous() {
   }
 }
 
-void AutonomousBase::StartDriveAbsolute(
+void AutonomousBase::StartDriveAbsolute(  // Start driving to a coordinate point
     double left, double right, bool follow_through,
     frc971::control_loops::drivetrain::Gear gear) {
   DrivetrainGoal goal;
@@ -64,7 +64,7 @@ void AutonomousBase::StartDriveAbsolute(
   drivetrain_goal_queue_->WriteMessage(goal);
 }
 
-void AutonomousBase::StartDriveRelative(
+void AutonomousBase::StartDriveRelative(  // Relative position from robot
     double forward, double theta, double final_velocity,
     frc971::control_loops::drivetrain::Gear gear) {
   DrivetrainStatus status;
@@ -271,6 +271,7 @@ void AutonomousBase::WaitUntilElevatorAtPosition() {
   }
 }
 
+// Elevator, wrist, intake, scoring commands
 void AutonomousBase::ForceIntake() {
   // Intake without setting height
   score_subsystem::ScoreSubsystemGoalProto score_goal;
