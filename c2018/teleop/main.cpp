@@ -155,6 +155,8 @@ void TeleopBase::SendDrivetrainMessage() {
 
 void TeleopBase::SendScoreSubsystemMessage() {
   ScoreSubsystemGoalProto score_subsystem_goal;
+
+  // Default elevator/wrist and intake goals
   score_subsystem_goal->set_score_goal(c2018::score_subsystem::SCORE_NONE);
   score_subsystem_goal->set_intake_goal(c2018::score_subsystem::INTAKE_NONE);
 
@@ -249,15 +251,14 @@ void TeleopBase::SendScoreSubsystemMessage() {
   score_subsystem_goal_queue_->WriteMessage(score_subsystem_goal);
 }
 
-void TeleopBase::SendClimbSubsystemMessage() {
-  // Climbing procedure
+void TeleopBase::SendClimbSubsystemMessage() {  // Climbing procedure
   if (hook_up_->is_pressed() && !batter_down_->is_pressed()) {
     climber_goal_->set_climber_goal(c2018::climber::APPROACHING);
   } else if (!hook_up_->is_pressed() && batter_down_->is_pressed()) {
     climber_goal_->set_climber_goal(c2018::climber::BATTERING);
   } else if (hook_up_->is_pressed() && batter_down_->is_pressed()) {
     climber_goal_->set_climber_goal(c2018::climber::CLIMBING);
-  } else {
+  } else {  // During teleop or after successful climb
     climber_goal_->set_climber_goal(c2018::climber::NONE);
   }
 
