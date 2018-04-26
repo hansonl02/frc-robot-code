@@ -163,14 +163,14 @@ void TeleopBase::SendScoreSubsystemMessage() {
   double godmode_elevator = -gamepad_.wpilib_joystick()->GetRawAxis(5);
   double godmode_wrist = gamepad_.wpilib_joystick()->GetRawAxis(4);
 
-  if (std::abs(godmode_elevator) > kGodmodeThreshold) {
+  if (std::abs(godmode_elevator) > kGodmodeButtonThreshold) {
     score_subsystem_goal->set_elevator_god_mode_goal(
-        (std::pow((std::abs(godmode_elevator) - kGodmodeThreshold), 2) *
+        (std::pow((std::abs(godmode_elevator) - kGodmodeButtonThreshold), 2) *
          kGodmodeElevatorMultiplier * (godmode_elevator > 0 ? 1 : -1)));
   }
-  if (std::abs(godmode_wrist) > kGodmodeThreshold) {
+  if (std::abs(godmode_wrist) > kGodmodeButtonThreshold) {
     score_subsystem_goal->set_wrist_god_mode_goal(
-        (std::pow((std::abs(godmode_wrist) - kGodmodeThreshold), 2) *
+        (std::pow((std::abs(godmode_wrist) - kGodmodeButtonThreshold), 2) *
          kGodmodeWristMultiplier * (godmode_wrist > 0 ? 1 : -1)));
   }
 

@@ -77,9 +77,9 @@ class TeleopBase {
   bool had_cube_ = false;
 
   // Godmode constants
-  double kGodmodeElevatorMultiplier = 6;  // tentative
-  double kGodmodeWristMultiplier = 10;    // tentative
-  double kGodmodeThreshold = .25;         // tentative
+  double kGodmodeElevatorMultiplier = 6;
+  double kGodmodeWristMultiplier = 10;
+  double kGodmodeButtonThreshold = .25;
 };
 
 }  // namespace teleop
