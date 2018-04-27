@@ -15,8 +15,12 @@ Climber::Climber()
 
 void Climber::Update() {
   bool outputs_enabled = false;
-  double winch_output = false;
+
+  bool should_climb = false;
+
   bool batter_output = false;
+  bool hook_output = false;
+  double winch_output = 0.0;
 
   ClimberStatusProto status;
   ClimberOutputProto output;
@@ -36,25 +40,25 @@ void Climber::Update() {
   if (outputs_enabled) {
     switch (goal->climber_goal()) {
       case NONE:  // If not endgame
-        should_climb_ = false;
+        should_climb = false;
         status->set_climber_state(IDLE);
         break;
       case APPROACHING:  // Hook up, drive forward to latch hook
         batter_output = false;
-        hook_output_ = true;
-        should_climb_ = false;
+        hook_output = true;
+        should_climb = false;
         status->set_climber_state(APPROACH);
         break;
       case BATTERING:  // Ramp down, arm down
         batter_output = true;
-        hook_output_ = false;
-        should_climb_ = false;
+        hook_output = false;
+        should_climb = false;
         status->set_climber_state(BATTER);
         break;
       case CLIMBING:  // Climb up with another robot
         batter_output = true;
-        hook_output_ = false;
-        should_climb_ = true;
+        hook_output = false;
+        should_climb = true;
         status->set_climber_state(CLIMB);
         break;
     }
@@ -62,7 +66,7 @@ void Climber::Update() {
     status->set_climber_state(IDLE);
   }
 
-  if (should_climb_) {
+  if (should_climb) {
     winch_output = 12.0;
   } else {
     winch_output = 0;
@@ -72,7 +76,7 @@ void Climber::Update() {
 
   // SETTING OUTPUTS
   output->set_batter_solenoid(batter_output);
-  output->set_hook_solenoid(hook_output_);
+  output->set_hook_solenoid(hook_output);
   output->set_voltage(winch_output);
 
   // WRITING TO QUEUES
