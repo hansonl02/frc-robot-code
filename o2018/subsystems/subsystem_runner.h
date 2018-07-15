@@ -19,7 +19,7 @@ class SubsystemRunner {
   void operator()();
 
  private:
-  drivetrain::Drivetrain& drivetrain_ = drivetrain::Drivetrain::GetInstance();
+  // drivetrain::Drivetrain& drivetrain_ = drivetrain::Drivetrain::GetInstance();
   ScoreSubsystem& score_subsystem_ = ScoreSubsystem::GetInstance();
   std::atomic<bool> running_;
 };
