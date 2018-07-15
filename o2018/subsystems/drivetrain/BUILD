@@ -9,7 +9,6 @@ cc_library(
         "//muan/control:pose",
         "//muan/control:trajectory",
         "//muan/utils:math_utils",
-        "//o2018/subsystems:constants",
         "//third_party/eigen",
         "//third_party/phoenixsuite:phoenix",
     ],
