@@ -20,7 +20,7 @@ class SubsystemRunner {
 
  private:
   // drivetrain::Drivetrain& drivetrain_ = drivetrain::Drivetrain::GetInstance();
-  ScoreSubsystem& score_subsystem_ = ScoreSubsystem::GetInstance();
+  // ScoreSubsystem& score_subsystem_ = ScoreSubsystem::GetInstance();
   std::atomic<bool> running_;
 };
 
