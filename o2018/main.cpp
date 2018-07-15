@@ -11,7 +11,7 @@ class WpilibRobot : public IterativeRobot {
 
   void SpawnThreads() {
     // std::thread subsystems(std::ref(subsystem_runner_));
-    subsystems.detach();
+    // subsystems.detach();
   }
 
  private:
