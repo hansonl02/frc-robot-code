@@ -1,8 +1,8 @@
-#include "c2018_rewrite/subsystems/subsystem_runner.h"
+#include "o2018/subsystems/subsystem_runner.h"
 #include "WPILib.h"
 #include "muan/utils/threading_utils.h"
 
-namespace c2018 {
+namespace o2018 {
 namespace subsystems {
 
 void SubsystemRunner::operator()() {
@@ -22,4 +22,4 @@ void SubsystemRunner::operator()() {
 }
 
 }  // namespace subsystems
-}  // namespace c2018
+}  // namespace o2018

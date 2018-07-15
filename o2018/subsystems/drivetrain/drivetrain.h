@@ -1,5 +1,5 @@
-#ifndef C2018_SUBSYTEMS_DRIVETRAIN_DRIVETRAIN_H_
-#define C2018_SUBSYTEMS_DRIVETRAIN_DRIVETRAIN_H_
+#ifndef O2018_SUBSYTEMS_DRIVETRAIN_DRIVETRAIN_H_
+#define O2018_SUBSYTEMS_DRIVETRAIN_DRIVETRAIN_H_
 
 #include <mutex>
 #include "Eigen/Core"
@@ -7,7 +7,7 @@
 #include "muan/control/pose.h"
 #include "muan/control/trajectory.h"
 
-namespace c2018 {
+namespace o2018 {
 namespace subsystems {
 namespace drivetrain {
 
@@ -104,6 +104,6 @@ class Drivetrain {
 
 }  // namespace drivetrain
 }  // namespace subsystems
-}  // namespace c2018
+}  // namespace o2018
 
-#endif  // C2018_SUBSYTEMS_DRIVETRAIN_DRIVETRAIN_H_
+#endif  // O2018_SUBSYTEMS_DRIVETRAIN_DRIVETRAIN_H_

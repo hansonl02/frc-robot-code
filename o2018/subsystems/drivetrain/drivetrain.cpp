@@ -1,6 +1,6 @@
-#include "c2018_rewrite/subsystems/drivetrain/drivetrain.h"
+#include "o2018/subsystems/drivetrain/drivetrain.h"
 
-namespace c2018 {
+namespace o2018 {
 namespace subsystems {
 namespace drivetrain {
 
@@ -105,4 +105,4 @@ void Drivetrain::ReloadGains() {
 
 }  // namespace drivetrain
 }  // namespace subsystems
-}  // namespace c2018
+}  // namespace o2018
