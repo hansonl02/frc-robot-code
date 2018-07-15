@@ -2,8 +2,8 @@
 #define O2018_REWRITE_SUBSYSTEMS_SCORE_SUBSYSTEM_SCORE_SUBSYSTEM_H_
 
 #include <cmath>
-#include "o2018/subsystems/score_subsystem/claw/claw.h"
-#include "o2018/subsystems/score_subsystem/elevator/elevator.h"
+// #include "o2018/subsystems/score_subsystem/claw/claw.h"
+// #include "o2018/subsystems/score_subsystem/elevator/elevator.h"
 
 namespace o2018 {
 namespace subsystems {
