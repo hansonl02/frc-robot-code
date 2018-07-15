@@ -15,7 +15,7 @@ class WpilibRobot : public IterativeRobot {
   }
 
  private:
-  c2018::SubsystemRunner subsystem_runner_;
+  o2018::SubsystemRunner subsystem_runner_;
 };
 
 int main(int argc, char **argv) {
