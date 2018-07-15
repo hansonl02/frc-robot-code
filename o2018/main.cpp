@@ -10,12 +10,12 @@ class WpilibRobot : public IterativeRobot {
   void RobotPeriodic() override {}
 
   void SpawnThreads() {
-    std::thread subsystems(std::ref(subsystem_runner_));
+    // std::thread subsystems(std::ref(subsystem_runner_));
     subsystems.detach();
   }
 
  private:
-  o2018::SubsystemRunner subsystem_runner_;
+  // o2018::SubsystemRunner subsystem_runner_;
 };
 
 int main(int argc, char **argv) {
