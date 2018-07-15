@@ -7,6 +7,7 @@ cc_library(
     deps = [
         "//o2018/subsystems/score_subsystem",
         "//muan/utils:threading_utils",
+        "//c2018/wpilib:wpilib_interface",
         "//third_party/aos/common:time",
         "//third_party/aos/common/util:phased_loop",
         "//third_party/aos/linux_code:init",
