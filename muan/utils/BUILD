@@ -58,41 +58,20 @@ cc_library(
     hdrs = ["monitor.h"],
     deps = [
         ":history",
-        "//muan/logging:logger",
-    ],
+        "//muan/logging:logger",    
+      ],
 )
 
 cc_library(
     name = "threading_utils",
     srcs = [
-        "threading_utils.cpp",
         "threading_utils.hpp",
+        "threading_utils.cpp"
     ],
     hdrs = ["threading_utils.h"],
     deps = [
         "//third_party/aos/common:time",
         "//third_party/aos/linux_code:init",
-    ],
-)
-
-cc_library(
-    name = "spline_utils",
-    hdrs = [
-        "spline_utils.h",
-    ],
-    deps = [
-        "//muan/control:spline",
-    ],
-)
-
-cc_library(
-    name = "trajectory_utils",
-    hdrs = [
-        "trajectory_utils.h",
-    ],
-    deps = [
-        ":spline_utils",
-        "//muan/control:trajectory",
     ],
 )
 
@@ -135,11 +114,11 @@ cc_test(
 cc_test(
     name = "monitor_test",
     srcs = ["monitor_test.cpp"],
-    linkopts = ["-lm"],
     deps = [
         ":monitor",
-        "//third_party/google/googletest",
+        "//third_party/google/googletest:googletest"
     ],
+    linkopts = ["-lm"]
 )
 
 cc_test(
@@ -147,25 +126,7 @@ cc_test(
     srcs = ["threading_utils_test.cpp"],
     deps = [
         ":threading_utils",
-        "//third_party/google/googletest",
-    ],
-)
-
-cc_test(
-    name = "spline_utils_test",
-    srcs = ["spline_utils_test.cpp"],
-    deps = [
-        ":spline_utils",
-        "//third_party/google/googletest",
-    ],
-)
-
-cc_test(
-    name = "trajectory_utils_test",
-    srcs = ["trajectory_utils_test.cpp"],
-    deps = [
-        ":trajectory_utils",
-        "//third_party/google/googletest",
+        "//third_party/google/googletest:googletest"
     ],
 )
 
@@ -187,6 +148,6 @@ cc_test(
     srcs = ["string_utils_test.cpp"],
     deps = [
         ":string_utils",
-        "//third_party/google/googletest",
+        "//third_party/google/googletest:googletest",
     ],
 )
