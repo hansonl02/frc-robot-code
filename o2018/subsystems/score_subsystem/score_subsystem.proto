@@ -5,9 +5,9 @@ option cc_enable_arenas = true;
 package o2018.subsytems.score_subsytem;
 
 enum Punch {
-	OPEN,
-	CLOSE,
-	CHILL
+	OPEN = 0;
+	CLOSE = 1;
+	CHILL = 2;
 };
 
 enum IntakeMode {
@@ -41,7 +41,7 @@ message ScoreSubsystemInput {
 	required double arm_encoder = 2;
 	required double arm_velocity = 3;
 	required double arm_voltage = 4;
-	required double arm_hall_effect = 5;
+	required bool arm_hall_effect = 5;
 
 	required double intake_proxy = 6;
 }
