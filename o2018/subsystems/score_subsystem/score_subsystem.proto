@@ -7,7 +7,7 @@ package o2018.subsytems.score_subsytem;
 enum Punch {
 	OPEN = 0;
 	CLOSE = 1;
-	CHILL = 2;
+	NEUTRAL = 2;
 };
 
 enum IntakeMode {
@@ -66,19 +66,21 @@ message ScoreSubsystemStatus {
 
 	required double arm_profiled_goal = 2;
 	required double arm_unprofiled_goal = 3;
-	required double arm_calibrated_position = 4;
+	required double arm_calibrated_angle = 4;
 	required bool arm_is_calibrated = 5;
 	required bool arm_encoder_fault = 6;
 
 	required bool has_cube = 7;
-	required IntakeState intake_state = 8;
-	required PinchState pinch_state = 9
+	required bool punching = 8;
+	
+	required IntakeState intake_state = 9;
+	required PinchState pinch_state = 10;
 }
 
 message ScoreSubsystemGoal {
 	required uint64 timestamp = 1;
 
-	required Punch punch_goal = 2;
+	required Punch should_punch = 2;
 	required IntakeMode intake_goal = 3;
 	required ScoreGoal score_goal = 4;
 }
