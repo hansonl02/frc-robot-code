@@ -1,4 +1,4 @@
-#include "o2018/subsystems/score_subsystem/shooter.h"
+#include "o2018/subsystems/score_subsystem/shooter/shooter.h"
 
 namespace o2018 {
 namespace score_subsystem {

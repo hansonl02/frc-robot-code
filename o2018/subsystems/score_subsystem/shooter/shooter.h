@@ -6,6 +6,7 @@ namespace score_subsystem {
 namespace shooter {
 
 // Intake Voltage constants
+
 constexpr double kSlowOuttakeVoltage = -6;
 constexpr double kFastOuttakeVoltage = -9;
 constexpr double kIntakeVoltage = 12;
@@ -20,4 +21,4 @@ class Shooter {
 } // namespace score_subsystem
 } // namespace o2018
 
-#endif // O2018_SUBSYSTEMS_SCORE_SUBSYSTEM_SHOOTER_SHOOTER_H
+#endif // O2018_SUBSYSTEMS_SCORE_SUBSYSTEM_SHOOTER_SHOOTER_H_
