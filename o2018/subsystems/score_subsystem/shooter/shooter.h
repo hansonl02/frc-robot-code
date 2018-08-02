@@ -17,8 +17,8 @@ class Shooter {
   bool Update(bool has_cube, bool should_punch, bool outputs_enabled);
 }
 
-} // namespace shooter
-} // namespace score_subsystem
-} // namespace o2018
+}  // namespace shooter
+}  // namespace score_subsystem
+}  // namespace o2018
 
-#endif // O2018_SUBSYSTEMS_SCORE_SUBSYSTEM_SHOOTER_SHOOTER_H_
+#endif  // O2018_SUBSYSTEMS_SCORE_SUBSYSTEM_SHOOTER_SHOOTER_H_

@@ -81,6 +81,6 @@ bool Shooter::Update(bool has_cube, bool should_punch, bool outputs_enabled) {
   }
 }
 
-} // namespace shooter
-} // namespace score_subsystem
-} // namespace o2018
+}  // namespace shooter
+}  // namespace score_subsystem
+}  // namespace o2018
