@@ -79,7 +79,6 @@ bool Shooter::Update(bool has_cube, bool should_punch, bool outputs_enabled) {
       }
       break;
   }
-
 }
 
 } // namespace shooter
