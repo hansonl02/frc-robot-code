@@ -12,7 +12,6 @@ cc_proto_library(
 cc_library(
     name = "score_subsystem_queues",
     hdrs = ["queue_types.h"],
-    #restricted_to = ["//tools:roborio"],
     deps = [
     	"score_subsystem_proto",
         "//muan/proto:stack_proto",
