@@ -1,4 +1,5 @@
 #include "o2018/subsystems/subsystem_runner.h"
+#include "WPILib.h"
 #include "muan/utils/threading_utils.h"
 
 namespace o2018 {
@@ -14,7 +15,10 @@ void SubsystemRunner::operator()() {
   running_ = true;
 
   while (running_) {
-    // Subsystems go here
+    // bool outputs_enabled = RobotController::IsSysActive();
+    // drivetrain_.Update(outputs_enabled);
+    // score_subsystem_.Update(outputs_enabled);
+
     phased_loop.SleepUntilNext();
   }
 }

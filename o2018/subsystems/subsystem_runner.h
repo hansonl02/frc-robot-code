@@ -3,6 +3,8 @@
 
 #include <atomic>
 
+// #include "o2018/subsystems/drivetrain/drivetrain.h"
+#include "o2018/subsystems/score_subsystem/score_subsystem.h"
 #include "third_party/aos/common/time.h"
 #include "third_party/aos/common/util/phased_loop.h"
 #include "third_party/aos/linux_code/init.h"
@@ -17,7 +19,8 @@ class SubsystemRunner {
   void operator()();
 
  private:
-  // Subsystems go here
+  // drivetrain::Drivetrain& drivetrain_ = drivetrain::Drivetrain::GetInstance();
+  // ScoreSubsystem& score_subsystem_ = ScoreSubsystem::GetInstance();
   std::atomic<bool> running_;
 };
 
