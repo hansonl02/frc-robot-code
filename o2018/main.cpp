@@ -5,7 +5,6 @@
 #include "o2018/subsystems/subsystem_runner.h"
 #include "o2018/teleop/teleop.h"
 #include "subsystems/subsystem_runner.h"
-#include "gflags/gflags.h"
 
 class WpilibRobot : public IterativeRobot {
  public:

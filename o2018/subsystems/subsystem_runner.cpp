@@ -1,5 +1,4 @@
 #include "o2018/subsystems/subsystem_runner.h"
-#include "WPILib.h"
 #include "muan/utils/threading_utils.h"
 
 namespace o2018 {
