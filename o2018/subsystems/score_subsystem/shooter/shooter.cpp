@@ -13,7 +13,7 @@ void Shooter::SetGoal(double angle, IntakeMode intake_goal) {
 void Shooter::Update(const ScoreSubsystemInputProto& input,
                   ScoreSubsystemOutputProto* output,
                   ScoreSubsystemStatusProto* status, bool outputs_enabled) {
-  bool has_cube = /* pinch_state_ == IDLE_WITH_CUBE && */ input->intake_proxy();
+  bool has_cube = pinch_state_ == IDLE_WITH_CUBE && input->intake_proxy();
 
   // Start of intake
   bool intake_solenoid_close = false;
