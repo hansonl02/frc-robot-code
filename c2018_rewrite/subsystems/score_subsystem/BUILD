@@ -13,7 +13,7 @@ cc_library(
     name = "score_subsystem_queues",
     hdrs = ["queue_types.h"],
     deps = [
-    	"score_subsystem_proto",
+        "score_subsystem_proto",
         "//muan/proto:stack_proto",
         "//muan/queues",
     ],
@@ -26,7 +26,18 @@ cc_library(
     deps = [
         ":score_subsystem_proto",
         ":score_subsystem_queues",
+        "//c2018_rewrite/subsystems/score_subsystem/elevator",
+        "//c2018_rewrite/subsystems/score_subsystem/claw",
         "//muan/queues:queue_manager",
         "//muan/wpilib:wpilib_queues",
+    ],
+)
+
+cc_test(
+    name = "score_subsystem_test",
+    srcs = ["score_subsystem_test.cpp"],
+    deps = [
+        ":score_subsystem",
+        "//third_party/google/googletest",
     ],
 )

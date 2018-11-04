@@ -14,10 +14,10 @@ void SubsystemRunner::operator()() {
   running_ = true;
 
   while (running_) {
-    // bool outputs_enabled = RobotController::IsSysActive();
-    // drivetrain_.Update(outputs_enabled);
-    // score_subsystem_.Update(outputs_enabled);
-
+    interface_runner_.ReadSensors();
+    arm_.Update();
+    drivetrain_.Update();
+    interface_runner_.WriteActuators();
     phased_loop.SleepUntilNext();
   }
 }
