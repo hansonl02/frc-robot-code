@@ -96,11 +96,11 @@ void TeleopBase::SendDrivetrainMessage() {
 void TeleopBase::SendArmMessage() {
   ArmGoal arm_goal;
 
-  double godmode_wrist = gamepad_.wpilib_joystick()->GetRawAxis(4);
-  double arm_godmode;
+  double godmode_wrist = -gamepad_.wpilib_joystick()->GetRawAxis(5);
+  double arm_godmode = 0;
   
   if (std::abs(godmode_wrist) > kGodmodeButtonThreshold) {
-   arm_godmode = (std::pow((std::abs(godmode_wrist) - kGodmodeButtonThreshold), 2) *
+    arm_godmode = (std::pow((std::abs(godmode_wrist) - kGodmodeButtonThreshold), 2) *
               kGodmodeWristMultiplier * (godmode_wrist > 0 ? 1 : -1));
   }
 
@@ -120,7 +120,15 @@ void TeleopBase::SendArmMessage() {
     arm_angle_ = 60 * (M_PI / 180);
   }
 
-  arm_angle_ += arm_godmode;
+  std::cout << arm_godmode << std::endl;
+
+  arm_angle_ += arm_godmode * (M_PI / 180.);
+  if (arm_angle_ < 0) {
+    arm_angle_ = 0;
+  }
+  if (arm_angle_ > M_PI / 2.) {
+    arm_angle_ = M_PI / 2.;
+  }
   arm_goal->set_arm_angle(arm_angle_);
 
   if (intake_->is_pressed()) {
