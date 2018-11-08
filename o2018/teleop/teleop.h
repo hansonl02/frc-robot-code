@@ -46,6 +46,10 @@ class TeleopBase {
 
   double arm_angle_ = 0;
   bool high_gear_;
+
+  // Godmode constants
+  double kGodmodeWristMultiplier = 3;
+  double kGodmodeButtonThreshold = .25;
 };
 
 }  // namespace teleop
