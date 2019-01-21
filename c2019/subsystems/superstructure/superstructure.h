@@ -23,17 +23,17 @@ namespace superstructure {
 // TODO(hanson) put actual numbers here
 // elevator constants
 constexpr double kHatchShipForwardsHeight = .4;
-constexpr double kHatchShipBackwardsHeight = .4;
+constexpr double kHatchShipBackwardsHeight = 0;
 constexpr double kHatchRocketFirstHeight = .4;
-constexpr double kHatchRocketBackwardsHeight = .4;
+constexpr double kHatchRocketBackwardsHeight = 0;
 constexpr double kHatchRocketSecondHeight = 1.2;
 constexpr double kHatchRocketThirdHeight = 2;
 constexpr double kHatchLoadingStationHeight = .4;
 constexpr double kHatchGroundHeight = 0;
 constexpr double kCargoShipForwardsHeight = 1;
-constexpr double kCargoShipBackwardsHeight = 1;
+constexpr double kCargoShipBackwardsHeight = 0;
 constexpr double kCargoRocketFirstHeight = .6;
-constexpr double kCargoRocketBackwardsHeight = .6;
+constexpr double kCargoRocketBackwardsHeight = 0;
 constexpr double kCargoRocketSecondHeight = 1.4;
 constexpr double kCargoRocketThirdHeight = 2;
 constexpr double kCargoGroundHeight = 0;
@@ -52,7 +52,7 @@ constexpr double kHatchBackwardsAngle = 3.1;
 constexpr double kCargoRocketFirstAngle = 0;
 constexpr double kCargoRocketSecondAngle = 0;
 constexpr double kCargoRocketThirdAngle = M_PI / 12;
-constexpr double kCargoRocketBackwardsAngle = 3.1;
+constexpr double kCargoRocketBackwardsAngle = (5 / 6) * M_PI;
 constexpr double kCargoShipForwardsAngle = 0;
 constexpr double kCargoShipBackwardsAngle = 0;
 constexpr double kCargoGroundAngle = 0;

@@ -21,8 +21,7 @@ Superstructure::Superstructure()
 void Superstructure::BoundGoal(double* elevator_goal, double* wrist_goal) {
   // If wrist angle is higher than safe angle, cap elevator to safe height
   if (wrist_status_->wrist_angle() > kWristSafeAngle) {
-    *elevator_goal = muan::utils::Cap(*elevator_goal, kElevatorMinHeight,
-                                      kElevatorSafeHeight);
+    *elevator_goal = muan::utils::Cap(*elevator_goal, 0, kElevatorSafeHeight);
   }
 
   // If elevator is higher than safe height, cap wrist to safe angle
@@ -141,8 +140,10 @@ void Superstructure::Update() {
     RunStateMachine();
   }
 
+  double capped_elevator_height = elevator_height_;
+  double capped_wrist_angle = wrist_angle_;
   // Now we make them safe so stuff doesn't break
-  BoundGoal(&elevator_height_, &wrist_angle_);
+  BoundGoal(&capped_elevator_height, &capped_wrist_angle);
 
   hatch_intake_input->set_hatch_proxy(input->hatch_intake_proxy());
   cargo_intake_input->set_has_cargo(input->cargo_proxy());
@@ -153,7 +154,9 @@ void Superstructure::Update() {
   wrist_input->set_wrist_hall(input->wrist_hall());
 
   auto elevator_goal = PopulateElevatorGoal();
+  elevator_goal->set_height(capped_elevator_height);
   auto wrist_goal = PopulateWristGoal();
+  wrist_goal->set_angle(capped_wrist_angle);
   auto ground_hatch_intake_goal = PopulateGroundHatchIntakeGoal();
   auto hatch_intake_goal = PopulateHatchIntakeGoal();
   auto cargo_intake_goal = PopulateCargoIntakeGoal();
@@ -200,6 +203,10 @@ void Superstructure::Update() {
   status_->set_winch_current(winch_status_->winch_current());
   status_->set_elevator_is_calibrated(elevator_status_->is_calibrated());
   status_->set_wrist_is_calibrated(wrist_status_->is_calibrated());
+  status_->set_elevator_goal(elevator_height_);
+  status_->set_wrist_goal(wrist_angle_);
+  status_->set_wrist_angle(wrist_status_->wrist_angle());
+  status_->set_elevator_height(elevator_status_->elevator_height());
 
   output->set_arrow_solenoid(hatch_intake_output->flute_solenoid());
   output->set_backplate_solenoid(hatch_intake_output->backplate_solenoid());
@@ -290,6 +297,9 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       elevator_height_ = kStowHeight;
       wrist_angle_ = kStowAngle;
       break;
+    case CARGO_GROUND:
+      elevator_height_ = kCargoGroundHeight;
+      wrist_angle_ = kCargoGroundAngle;
     case CLIMB:
       elevator_height_ = kClimbHeight;
       wrist_angle_ = kClimbAngle;
