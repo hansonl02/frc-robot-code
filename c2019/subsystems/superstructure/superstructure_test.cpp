@@ -529,6 +529,7 @@ TEST_F(SuperstructureTest, Crawl) {
   CheckGoal(kClimbHeight, kClimbAngle);
   EXPECT_EQ(superstructure_status_proto_->state(), CLIMBING);
   EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
+  EXPECT_EQ(superstructure_output_proto_->crawler_voltage(), 12);
   EXPECT_TRUE(superstructure_output_proto_->crawler_solenoid());
 }
 
@@ -553,6 +554,7 @@ TEST_F(SuperstructureTest, CrawlBraked) {
   EXPECT_EQ(superstructure_status_proto_->state(), CLIMBING);
   EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
   EXPECT_TRUE(superstructure_output_proto_->crawler_solenoid());
+  EXPECT_EQ(superstructure_output_proto_->crawler_voltage(), 12);
   EXPECT_TRUE(superstructure_output_proto_->brake());
 }
 

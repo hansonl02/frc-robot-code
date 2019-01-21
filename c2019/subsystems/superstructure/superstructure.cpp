@@ -313,7 +313,6 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       should_climb_ = true;
       buddy_ = true;
       high_gear_ = false;
-      crawler_down_ = true;
       break;
     case CRAWL:
       crawling_ = true;
