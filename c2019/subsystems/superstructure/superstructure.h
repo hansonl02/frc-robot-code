@@ -20,7 +20,7 @@
 namespace c2019 {
 namespace superstructure {
 
-// TODO(hanson) put actual numbers here
+// TODO(hanson) test these numbers
 // elevator constants
 constexpr double kHatchShipForwardsHeight = .4;
 constexpr double kHatchShipBackwardsHeight = 0.;
