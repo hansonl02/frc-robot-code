@@ -506,6 +506,7 @@ TEST_F(SuperstructureTest, BuddyClimb) {
 
   CheckGoal(kClimbHeight, kClimbAngle);
   EXPECT_EQ(superstructure_status_proto_->state(), BUDDY_CLIMBING);
+  EXPECT_EQ(superstructure_output_proto_->winch_voltage(), 12);
   EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
 }
 
