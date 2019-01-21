@@ -209,6 +209,12 @@ void Superstructure::Update() {
   output->set_snap_down(ground_hatch_intake_output->snap_down());
   output->set_winch_voltage(winch_output->winch_voltage());
   output->set_drop_forks(winch_output->drop_forks());
+  output->set_elevator_setpoint(elevator_output->elevator_setpoint());
+  output->set_elevator_setpoint_type(
+      static_cast<TalonOutput>(elevator_output->elevator_output_type()));
+  output->set_wrist_setpoint(wrist_output->wrist_setpoint());
+  output->set_wrist_setpoint_type(
+      static_cast<TalonOutput>(wrist_output->output_type()));
 
   // Write those queues after Updating the controllers
   status_queue_->WriteMessage(status_);
