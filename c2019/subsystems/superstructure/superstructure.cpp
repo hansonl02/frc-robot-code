@@ -216,6 +216,10 @@ void Superstructure::Update() {
   output->set_snap_down(ground_hatch_intake_output->snap_down());
   output->set_winch_voltage(winch_output->winch_voltage());
   output->set_drop_forks(winch_output->drop_forks());
+  output->set_elevator_high_gear(elevator_output->high_gear());
+  output->set_crawler_solenoid(elevator_output->crawler_solenoid());
+  output->set_crawler_voltage(elevator_output->crawler_voltage());
+  output->set_brake(elevator_output->brake());
   output->set_elevator_setpoint(elevator_output->elevator_setpoint());
   output->set_elevator_setpoint_type(
       static_cast<TalonOutput>(elevator_output->elevator_output_type()));
@@ -231,13 +235,6 @@ void Superstructure::Update() {
 void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
   // These set the member variable goals before they are constrained
   // They are set based on the score goal enumerator
-  crawling_ = false;
-  high_gear_ = false;
-  crawler_down_ = false;
-  brake_ = false;
-  should_climb_ = false;
-  buddy_ = false;
-
   switch (goal->score_goal()) {
     case NONE:
       break;
@@ -301,6 +298,7 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       elevator_height_ = kCargoGroundHeight;
       wrist_angle_ = kCargoGroundAngle;
     case CLIMB:
+      GoToState(CLIMBING);
       elevator_height_ = kClimbHeight;
       wrist_angle_ = kClimbAngle;
       should_climb_ = true;
@@ -309,6 +307,7 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       crawler_down_ = true;
       break;
     case BUDDY_CLIMB:
+      GoToState(BUDDY_CLIMBING);
       elevator_height_ = kClimbHeight;
       wrist_angle_ = kClimbAngle;
       should_climb_ = true;

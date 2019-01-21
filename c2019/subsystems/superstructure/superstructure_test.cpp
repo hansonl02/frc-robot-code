@@ -117,10 +117,6 @@ class SuperstructureTest : public ::testing::Test {
         elevator_god_mode_goal);
     superstructure_goal_proto_->set_wrist_god_mode_goal(wrist_god_mode_goal);
     RunFor(run_for);
-    std::cout << "elevator goal: "
-              << superstructure_output_proto_->elevator_setpoint() << std::endl;
-    std::cout << "wrist goal: "
-              << superstructure_output_proto_->wrist_setpoint() << std::endl;
 
     SetGodmodeZero(true);
     RunFor(3);
@@ -129,15 +125,25 @@ class SuperstructureTest : public ::testing::Test {
         superstructure_output_proto_->elevator_setpoint();
     double second_wrist_goal = superstructure_output_proto_->wrist_setpoint();
 
-    if (elevator_god_mode_goal != 0 && wrist_god_mode_goal != 0) {
+    if (elevator_god_mode_goal != 0 && wrist_god_mode_goal == 0) {
+      if (std::abs(second_elevator_goal - first_elevator_goal) > 2e-3) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (wrist_god_mode_goal != 0 && elevator_god_mode_goal == 0) {
+      if (std::abs(second_wrist_goal - first_wrist_goal) > 3 * (M_PI / 180)) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
       if (std::abs(second_elevator_goal - first_elevator_goal) > 2e-3 &&
           std::abs(second_wrist_goal - first_wrist_goal) > 3 * (M_PI / 180)) {
         return true;
       } else {
         return false;
       }
-    } else {
-      return true;
     }
 
     driver_station_proto_->set_is_sys_active(outputs_enabled);
@@ -175,6 +181,10 @@ class SuperstructureTest : public ::testing::Test {
     EXPECT_NEAR(superstructure_status_proto_->elevator_height(), elevator,
                 1e-3);
     EXPECT_NEAR(superstructure_status_proto_->wrist_angle(), wrist, 1e-3);
+
+    EXPECT_NEAR(superstructure_output_proto_->elevator_setpoint(), elevator,
+                1e-3);
+    EXPECT_NEAR(superstructure_output_proto_->wrist_setpoint(), wrist, 1e-3);
   }
 
   void CheckIntake(bool has_ground_hatch, bool has_hp_hatch, bool has_cargo,
@@ -472,8 +482,101 @@ TEST_F(SuperstructureTest, GodmodeWrist) {
   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
   RunFor(1000);
   CheckGoal(kCargoShipBackwardsHeight, kCargoShipBackwardsAngle);
+  EXPECT_TRUE(Godmode(0, -10, 10, true));
+}
 
-  EXPECT_TRUE(Godmode(0, -10, 30, true));
+TEST_F(SuperstructureTest, Climb) {
+  CalibrateDisabled();
+  SetGoal(ScoreGoal::CLIMB, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(1000);
+
+  CheckGoal(kClimbHeight, kClimbAngle);
+  EXPECT_EQ(superstructure_status_proto_->state(), CLIMBING);
+  EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
+}
+
+TEST_F(SuperstructureTest, BuddyClimb) {
+  CalibrateDisabled();
+  SetGoal(ScoreGoal::BUDDY_CLIMB, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(1000);
+
+  CheckGoal(kClimbHeight, kClimbAngle);
+  EXPECT_EQ(superstructure_status_proto_->state(), BUDDY_CLIMBING);
+  EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
+}
+
+TEST_F(SuperstructureTest, Crawl) {
+  CalibrateDisabled();
+
+  SetGoal(ScoreGoal::CLIMB, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(1000);
+
+  CheckGoal(kClimbHeight, kClimbAngle);
+  EXPECT_EQ(superstructure_status_proto_->state(), CLIMBING);
+  EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
+
+  SetGoal(ScoreGoal::CRAWL, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(1000);
+
+  CheckGoal(kClimbHeight, kClimbAngle);
+  EXPECT_EQ(superstructure_status_proto_->state(), CLIMBING);
+  EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
+  EXPECT_TRUE(superstructure_output_proto_->crawler_solenoid());
+}
+
+TEST_F(SuperstructureTest, CrawlBraked) {
+  CalibrateDisabled();
+
+  SetGoal(ScoreGoal::CLIMB, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(1000);
+
+  CheckGoal(kClimbHeight, kClimbAngle);
+  EXPECT_EQ(superstructure_status_proto_->state(), CLIMBING);
+  EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
+
+  SetGoal(ScoreGoal::CRAWL_BRAKED, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(1000);
+
+  CheckGoal(kClimbHeight, kClimbAngle);
+  EXPECT_EQ(superstructure_status_proto_->state(), CLIMBING);
+  EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
+  EXPECT_TRUE(superstructure_output_proto_->crawler_solenoid());
+  EXPECT_TRUE(superstructure_output_proto_->brake());
+}
+
+TEST_F(SuperstructureTest, Brake) {
+  CalibrateDisabled();
+
+  SetGoal(ScoreGoal::CLIMB, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(1000);
+
+  CheckGoal(kClimbHeight, kClimbAngle);
+  EXPECT_EQ(superstructure_status_proto_->state(), CLIMBING);
+  EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
+
+  SetGoal(ScoreGoal::BRAKE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(1000);
+
+  CheckGoal(kClimbHeight, kClimbAngle);
+  EXPECT_EQ(superstructure_status_proto_->state(), CLIMBING);
+  EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear());
+  EXPECT_TRUE(superstructure_output_proto_->brake());
 }
 
 }  // namespace superstructure

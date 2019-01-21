@@ -144,4 +144,8 @@ message SuperstructureOutput {
   required bool snap_down = 11;
   required double winch_voltage = 12;
   required bool drop_forks = 13;
+  required bool elevator_high_gear = 14;
+  required bool crawler_solenoid = 15;
+  required double crawler_voltage = 16;
+  required bool brake = 17;
 }
