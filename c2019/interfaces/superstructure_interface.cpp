@@ -78,8 +78,8 @@ void SuperstructureInterface::ReadSensors() {
   inputs->set_wrist_hall(
       !canifier_.GetGeneralInput(CANifier::GeneralPin::LIMF));
   inputs->set_cargo_proxy(
-      canifier_.GetGeneralInput(CANifier::GeneralPin::SPI_CLK_PWM0P) ||
-      canifier_.GetGeneralInput(CANifier::GeneralPin::SPI_MISO_PWM2P));
+      canifier_.GetGeneralInput(CANifier::GeneralPin::SPI_CLK_PWM0P));
+  //      canifier_.GetGeneralInput(CANifier::GeneralPin::SPI_MISO_PWM2P));
   inputs->set_hatch_intake_proxy(
       canifier_.GetGeneralInput(CANifier::GeneralPin::LIMR) &&
       canifier_.GetGeneralInput(CANifier::GeneralPin::SPI_CS));
@@ -162,27 +162,25 @@ void SuperstructureInterface::WriteActuators() {
     case TalonOutput::OPEN_LOOP:
       elevator_master_.Set(ControlMode::PercentOutput,
                            outputs->elevator_setpoint() / 12.);
+      break;
     case TalonOutput::POSITION:
-      if (outputs->elevator_high_gear()) {
-        elevator_master_.Set(
-            ControlMode::MotionMagic,
-            outputs->elevator_setpoint() * kElevatorConversionFactor,
-            DemandType_ArbitraryFeedForward, 1.4 / 12.);
-      } else {
-        elevator_master_.Set(
-            ControlMode::Position,
-            outputs->elevator_setpoint() * kElevatorConversionFactor);
-      }
+      elevator_master_.Set(
+          ControlMode::MotionMagic,
+          outputs->elevator_setpoint() * kElevatorConversionFactor,
+          DemandType_ArbitraryFeedForward, 1. / 12.);
+      break;
   }
 
   switch (outputs->wrist_setpoint_type()) {
     case TalonOutput::OPEN_LOOP:
       wrist_.Set(ControlMode::PercentOutput, outputs->wrist_setpoint() / 12.);
+      break;
     case TalonOutput::POSITION:
       wrist_.Set(ControlMode::MotionMagic,
                  outputs->wrist_setpoint() * kWristConversionFactor,
                  DemandType_ArbitraryFeedForward,
                  outputs->wrist_setpoint_ff() / 12.);
+      break;
   }
 
   cargo_intake_.Set(ControlMode::PercentOutput,

@@ -80,10 +80,23 @@ class TeleopBase {
 
   muan::teleop::Button *shifting_high_, *shifting_low_, *quickturn_,
       *exit_auto_;
-  muan::teleop::Button *test_auto_, *drive_straight_;
+  muan::teleop::Button *test_auto_, *drive_straight_, *vision_, *vision_intake_;
 
   bool high_gear_;
   bool running_command_;
+  double distance_factor_;
+  double last_horiz_angle_;
+  bool wants_override_;
+  double tx_error_;
+  double estimated_heading_;
+  double current_heading_;
+  double cached_velocity_;
+  double target_dist_;
+  double horiz_angle_;
+  int velocity_counter_;
+  double height_distance_factor_ = 0.0;
+  superstructure::ScoreGoal override_goal_;
+  superstructure::ScoreGoal cached_goal_;
 };
 
 }  // namespace teleop
