@@ -50,6 +50,7 @@ enum ScoreGoal {
   CRAWL_BRAKED = 22;
   BRAKE = 23;
   WINCH = 24;
+  LIMELIGHT_OVERRIDE = 25;
 }
 
 enum GroundHatchIntakeState {

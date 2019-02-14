@@ -366,9 +366,14 @@ void TeleopBase::SendSuperstructureMessage() {
       if (!backwards_->is_pressed()) {
         superstructure_goal->set_score_goal(
             c2019::superstructure::HATCH_SHIP_FORWARDS);
+        superstructure_goal->set_intake_goal(
+            c2019::superstructure::INTAKE_HATCH);
+
       } else {
         superstructure_goal->set_score_goal(
             c2019::superstructure::HATCH_SHIP_BACKWARDS);
+        superstructure_goal->set_intake_goal(
+            c2019::superstructure::INTAKE_HATCH);
       }
     }
   }

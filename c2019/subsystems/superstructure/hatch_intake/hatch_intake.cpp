@@ -45,7 +45,7 @@ void HatchIntake::Update(const HatchIntakeInputProto& input,
       break;
     case INTAKING:
       flutes = true;
-      backplate = true;
+      backplate = false;
       if (input->hatch_proxy()) {
         backplate = false;
         state_ = (CARRYING);

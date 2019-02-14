@@ -76,7 +76,7 @@ void SuperstructureInterface::ReadSensors() {
   inputs->set_wrist_encoder(wrist_.GetSelectedSensorPosition() /
                             kWristConversionFactor);
   inputs->set_wrist_hall(
-      !canifier_.GetGeneralInput(CANifier::GeneralPin::LIMF));
+      !canifier_.GetGeneralInput(CANifier::GeneralPin::SPI_MOSI_PWM1P));
   inputs->set_cargo_proxy(
       canifier_.GetGeneralInput(CANifier::GeneralPin::SPI_CLK_PWM0P));
   //      canifier_.GetGeneralInput(CANifier::GeneralPin::SPI_MISO_PWM2P));
