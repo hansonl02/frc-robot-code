@@ -261,7 +261,7 @@ void Superstructure::Update() {
   output->set_wrist_setpoint_type(
       static_cast<TalonOutput>(wrist_output->output_type()));
   output->set_cargo_out(cargo_out_);
-  output->set_elevator_setpoint_ff(climbing_ ? (high_gear_ ? -4 : -4) : 1.5);
+  output->set_elevator_setpoint_ff(climbing_ ? (high_gear_ ? -4 : -4) : 1.2);
 
   if (request_crawl_) {
     if (elevator_status_->elevator_height() < 0.08) {
@@ -293,6 +293,21 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
   crawling_ = false;
   switch (goal->score_goal()) {
     case NONE:
+      if (request_climb_) {
+        if (status_->elevator_height() < kKissHeight + .03) {
+          elevator_height_ = kClimbHeight;
+          wrist_angle_ = kClimbAngle;
+          high_gear_ = !buddy_;
+          crawler_down_ = true;
+          brake_ = false;
+          climbing_ = true;
+          request_crawl_ = true;
+        }
+      } else if (request_crawlers_) {
+        if (status_->elevator_height() > kHatchRocketThirdHeight - .1) {
+          crawler_down_ = true;
+        }
+      }
       break;
     case CARGO_ROCKET_FIRST:
       elevator_height_ = kCargoRocketFirstHeight;
@@ -389,6 +404,7 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       wrist_angle_ = kClimbAngle;
       request_crawl_ = false;
       crawler_down_ = false;
+      request_climb_ = false;
       break;
     case DROP_FORKS:
       buddy_ = true;
@@ -396,7 +412,8 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
     case DROP_CRAWLERS:
       elevator_height_ = kHatchRocketThirdHeight;
       wrist_angle_ = kHatchForwardsAngle;
-      if (status_->elevator_height() > kHatchRocketThirdHeight - 5e-3) {
+      request_crawlers_ = true;
+      if (status_->elevator_height() > kHatchRocketThirdHeight - .1) {
         crawler_down_ = true;
       }
       break;
@@ -404,6 +421,7 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       elevator_height_ = kKissHeight;
       wrist_angle_ = kHatchForwardsAngle;
       high_gear_ = true;
+      request_climb_ = !buddy_;
       break;
     case CRAWL:
       crawling_ = true;
@@ -424,11 +442,8 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       should_climb_ = true;
       break;
     case LIMELIGHT_OVERRIDE:
-      if (elevator_height_ == kHatchRocketSecondHeight) {
-        wrist_angle_ = 0.6;
-      } else {
-        wrist_angle_ = kHatchForwardsAngle;
-      }
+      wrist_angle_ = 0.6;
+      elevator_height_ = kHatchRocketSecondHeight;
       break;
   }
 

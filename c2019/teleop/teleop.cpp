@@ -36,7 +36,9 @@ TeleopBase::TeleopBase()
       gamepad_{2, QueueManager<JoystickStatusProto>::Fetch("gamepad")},
       auto_status_reader_{QueueManager<AutoStatusProto>::Fetch()->MakeReader()},
       auto_goal_queue_{QueueManager<AutoGoalProto>::Fetch()} {
-  winch_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
+  // winch_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::START));
+  winch_left_ = throttle_.MakeButton(7);
+  winch_right_ = throttle_.MakeButton(10);
   // brake_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::LEFT_CLICK_IN));
   drop_forks_ = gamepad_.MakeButton(uint32_t(muan::teleop::XBox::BACK));
   drop_crawlers_ = gamepad_.MakeAxisRange(-105, -75, 0, 1, 0.8);
@@ -120,7 +122,7 @@ void TeleopBase::Update() {
   std::shared_ptr<nt::NetworkTable> back_table =
       inst.GetTable("limelight-back");
   if (RobotController::IsSysActive()) {
-    if (!auto_status->running_command()) {
+    if (DriverStation::GetInstance().IsOperatorControl()) {
       SendDrivetrainMessage();
       SendSuperstructureMessage();
     }
@@ -212,7 +214,7 @@ void TeleopBase::SendDrivetrainMessage() {
     if (vision_->is_pressed()) {
       if (super_status->elevator_goal() == 0.987) {
         bool score_possible =
-            lime_status->target_dist() < 1.4 && lime_status->has_target();
+            lime_status->target_dist() < 1.9 && lime_status->has_target();
         wants_override_ = true;
         height_distance_factor_ = 0.7;
         override_goal_ = score_possible ? superstructure::HATCH_ROCKET_SECOND
@@ -228,16 +230,21 @@ void TeleopBase::SendDrivetrainMessage() {
     if (vision_->is_pressed()) {
       if (vision_intake_->is_pressed() && lime_status->back_has_target()) {
         vision = true;
-        distance_factor_ = 0.5;
+        distance_factor_ = 0.1;
         target_dist_ = -1 * lime_status->back_target_dist();
         horiz_angle_ = lime_status->back_horiz_angle();
       } else if (lime_status->has_target() && !vision_intake_->is_pressed()) {
         vision = true;
-        distance_factor_ = 0.82 / 2.8;
+        distance_factor_ = 0.95 / 2.8;
         target_dist_ = lime_status->target_dist();
         horiz_angle_ = lime_status->horiz_angle();
       }
     }
+  }
+
+  if (super_status->elevator_height() < 1.3 &&
+      super_status->elevator_goal() > 1.5) {
+    vision = false;
   }
 
   drivetrain_goal->set_high_gear(high_gear_);
@@ -250,7 +257,7 @@ void TeleopBase::SendDrivetrainMessage() {
   } else {
     drivetrain_goal->mutable_linear_angular_velocity_goal()
         ->set_linear_velocity(
-            2.8 * (height_distance_factor_ * target_dist_ - distance_factor_));
+            2.0 * (height_distance_factor_ * target_dist_ - distance_factor_));
     drivetrain_goal->mutable_linear_angular_velocity_goal()
         ->set_angular_velocity(-16.0 * horiz_angle_);
   }
@@ -310,9 +317,9 @@ void TeleopBase::SendSuperstructureMessage() {
   // Handoff
   if (handoff_->is_pressed() &&
       (safety_->is_pressed() || safety2_->is_pressed())) {
-    superstructure_goal->set_score_goal(c2019::superstructure::HANDOFF);
+    /* superstructure_goal->set_score_goal(c2019::superstructure::HANDOFF);
     superstructure_goal->set_intake_goal(
-        c2019::superstructure::INTAKE_GROUND_HATCH);
+        c2019::superstructure::INTAKE_GROUND_HATCH);*/
   }
   if (pop_->is_pressed()) {
     superstructure_goal->set_intake_goal(c2019::superstructure::POP);
@@ -366,7 +373,7 @@ void TeleopBase::SendSuperstructureMessage() {
             c2019::superstructure::CARGO_ROCKET_SECOND);
       } else {
         superstructure_goal->set_score_goal(
-            c2019::superstructure::HATCH_ROCKET_SECOND);
+            c2019::superstructure::LIMELIGHT_OVERRIDE);
         if (has_hp_hatch_) {
           superstructure_goal->set_intake_goal(
               c2019::superstructure::PREP_SCORE);
@@ -430,19 +437,17 @@ void TeleopBase::SendSuperstructureMessage() {
       (safety_->is_pressed() || safety2_->is_pressed())) {
     superstructure_goal->set_score_goal(c2019::superstructure::DROP_FORKS);
   }
-  if (winch_->is_pressed() &&
+  /*if (winch_->is_pressed() &&
       (safety_->is_pressed() || safety2_->is_pressed())) {
     superstructure_goal->set_score_goal(c2019::superstructure::WINCH);
+  */
+  if (winch_left_->is_pressed()) {
+    superstructure_goal->set_manual_left_winch(true);
+  }
+  if (winch_right_->is_pressed()) {
+    superstructure_goal->set_manual_right_winch(true);
   }
 
-  if (safety_->is_pressed() && safety2_->is_pressed()) {
-    if (hp_hatch_intake_->is_pressed()) {
-      superstructure_goal->set_manual_left_winch(true);
-    }
-    if (hp_hatch_outtake_->is_pressed()) {
-      superstructure_goal->set_manual_right_winch(true);
-    }
-  }
   /*if (brake_->is_pressed() &&
       (safety_->is_pressed() || safety2_->is_pressed())) {
     superstructure_goal->set_score_goal(c2019::superstructure::BRAKE);
