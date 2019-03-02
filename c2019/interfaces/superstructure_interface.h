@@ -47,13 +47,14 @@ class SuperstructureInterface {
   SuperstructureOutputQueue::QueueReader output_reader_;
 
   VictorSPX winch_two_{kWinchTwo};
-  PowerDistributionPanel pdp_{0};
+  /* PowerDistributionPanel pdp_{0}; */
   Solenoid arrow_solenoid_{kArrow};
   Solenoid backplate_solenoid_{kBackplate};
   Solenoid crawler_one_solenoid_{kCrawlerOne};
   Solenoid fork_drop_{kForkDrop};
   Solenoid shifter_{kShifter};
   Solenoid cargo_{kCargo};
+  Solenoid pins_{1};
 
   TalonSRX elevator_master_{kElevatorMaster};
   VictorSPX elevator_slave_a_{kElevatorSlaveA};
@@ -68,7 +69,8 @@ class SuperstructureInterface {
 
   CANifier canifier_{0};
 
-  bool zeroed_ = false;
+  bool elevator_zeroed_ = false;
+  bool wrist_zeroed_ = false;
 };
 
 }  // namespace interfaces

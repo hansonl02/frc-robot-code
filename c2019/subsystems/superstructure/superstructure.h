@@ -22,26 +22,26 @@ namespace superstructure {
 
 // TODO(hanson) test these numbers
 // elevator constants
-constexpr double kHatchShipForwardsHeight = 0.;
+constexpr double kHatchShipForwardsHeight = 0.018;
 constexpr double kHatchShipBackwardsHeight = 0.2;
-constexpr double kHatchRocketFirstHeight = 0.;
+constexpr double kHatchRocketFirstHeight = 0.018;
 constexpr double kHatchRocketBackwardsHeight = 0.2;
 constexpr double kHatchRocketSecondHeight = 0.987;
-constexpr double kHatchRocketThirdHeight = 1.75;
+constexpr double kHatchRocketThirdHeight = 1.78;
 constexpr double kHatchLoadingStationHeight = 0.089;
 constexpr double kHatchGroundHeight = 0.;
 constexpr double kCargoShipForwardsHeight = 1.173;
 constexpr double kCargoShipBackwardsHeight = 0.643;
-constexpr double kCargoRocketFirstHeight = 0.08;
+constexpr double kCargoRocketFirstHeight = 0.148;
 constexpr double kCargoRocketBackwardsHeight = 0.116;
-constexpr double kCargoRocketSecondHeight = 0.938;
-constexpr double kCargoRocketThirdHeight = 1.768;
+constexpr double kCargoRocketSecondHeight = 0.972;
+constexpr double kCargoRocketThirdHeight = 1.78;
 constexpr double kCargoGroundHeight = 0.;
 constexpr double kHandoffHeight = 0.257;
 constexpr double kSpitHeight = 0.;
 constexpr double kStowHeight = 0.;
 constexpr double kKissHeight = 1.39;
-constexpr double kClimbHeight = 0.02;
+constexpr double kClimbHeight = 0.05;
 constexpr double kLandHeight = 0.312;
 constexpr double kElevatorSafeHeight = 0.71;
 constexpr double kElevatorPassThroughHeight = 0.023;
@@ -128,6 +128,7 @@ class Superstructure {
   bool cargo_out_ = false;
   bool climbing_ = false;
   bool request_crawl_ = false;
+  bool pins_ = false;
 
   SuperstructureState state_ = SuperstructureState::CALIBRATING;
   IntakeGoal intake_goal_ = IntakeGoal::INTAKE_NONE;
