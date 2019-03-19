@@ -25,6 +25,12 @@ void Superstructure::BoundGoal(double* elevator_goal, double* wrist_goal) {
                                    kWristSafeForwardsAngle);
   }
 
+  // Don't jump the diving board!
+  if (elevator_status_->elevator_height() > kDivingBoardHeight &&
+      *elevator_goal < kDivingBoardHeight) {
+    *wrist_goal = 0.;
+  }
+
   if (elevator_status_->elevator_height() < kElevatorWristHorizHeight) {
     *wrist_goal = muan::utils::Cap(*wrist_goal, wrist::kMinAngle, M_PI);
   }
@@ -57,7 +63,8 @@ void Superstructure::BoundGoal(double* elevator_goal, double* wrist_goal) {
     force_backplate_ = true;
   }
 
-  if (elevator_status_->elevator_height() > kElevatorBoardHeight && *elevator_goal < kElevatorBoardHeight) {
+  if (elevator_status_->elevator_height() > kElevatorBoardHeight &&
+      *elevator_goal < kElevatorBoardHeight) {
     *wrist_goal = 0;
   }
 }
@@ -272,7 +279,7 @@ void Superstructure::Update() {
   output->set_wrist_setpoint_type(
       static_cast<TalonOutput>(wrist_output->output_type()));
   output->set_cargo_out(cargo_out_);
-  output->set_elevator_setpoint_ff(climbing_ ? (high_gear_ ? -2.7: -4) : 1.5);
+  output->set_elevator_setpoint_ff(climbing_ ? (high_gear_ ? -2.7 : -4) : 1.5);
   output->set_pins(pins_);
 
   if (request_crawl_) {
@@ -323,7 +330,7 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       break;
     case CARGO_ROCKET_FIRST:
       elevator_height_ = kCargoRocketFirstHeight;
-      wrist_angle_ = kCargoRocketFirstAngle;
+      wrist_angle_ = kCargoRocketAngle;
       high_gear_ = true;
       break;
     case CARGO_ROCKET_BACKWARDS:
@@ -333,12 +340,12 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       break;
     case CARGO_ROCKET_SECOND:
       elevator_height_ = kCargoRocketSecondHeight;
-      wrist_angle_ = kCargoRocketSecondAngle;
+      wrist_angle_ = kCargoRocketAngle;
       high_gear_ = true;
       break;
     case CARGO_ROCKET_THIRD:
       elevator_height_ = kCargoRocketThirdHeight;
-      wrist_angle_ = kCargoRocketThirdAngle;
+      wrist_angle_ = kCargoRocketAngle;
       high_gear_ = true;
       break;
     case CARGO_SHIP_FORWARDS:
@@ -469,6 +476,9 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
   switch (goal->intake_goal()) {
     case INTAKE_NONE:
       intake_goal_ = goal->intake_goal();
+      if (cargo_intake_status_->has_cargo()) {
+        cargo_out_ = false;
+      }
       break;
     case INTAKE_HATCH:
       if (!hatch_intake_status_->has_hatch()) {
