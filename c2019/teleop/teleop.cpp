@@ -275,7 +275,8 @@ void TeleopBase::SendDrivetrainMessage() {
           target_dist_ = lime_status->pricey_target_dist();
           distance_factor_ = 4.0 / 4.5;
           y_int = 0.4;
-          vision = lime_status->bottom_limelight_ok() && lime_status->pricey_has_target();
+          vision = lime_status->bottom_limelight_ok() &&
+                   lime_status->pricey_has_target();
         } else {
           horiz_angle_ = lime_status->horiz_angle();
           target_dist_ = lime_status->target_dist();
@@ -486,9 +487,8 @@ void TeleopBase::SendSuperstructureMessage() {
   }
 
   // Climbing buttons
-  // drop forks and drop crawlers require safety button to prevent an oops
-  if (drop_forks_->is_pressed() &&
-      (safety_->is_pressed() || safety2_->is_pressed())) {
+  // drop forks and drop crawlers require climb mode to prevent an oops
+  if (drop_forks_->is_pressed() && climb_mode_) {
     superstructure_goal->set_score_goal(c2019::superstructure::DROP_FORKS);
   }
   /*if (winch_->is_pressed() &&

@@ -63,7 +63,8 @@ void Superstructure::BoundGoal(double* elevator_goal, double* wrist_goal) {
     force_backplate_ = true;
   }
 
-  if (elevator_status_->elevator_height() > kElevatorBoardHeight && *elevator_goal < kElevatorBoardHeight) {
+  if (elevator_status_->elevator_height() > kElevatorBoardHeight &&
+      *elevator_goal < kElevatorBoardHeight) {
     *wrist_goal = 0;
   }
 }
@@ -475,6 +476,9 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
   switch (goal->intake_goal()) {
     case INTAKE_NONE:
       intake_goal_ = goal->intake_goal();
+      if (cargo_intake_status_->has_cargo()) {
+        cargo_out_ = false;
+      }
       break;
     case INTAKE_HATCH:
       if (!hatch_intake_status_->has_hatch()) {
