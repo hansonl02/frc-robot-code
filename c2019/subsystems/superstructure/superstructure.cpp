@@ -564,13 +564,6 @@ void Superstructure::RunStateMachine() {
           counter_ = 0;
         }
       } else if (hatch_intake_status_->has_hatch()) {
-        /*counter_++;
-        if (counter_ > 25) {
-          elevator_height_ = kStowHeight;
-          wrist_angle_ = kStowAngle;
-          GoToState(HOLDING);
-          counter_ = 0;
-        }*/
         GoToState(HOLDING);
       }
       break;
