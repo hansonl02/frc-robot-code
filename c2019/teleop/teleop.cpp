@@ -344,9 +344,9 @@ void TeleopBase::SendSuperstructureMessage() {
   // Intake buttons
   if (cargo_intake_->is_pressed()) {
     superstructure_goal->set_intake_goal(c2019::superstructure::INTAKE_CARGO);
-    if (has_cargo_) {
+    /*if (has_cargo_) {
       superstructure_goal->set_score_goal(c2019::superstructure::STOW);
-    }
+    }*/
   } else if (cargo_outtake_->is_pressed()) {
     if (!has_ground_hatch_) {
       superstructure_goal->set_intake_goal(
