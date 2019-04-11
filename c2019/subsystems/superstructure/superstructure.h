@@ -131,6 +131,12 @@ class Superstructure {
   bool request_crawl_ = false;
   bool pins_ = false;
 
+  bool rezero_mode_ = false;
+  bool elevator_rezeroed_ = true;
+  bool wrist_rezeroed_ = true;
+  double elevator_offset_ = 0.;
+  double wrist_offset_ = 0.;
+
   SuperstructureState state_ = SuperstructureState::CALIBRATING;
   IntakeGoal intake_goal_ = IntakeGoal::INTAKE_NONE;
 };

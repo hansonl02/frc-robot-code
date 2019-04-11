@@ -186,14 +186,23 @@ void Superstructure::Update() {
   // Now we make them safe so stuff doesn't break
   BoundGoal(&capped_elevator_height, &capped_wrist_angle);
 
+  double old_elevator_current = elevator_input->elevator_current();
+  double old_wrist_current = wrist_input->wrist_current();
+
   hatch_intake_input->set_hatch_proxy(input->hatch_intake_proxy());
   cargo_intake_input->set_cargo_proxy(input->cargo_proxy());
   cargo_intake_input->set_current(input->cargo_current());
   ground_hatch_intake_input->set_current(input->hatch_ground_current());
-  elevator_input->set_elevator_encoder(input->elevator_encoder());
+  elevator_input->set_elevator_encoder(input->elevator_encoder() -
+                                       elevator_offset_);
   elevator_input->set_zeroed(input->elevator_zeroed());
-  wrist_input->set_wrist_encoder(input->wrist_encoder());
+  elevator_input->set_elevator_current(input->elevator_current());
+  wrist_input->set_wrist_encoder(input->wrist_encoder() - wrist_offset_);
   wrist_input->set_wrist_zeroed(input->wrist_zeroed());
+  wrist_input->set_wrist_current(input->wrist_current());
+
+  double new_elevator_current = elevator_input->elevator_current();
+  double new_wrist_current = wrist_input->wrist_current();
 
   auto elevator_goal = PopulateElevatorGoal();
   elevator_goal->set_height(capped_elevator_height);
@@ -252,8 +261,6 @@ void Superstructure::Update() {
   status_->set_elevator_height(elevator_status_->elevator_height());
   status_->set_has_cargo(cargo_intake_status_->has_cargo());
 
-  output->set_arrow_solenoid(hatch_intake_output->flute_solenoid());
-  output->set_backplate_solenoid(hatch_intake_output->backplate_solenoid());
   output->set_cargo_roller_voltage(cargo_intake_output->roller_voltage());
   output->set_hatch_roller_voltage(
       ground_hatch_intake_output->roller_voltage());
@@ -266,15 +273,50 @@ void Superstructure::Update() {
   output->set_crawler_two_solenoid(elevator_output->crawler_two_solenoid());
   output->set_crawler_voltage(elevator_output->crawler_voltage());
   output->set_brake(elevator_output->brake());
-  output->set_elevator_setpoint(elevator_output->elevator_setpoint());
-  output->set_elevator_setpoint_type(
-      static_cast<TalonOutput>(elevator_output->elevator_output_type()));
-  output->set_wrist_setpoint(wrist_output->wrist_setpoint());
-  output->set_wrist_setpoint_type(
-      static_cast<TalonOutput>(wrist_output->output_type()));
-  output->set_cargo_out(cargo_out_);
   output->set_elevator_setpoint_ff(climbing_ ? (high_gear_ ? -2.7 : -4) : 1.5);
   output->set_pins(pins_);
+
+  if (rezero_mode_) {
+    if (!elevator_rezeroed_) {
+      output->set_elevator_setpoint(-1);
+      output->set_elevator_setpoint_type(OPEN_LOOP);
+    } else {
+      output->set_elevator_setpoint(elevator_output->elevator_setpoint());
+      output->set_elevator_setpoint_type(
+          static_cast<TalonOutput>(elevator_output->elevator_output_type()));
+    }
+    if (!wrist_rezeroed_) {
+      output->set_wrist_setpoint(-2);
+      output->set_wrist_setpoint_type(OPEN_LOOP);
+    } else {
+      output->set_wrist_setpoint(wrist_output->wrist_setpoint());
+      output->set_wrist_setpoint_type(
+          static_cast<TalonOutput>(wrist_output->output_type()));
+    }
+    output->set_cargo_out(false);
+    output->set_backplate_solenoid(false);
+    output->set_arrow_solenoid(true);
+  } else {
+    output->set_elevator_setpoint(elevator_output->elevator_setpoint());
+    output->set_elevator_setpoint_type(
+        static_cast<TalonOutput>(elevator_output->elevator_output_type()));
+    output->set_wrist_setpoint(wrist_output->wrist_setpoint());
+    output->set_wrist_setpoint_type(
+        static_cast<TalonOutput>(wrist_output->output_type()));
+    output->set_cargo_out(cargo_out_);
+    output->set_arrow_solenoid(hatch_intake_output->flute_solenoid());
+    output->set_backplate_solenoid(hatch_intake_output->backplate_solenoid());
+  }
+
+  if (new_elevator_current > old_elevator_current * 2) {
+    elevator_rezeroed_ = true;
+  }
+  if (new_wrist_current > old_wrist_current * 2) {
+    wrist_rezeroed_ = true;
+  }
+  if (elevator_rezeroed_ && wrist_rezeroed_) {
+    rezero_mode_ = false;
+  }
 
   if (request_crawl_) {
     if (elevator_status_->elevator_height() < 0.08) {
@@ -455,6 +497,11 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
     case LIMELIGHT_OVERRIDE:
       wrist_angle_ = 0.1;
       elevator_height_ = kHatchRocketSecondHeight;
+      break;
+    case REZERO:
+      rezero_mode_ = true;
+      elevator_rezeroed_ = false;
+      wrist_rezeroed_ = false;
       break;
   }
 
