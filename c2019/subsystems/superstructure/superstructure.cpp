@@ -310,9 +310,11 @@ void Superstructure::Update() {
 
   if (new_elevator_current > old_elevator_current * 2) {
     elevator_rezeroed_ = true;
+    elevator_offset_ = input->elevator_encoder();
   }
   if (new_wrist_current > old_wrist_current * 2) {
     wrist_rezeroed_ = true;
+    wrist_offset_ = input->wrist_encoder();
   }
   if (elevator_rezeroed_ && wrist_rezeroed_) {
     rezero_mode_ = false;
