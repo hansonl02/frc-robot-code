@@ -48,7 +48,7 @@ constexpr double kElevatorPassThroughHeight = 0.025;
 constexpr double kElevatorHandoffTolerance = 2e-3;
 constexpr double kElevatorWristHorizHeight = 0.05;
 constexpr double kElevatorBoardHeight = 1.42;
-constexpr double kElevatorRezeroCurrent = 3.625;  // tune
+constexpr double kElevatorRezeroCurrentThreshold = 3.625;  // tune
 
 // wrist constants
 constexpr double kHatchForwardsAngle = 0.0;
@@ -66,7 +66,7 @@ constexpr double kClimbAngle = 0.3;
 constexpr double kWristSafeForwardsAngle = 1.3;
 constexpr double kWristSafeBackwardsAngle = 2.65;
 constexpr double kWristHandoffTolerance = 3. * (M_PI / 180.);
-constexpr double kWristRezeroCurrent = 0;  // tune
+constexpr double kWristRezeroCurrentThreshold = 0;  // tune
 
 class Superstructure {
  public:

@@ -164,9 +164,6 @@ void Superstructure::Update() {
   SuperstructureOutputProto output;
   DriverStationProto driver_station;
 
-  double old_elevator_current = elevator_current_;
-  double old_wrist_current = wrist_current_;
-
   if (!input_reader_.ReadLastMessage(&input)) {
     // TODO(Kyle) handle this gracefully
     return;
@@ -205,9 +202,6 @@ void Superstructure::Update() {
   wrist_input->set_wrist_encoder(input->wrist_encoder());
   wrist_input->set_wrist_zeroed(input->wrist_zeroed());
   wrist_input->set_wrist_current(input->wrist_current());
-
-  double new_elevator_current = elevator_input->elevator_current();
-  double new_wrist_current = wrist_input->wrist_current();
 
   auto elevator_goal = PopulateElevatorGoal();
   elevator_goal->set_height(capped_elevator_height);
@@ -292,8 +286,10 @@ void Superstructure::Update() {
           static_cast<TalonOutput>(elevator_output->elevator_output_type()));
     }
     if (!wrist_rezeroed_) {
-      output->set_wrist_setpoint(-2);
-      output->set_wrist_setpoint_type(OPEN_LOOP);
+      if (elevator_rezeroed_) {
+        output->set_wrist_setpoint(-2);
+        output->set_wrist_setpoint_type(OPEN_LOOP);
+      }
     } else {
       output->set_wrist_setpoint(wrist_output->wrist_setpoint() +
                                  wrist_offset_);
@@ -316,11 +312,11 @@ void Superstructure::Update() {
     output->set_backplate_solenoid(hatch_intake_output->backplate_solenoid());
   }
 
-  if (new_elevator_current > old_elevator_current * 2) {
+  if (elevator_current_ > kElevatorRezeroCurrentThreshold) {
     elevator_rezeroed_ = true;
     elevator_offset_ = input->elevator_encoder();
   }
-  if (new_wrist_current > old_wrist_current * 2) {
+  if (wrist_current_ > kWristRezeroCurrentThreshold) {
     wrist_rezeroed_ = true;
     wrist_offset_ = input->wrist_encoder();
   }
