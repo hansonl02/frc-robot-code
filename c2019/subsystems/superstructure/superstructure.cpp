@@ -164,10 +164,16 @@ void Superstructure::Update() {
   SuperstructureOutputProto output;
   DriverStationProto driver_station;
 
+  double old_elevator_current = elevator_current_;
+  double old_wrist_current = wrist_current_;
+
   if (!input_reader_.ReadLastMessage(&input)) {
     // TODO(Kyle) handle this gracefully
     return;
   }
+
+  input->set_elevator_encoder(input->elevator_encoder() - elevator_offset_);
+  input->set_wrist_encoder(input->wrist_encoder() - wrist_offset_);
 
   if (!ds_status_reader_.ReadLastMessage(&driver_station)) {
     // Even if we don't get a message, we know that it is a 12V battery
@@ -186,18 +192,17 @@ void Superstructure::Update() {
   // Now we make them safe so stuff doesn't break
   BoundGoal(&capped_elevator_height, &capped_wrist_angle);
 
-  double old_elevator_current = elevator_input->elevator_current();
-  double old_wrist_current = wrist_input->wrist_current();
+  elevator_current_ = input->elevator_current();
+  wrist_current_ = input->wrist_current();
 
   hatch_intake_input->set_hatch_proxy(input->hatch_intake_proxy());
   cargo_intake_input->set_cargo_proxy(input->cargo_proxy());
   cargo_intake_input->set_current(input->cargo_current());
   ground_hatch_intake_input->set_current(input->hatch_ground_current());
-  elevator_input->set_elevator_encoder(input->elevator_encoder() -
-                                       elevator_offset_);
+  elevator_input->set_elevator_encoder(input->elevator_encoder());
   elevator_input->set_zeroed(input->elevator_zeroed());
   elevator_input->set_elevator_current(input->elevator_current());
-  wrist_input->set_wrist_encoder(input->wrist_encoder() - wrist_offset_);
+  wrist_input->set_wrist_encoder(input->wrist_encoder());
   wrist_input->set_wrist_zeroed(input->wrist_zeroed());
   wrist_input->set_wrist_current(input->wrist_current());
 
@@ -281,7 +286,8 @@ void Superstructure::Update() {
       output->set_elevator_setpoint(-1);
       output->set_elevator_setpoint_type(OPEN_LOOP);
     } else {
-      output->set_elevator_setpoint(elevator_output->elevator_setpoint());
+      output->set_elevator_setpoint(elevator_output->elevator_setpoint() +
+                                    elevator_offset_);
       output->set_elevator_setpoint_type(
           static_cast<TalonOutput>(elevator_output->elevator_output_type()));
     }
@@ -289,7 +295,8 @@ void Superstructure::Update() {
       output->set_wrist_setpoint(-2);
       output->set_wrist_setpoint_type(OPEN_LOOP);
     } else {
-      output->set_wrist_setpoint(wrist_output->wrist_setpoint());
+      output->set_wrist_setpoint(wrist_output->wrist_setpoint() +
+                                 wrist_offset_);
       output->set_wrist_setpoint_type(
           static_cast<TalonOutput>(wrist_output->output_type()));
     }
@@ -297,10 +304,11 @@ void Superstructure::Update() {
     output->set_backplate_solenoid(false);
     output->set_arrow_solenoid(true);
   } else {
-    output->set_elevator_setpoint(elevator_output->elevator_setpoint());
+    output->set_elevator_setpoint(elevator_output->elevator_setpoint() +
+                                  elevator_offset_);
     output->set_elevator_setpoint_type(
         static_cast<TalonOutput>(elevator_output->elevator_output_type()));
-    output->set_wrist_setpoint(wrist_output->wrist_setpoint());
+    output->set_wrist_setpoint(wrist_output->wrist_setpoint() + wrist_offset_);
     output->set_wrist_setpoint_type(
         static_cast<TalonOutput>(wrist_output->output_type()));
     output->set_cargo_out(cargo_out_);
