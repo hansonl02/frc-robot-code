@@ -280,19 +280,20 @@ void Superstructure::Update() {
       output->set_elevator_setpoint(-1);
       output->set_elevator_setpoint_type(OPEN_LOOP);
     } else {
-      output->set_elevator_setpoint(elevator_output->elevator_setpoint() +
-                                    elevator_offset_);
+      output->set_elevator_setpoint(
+          wrist_rezeroed_
+              ? (elevator_output->elevator_setpoint() + elevator_offset_)
+              : 0);
       output->set_elevator_setpoint_type(
           static_cast<TalonOutput>(elevator_output->elevator_output_type()));
     }
     if (!wrist_rezeroed_) {
-      if (elevator_rezeroed_) {
-        output->set_wrist_setpoint(-2);
-        output->set_wrist_setpoint_type(OPEN_LOOP);
-      }
+      output->set_wrist_setpoint(elevator_rezeroed_ ? -2 : 0);
+      output->set_wrist_setpoint_type(OPEN_LOOP);
     } else {
-      output->set_wrist_setpoint(wrist_output->wrist_setpoint() +
-                                 wrist_offset_);
+      output->set_wrist_setpoint(
+          elevator_rezeroed_ ? (wrist_output->wrist_setpoint() + wrist_offset_)
+                             : 0);
       output->set_wrist_setpoint_type(
           static_cast<TalonOutput>(wrist_output->output_type()));
     }
