@@ -37,6 +37,7 @@ void Superstructure::BoundGoal(double* elevator_goal, double* wrist_goal) {
        wrist_status_->wrist_angle() < kWristSafeBackwardsAngle)) {
     *elevator_goal = 0.;
     force_backplate_ = true;
+    cargo_out_ = false;
     if (elevator_status_->elevator_height() > kElevatorPassThroughHeight) {
       if (wrist_status_->wrist_angle() > kWristSafeBackwardsAngle) {
         *wrist_goal = muan::utils::Cap(*wrist_goal, kWristSafeBackwardsAngle,
@@ -57,10 +58,10 @@ void Superstructure::BoundGoal(double* elevator_goal, double* wrist_goal) {
     force_backplate_ = true;
   }
 
-  if (elevator_status_->elevator_height() > kElevatorBoardHeight &&
-      *elevator_goal < kElevatorBoardHeight) {
-    *wrist_goal = 0;
-  }
+  /* if (elevator_status_->elevator_height() > kElevatorBoardHeight && */
+  /*     *elevator_goal < kElevatorBoardHeight) { */
+  /*   *wrist_goal = 0; */
+  /* } */
 }
 
 elevator::ElevatorGoalProto Superstructure::PopulateElevatorGoal() {
@@ -220,6 +221,9 @@ void Superstructure::Update() {
 
   status_->set_braked(elevator_status_->braked());
 
+  status_->set_elevator_rezeroed(elevator_rezeroed_);
+  status_->set_wrist_rezeroed(wrist_rezeroed_);
+
   wrist_.SetGoal(wrist_goal);
   wrist_.Update(wrist_input, &wrist_output, &wrist_status_,
                 driver_station->is_sys_active());
@@ -277,6 +281,7 @@ void Superstructure::Update() {
   output->set_pins(pins_);
 
   if (rezero_mode_) {
+    force_backplate_ = true;
     if (!elevator_rezeroed_) {
       output->set_elevator_setpoint(-2);
       output->set_elevator_setpoint_type(OPEN_LOOP);
@@ -309,16 +314,22 @@ void Superstructure::Update() {
     output->set_wrist_setpoint(wrist_output->wrist_setpoint() + wrist_offset_);
     output->set_wrist_setpoint_type(
         static_cast<TalonOutput>(wrist_output->output_type()));
+    if (goal->climb_mode()) {
+      cargo_out_ = false;
+    }
     output->set_cargo_out(cargo_out_);
     output->set_arrow_solenoid(hatch_intake_output->flute_solenoid());
     output->set_backplate_solenoid(hatch_intake_output->backplate_solenoid());
   }
 
-  if (elevator_current_ > kElevatorRezeroCurrentThreshold && rezero_mode_) {
+  if ((elevator_current_ > kElevatorRezeroCurrentThreshold ||
+       input->elevator_hall()) &&
+      rezero_mode_) {
     elevator_rezeroed_ = true;
     elevator_offset_ = input->elevator_encoder();
   }
-  if (wrist_current_ > kWristRezeroCurrentThreshold && rezero_mode_) {
+  if ((wrist_current_ > kWristRezeroCurrentThreshold || input->wrist_hall()) &&
+      rezero_mode_) {
     wrist_rezeroed_ = true;
     wrist_offset_ = input->wrist_encoder();
   }
@@ -511,6 +522,9 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       elevator_rezeroed_ = false;
       wrist_rezeroed_ = false;
       break;
+    case CARGO_AUTO:
+      wrist_angle_ = 0.52;
+      elevator_height_ = 0.0;
   }
 
   // Godmode
