@@ -81,6 +81,9 @@ class Superstructure {
   void RunStateMachine();
   void BoundGoal(double* elevator_goal, double* wrist_goal);
 
+  void Rezero();
+  void Autocrawl();
+
   elevator::ElevatorGoalProto PopulateElevatorGoal();
   wrist::WristGoalProto PopulateWristGoal();
   ground_hatch_intake::GroundHatchIntakeGoalProto
@@ -104,6 +107,7 @@ class Superstructure {
   winch::WinchStatusProto winch_status_;
 
   SuperstructureStatusProto status_;
+  SuperstructureOutputProto output_;
 
   SuperstructureGoalQueue::QueueReader goal_reader_;
   SuperstructureInputQueue::QueueReader input_reader_;
