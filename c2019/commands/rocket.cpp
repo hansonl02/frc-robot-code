@@ -22,9 +22,9 @@ void Rocket::RightBackRocket() {
   LOG(INFO, "Running RIGHT BACK ROCKET auto");
 
   StartDrivePath(7.7, -3.1, -210 * (M_PI / 180.), -1, true);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   GoTo(superstructure::REZERO);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   WaitUntilDriveComplete();
   StartPointTurn(60 * (M_PI / 180.));
   WaitUntilDriveComplete();
@@ -99,9 +99,9 @@ void Rocket::LeftBackRocket() {
   LOG(INFO, "Running LEFT BACK ROCKET auto");
 
   StartDrivePath(7.7, 3.1, 210 * (M_PI / 180.), -1, true);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   GoTo(superstructure::REZERO);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   WaitUntilDriveComplete();
   StartPointTurn(-60 * (M_PI / 180.));
   WaitUntilDriveComplete();
@@ -177,9 +177,9 @@ void Rocket::RightDoubleRocket() {
   LOG(INFO, "Running RIGHT DOUBLE ROCKET auto");
 
   StartDrivePath(7.7, -3.1, -210 * (M_PI / 180.), -1, true);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   GoTo(superstructure::REZERO);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   WaitUntilDrivetrainNear(5.8, -2.0, .5);
   GoTo(superstructure::HATCH_ROCKET_SECOND, superstructure::PREP_SCORE);
   WaitUntilDriveComplete();
@@ -201,7 +201,7 @@ void Rocket::RightDoubleRocket() {
   final_vel_ = 2.0;
   StartDrivePath(5.5, -2.1, 0.0, -1, true, true);
   Wait(15);
-  GoTo(superstructure::CARGO_GROUND, superstructure::INTAKE_HATCH);
+  GoTo(superstructure::GROUND, superstructure::INTAKE_HATCH);
   final_vel_ = 0.0;
   WaitUntilDriveComplete();
   StartDrivePath(.4, -3.6, 0 * (M_PI / 180.), -1, true, true);
@@ -271,9 +271,9 @@ void Rocket::LeftDoubleRocket() {
   LOG(INFO, "Running LEFT DOUBLE ROCKET auto");
 
   StartDrivePath(7.7, 3.1, 210 * (M_PI / 180.), -1, true);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   GoTo(superstructure::REZERO);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   WaitUntilDrivetrainNear(5.8, 2.0, .5);
   GoTo(superstructure::HATCH_ROCKET_SECOND, superstructure::PREP_SCORE);
   WaitUntilDriveComplete();
@@ -295,7 +295,7 @@ void Rocket::LeftDoubleRocket() {
   final_vel_ = 2.0;
   StartDrivePath(5.5, 2.1, 0.0, -1, true, true);
   Wait(15);
-  GoTo(superstructure::CARGO_GROUND, superstructure::INTAKE_HATCH);
+  GoTo(superstructure::GROUND, superstructure::INTAKE_HATCH);
   final_vel_ = 0.0;
   WaitUntilDriveComplete();
   StartDrivePath(.4, 3.6, 0 * (M_PI / 180.), -1, true, true);

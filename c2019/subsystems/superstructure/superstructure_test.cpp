@@ -337,7 +337,7 @@ TEST_F(SuperstructureTest, IntakeGoals) {
   // Get Rid of Hatch First
   SetIntakeInputs(false, false, false);
 
-  SetGoal(ScoreGoal::CARGO_GROUND, IntakeGoal::INTAKE_CARGO, true);
+  SetGoal(ScoreGoal::GROUND, IntakeGoal::INTAKE_CARGO, true);
   RunFor(5);
   EXPECT_EQ(superstructure_status_proto_->state(), HOLDING);  // jank
 
@@ -402,7 +402,7 @@ TEST_F(SuperstructureTest, Climb) {
   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
   RunFor(1000);
 
-  CheckGoal(kClimbHeight, kClimbAngle);
+  CheckGoal(kClimbHeight, kBustDownAngle);
   EXPECT_TRUE(superstructure_output_proto_->elevator_high_gear());
 }
 
@@ -438,7 +438,7 @@ TEST_F(SuperstructureTest, BuddyClimb) {
   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
   RunFor(1000);
 
-  CheckGoal(kClimbHeight, kClimbAngle);
+  CheckGoal(kClimbHeight, kBustDownAngle);
   EXPECT_EQ(superstructure_output_proto_->crawler_voltage(), 12);
   EXPECT_TRUE(superstructure_output_proto_->crawler_one_solenoid());
   EXPECT_TRUE(superstructure_output_proto_->crawler_two_solenoid());
@@ -453,7 +453,7 @@ TEST_F(SuperstructureTest, Crawl) {
   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
   RunFor(1000);
 
-  CheckGoal(kClimbHeight, kClimbAngle);
+  CheckGoal(kClimbHeight, kBustDownAngle);
   EXPECT_TRUE(superstructure_output_proto_->elevator_high_gear());
 
   SetGoal(ScoreGoal::CRAWL, IntakeGoal::INTAKE_NONE, true);
@@ -461,7 +461,7 @@ TEST_F(SuperstructureTest, Crawl) {
   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
   RunFor(1000);
 
-  CheckGoal(kClimbHeight, kClimbAngle);
+  CheckGoal(kClimbHeight, kBustDownAngle);
   EXPECT_TRUE(superstructure_output_proto_->elevator_high_gear());
   EXPECT_EQ(superstructure_output_proto_->crawler_voltage(), 12);
   EXPECT_TRUE(superstructure_output_proto_->crawler_one_solenoid());

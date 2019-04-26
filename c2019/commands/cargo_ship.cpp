@@ -21,9 +21,9 @@ void CargoShip::RightFrontCargoShip() {
   double init_gyro = drive_status->estimated_heading();
   LOG(INFO, "Running RIGHT FRONT CARGO SHIP auto");
 
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   GoTo(superstructure::REZERO);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   StartDrivePath(5.3, -0.2, 0 * (M_PI / 180), 1, true);
   WaitUntilDrivetrainNear(5.3, -0.2, .3);
   bool success = StartDriveVision();
@@ -59,7 +59,7 @@ void CargoShip::RightFrontCargoShip() {
   }
 
   Wait(10);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
 
   QueueManager<DrivetrainStatus>::Fetch()->ReadLastMessage(&drive_status);
   SetFieldPosition(
@@ -111,9 +111,9 @@ void CargoShip::LeftFrontCargoShip() {
   double init_gyro = drive_status->estimated_heading();
   LOG(INFO, "Running LEFT FRONT CARGO SHIP auto");
 
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   GoTo(superstructure::REZERO);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   StartDrivePath(5.3, 0.2, 0 * (M_PI / 180), 1, true);
   WaitUntilDrivetrainNear(5.3, 0.2, .3);
   bool success = StartDriveVision();
@@ -149,7 +149,7 @@ void CargoShip::LeftFrontCargoShip() {
   }
 
   Wait(10);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
 
   QueueManager<DrivetrainStatus>::Fetch()->ReadLastMessage(&drive_status);
   SetFieldPosition(
@@ -201,9 +201,9 @@ void CargoShip::RightSideCargoShip() {
   LOG(INFO, "Running RIGHT CARGO SHIP auto");
 
   // score hatch on left side, 2, of the CS
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   GoTo(superstructure::REZERO);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   final_vel_ = 0.5;
   StartDrivePath(7., -1.3, 80 * (M_PI / 180), 1, true);
 
@@ -240,7 +240,7 @@ void CargoShip::RightSideCargoShip() {
   }
 
   Wait(10);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
 
   QueueManager<DrivetrainStatus>::Fetch()->ReadLastMessage(&drive_status);
   SetFieldPosition(
@@ -292,9 +292,9 @@ void CargoShip::LeftSideCargoShip() {
   LOG(INFO, "Running LEFT CARGO SHIP auto");
 
   // score hatch on left side, 2, of the CS
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   GoTo(superstructure::REZERO);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
   final_vel_ = 0.5;
   StartDrivePath(7., 1.3, -80 * (M_PI / 180), 1, true);
 
@@ -331,7 +331,7 @@ void CargoShip::LeftSideCargoShip() {
   }
 
   Wait(10);
-  GoTo(superstructure::CARGO_GROUND, superstructure::PREP_SCORE);
+  GoTo(superstructure::GROUND, superstructure::PREP_SCORE);
 
   QueueManager<DrivetrainStatus>::Fetch()->ReadLastMessage(&drive_status);
   SetFieldPosition(

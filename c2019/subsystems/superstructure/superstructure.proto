@@ -41,7 +41,7 @@ enum ScoreGoal {
   HATCH_SHIP_BACKWARDS = 13;
   HANDOFF = 14;
   STOW = 15;
-  CARGO_GROUND = 16;
+  GROUND = 16;
   CLIMB = 17;
   DROP_FORKS = 18;
   DROP_CRAWLERS = 19;
@@ -51,7 +51,7 @@ enum ScoreGoal {
   BRAKE = 23;
   WINCH = 24;
   LIMELIGHT_OVERRIDE = 25;
-  LAND = 26;
+  BUST_DOWN = 26;
   REZERO = 27;
   CARGO_AUTO = 28;
 }

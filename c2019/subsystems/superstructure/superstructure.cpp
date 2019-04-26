@@ -376,7 +376,7 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       if (request_climb_) {
         if (status_->elevator_height() < kKissHeight + .03) {
           elevator_height_ = kClimbHeight;
-          wrist_angle_ = kClimbAngle;
+          wrist_angle_ = kBustDownAngle;
           high_gear_ = !buddy_;
           crawler_down_ = true;
           brake_ = false;
@@ -465,23 +465,23 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       wrist_angle_ = kStowAngle;
       high_gear_ = true;
       break;
-    case CARGO_GROUND:
-      elevator_height_ = kCargoGroundHeight;
-      wrist_angle_ = kCargoGroundAngle;
+    case GROUND:
+      elevator_height_ = kGroundHeight;
+      wrist_angle_ = kGroundAngle;
       high_gear_ = true;
       break;
     case CLIMB:
       elevator_height_ = kClimbHeight;
-      wrist_angle_ = kClimbAngle;
+      wrist_angle_ = kBustDownAngle;
       high_gear_ = !buddy_;
       crawler_down_ = true;
       brake_ = false;
       climbing_ = true;
       request_crawl_ = true;
       break;
-    case LAND:
-      elevator_height_ = kLandHeight;
-      wrist_angle_ = kClimbAngle;
+    case BUST_DOWN:
+      elevator_height_ = kBustDown;
+      wrist_angle_ = kBustDownAngle;
       request_crawl_ = false;
       crawler_down_ = false;
       request_climb_ = false;
@@ -562,8 +562,8 @@ void Superstructure::SetGoal(const SuperstructureGoalProto& goal) {
       break;
     case INTAKE_CARGO:
       if (!cargo_intake_status_->has_cargo()) {
-        if (elevator_height_ < kCargoGroundHeight + 2e-3 &&
-            wrist_angle_ < kCargoGroundAngle + 2e-3) {
+        if (elevator_height_ < kGroundHeight + 2e-3 &&
+            wrist_angle_ < kGroundAngle + 2e-3) {
           GoToState(INTAKING_TO_STOW, goal->intake_goal());
         } else {
           GoToState(INTAKING_WRIST, goal->intake_goal());
