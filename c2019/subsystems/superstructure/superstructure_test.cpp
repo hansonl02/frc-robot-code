@@ -162,6 +162,12 @@ class SuperstructureTest : public ::testing::Test {
     WriteMessages();
   }
 
+  void CurrentSpike(double elevator_current, double wrist_current) {
+    superstructure_input_proto_->set_elevator_current(elevator_current);
+    superstructure_input_proto_->set_wrist_current(wrist_current);
+    WriteMessages();
+  }
+
  protected:
   void CheckGoal(double elevator, double wrist) const {
     EXPECT_NEAR(superstructure_status_proto_->elevator_goal(), elevator, 1e-3);
@@ -222,12 +228,11 @@ TEST_F(SuperstructureTest, ScoreGoals) {
   CheckGoal(kCargoRocketFirstHeight, kCargoRocketFirstAngle);
 
   // CARGO_ROCKET_BACKWARDS
-  /* SetGoal(ScoreGoal::CARGO_ROCKET_BACKWARDS, IntakeGoal::INTAKE_NONE, true);
-   */
-  /* RunFor(3); */
-  /* SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true); */
-  /* RunFor(10); */
-  /* CheckGoal(kCargoRocketBackwardsHeight, kCargoRocketBackwardsAngle); */
+  SetGoal(ScoreGoal::CARGO_ROCKET_BACKWARDS, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(10);
+  CheckGoal(kCargoRocketBackwardsHeight, kCargoRocketBackwardsAngle);
 
   // CARGO_ROCKET_SECOND
   SetGoal(ScoreGoal::CARGO_ROCKET_SECOND, IntakeGoal::INTAKE_NONE, true);
@@ -251,12 +256,11 @@ TEST_F(SuperstructureTest, ScoreGoals) {
   CheckGoal(kHatchRocketFirstHeight, kHatchForwardsAngle);
 
   // HATCH_ROCKET_BACKWARDS
-  /* SetGoal(ScoreGoal::HATCH_ROCKET_BACKWARDS, IntakeGoal::INTAKE_NONE, true);
-   */
-  /* RunFor(3); */
-  /* SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true); */
-  /* RunFor(10); */
-  /* CheckGoal(kHatchRocketBackwardsHeight, kHatchBackwardsAngle); */
+  SetGoal(ScoreGoal::HATCH_ROCKET_BACKWARDS, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(10);
+  CheckGoal(kHatchRocketBackwardsHeight, kHatchBackwardsAngle);
 
   // HATCH_ROCKET_SECOND
   SetGoal(ScoreGoal::HATCH_ROCKET_SECOND, IntakeGoal::INTAKE_NONE, true);
@@ -464,85 +468,27 @@ TEST_F(SuperstructureTest, Crawl) {
   EXPECT_TRUE(superstructure_output_proto_->crawler_two_solenoid());
 }
 
-/* TEST_F(SuperstructureTest, CrawlBraked) { */
-/*   CalibrateDisabled(); */
+TEST_F(SuperstructureTest, Rezero) {
+  SetGoal(ScoreGoal::REZERO, IntakeGoal::INTAKE_NONE, true);
+  RunFor(3);
+  SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true);
+  RunFor(1000);
 
-/*   SetGoal(ScoreGoal::CLIMB, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(3); */
-/*   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(1000); */
+  SetInput(1., false, (M_PI / 3), false);
 
-/*   CheckGoal(kClimbHeight, kClimbAngle); */
-/*   EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear()); */
+  for (int i = 0; i < 1000; i++) {
+    SetInput(i * -(1 / 1000.), false, i * -(M_PI / 3000.), false);
+    Update();
+  }
 
-/*   SetGoal(ScoreGoal::CRAWL_BRAKED, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(3); */
-/*   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(1000); */
+  CurrentSpike(50, 50);
+  RunFor(3);
+  CurrentSpike(1, 1);
+  RunFor(1000);
 
-/*   CheckGoal(kClimbHeight, kClimbAngle); */
-/*   EXPECT_FALSE(superstructure_output_proto_->elevator_high_gear()); */
-/*   EXPECT_TRUE(superstructure_output_proto_->crawler_one_solenoid()); */
-/*   EXPECT_TRUE(superstructure_output_proto_->crawler_two_solenoid()); */
-/*   EXPECT_EQ(superstructure_output_proto_->crawler_voltage(), 12); */
-/*   EXPECT_TRUE(superstructure_output_proto_->brake()); */
-/* } */
-
-/* TEST_F(SuperstructureTest, Brake) { */
-/*   CalibrateDisabled(); */
-
-/*   SetGoal(ScoreGoal::HATCH_ROCKET_THIRD, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(3); */
-/*   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(1000); */
-
-/*   CheckGoal(kHatchRocketThirdHeight, kHatchForwardsAngle); */
-
-/*   aos::time::EnableMockTime(aos::monotonic_clock::now()); */
-
-/*   SetGoal(ScoreGoal::BRAKE, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(3); */
-/*   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true); */
-/*   aos::time::IncrementMockTime(std::chrono::milliseconds(210)); */
-
-/*   RunFor(1000); */
-
-/*   EXPECT_EQ(superstructure_output_proto_->elevator_setpoint(), 0); */
-/*   EXPECT_EQ(superstructure_output_proto_->elevator_setpoint_type(),
- * OPEN_LOOP); */
-/*   EXPECT_TRUE(superstructure_output_proto_->brake()); */
-/*   EXPECT_TRUE(superstructure_status_proto_->braked()); */
-/* } */
-
-/* TEST_F(SuperstructureTest, Handoff) { */
-/*   CalibrateDisabled(); */
-/*   SetIntakeInputs(false, false, false); */
-/*   EXPECT_FALSE(superstructure_status_proto_->has_hp_hatch()); */
-/*   EXPECT_FALSE(superstructure_status_proto_->has_ground_hatch()); */
-
-/*   SetGoal(ScoreGoal::HANDOFF, IntakeGoal::INTAKE_GROUND_HATCH, true); */
-/*   RunFor(3); */
-/*   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(1000); */
-
-/*   CheckGoal(kHandoffHeight, kHandoffAngle); */
-
-/*   SetIntakeInputs(true, false, false); */
-/*   SetGoal(ScoreGoal::NONE, IntakeGoal::POP, true); */
-/*   RunFor(3); */
-/*   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(1000); */
-
-/*   SetIntakeInputs(true, true, false); */
-/*   SetGoal(ScoreGoal::STOW, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(3); */
-/*   SetGoal(ScoreGoal::NONE, IntakeGoal::INTAKE_NONE, true); */
-/*   RunFor(1000); */
-
-/*   SetIntakeInputs(false, true, false); */
-
-/*   EXPECT_EQ(superstructure_status_proto_->state(), HOLDING); */
-/* } */
+  EXPECT_TRUE(superstructure_status_proto_->elevator_is_calibrated());
+  EXPECT_TRUE(superstructure_status_proto_->wrist_is_calibrated());
+}
 
 }  // namespace superstructure
 }  // namespace c2019
