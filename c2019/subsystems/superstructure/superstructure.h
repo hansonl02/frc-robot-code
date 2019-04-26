@@ -58,7 +58,7 @@ constexpr double kCargoRocketSecondAngle = .87;
 constexpr double kCargoRocketThirdAngle = .87;
 constexpr double kCargoRocketBackwardsAngle = M_PI;
 constexpr double kCargoShipForwardsAngle = 0.0;
-constexpr double kCargoShipBackwardsAngle =2.98;
+constexpr double kCargoShipBackwardsAngle = 2.98;
 constexpr double kCargoGroundAngle = 0.0;
 constexpr double kHandoffAngle = 2.98;
 constexpr double kStowAngle = 1.2;
@@ -121,6 +121,8 @@ class Superstructure {
   bool brake_ = false;
   bool request_climb_ = false;
   bool request_crawlers_ = false;
+  bool winch_right_ = false;
+  bool winch_left_ = false;
 
   bool should_climb_ = false;
   bool buddy_ = false;

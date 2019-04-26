@@ -19,16 +19,20 @@ Superstructure::Superstructure()
           QueueManager<DriverStationProto>::Fetch()->MakeReader()} {}
 
 void Superstructure::BoundGoal(double* elevator_goal, double* wrist_goal) {
-  // If wrist angle is higher than safe angle, cap elevator to safe height
+  // To prevent the wrist and elevator from going places it shouldn't go
+
+  // Wrist passthrough prevention
   if (elevator_status_->elevator_height() > kElevatorSafeHeight) {
     *wrist_goal = muan::utils::Cap(*wrist_goal, wrist::kMinAngle,
                                    kWristSafeForwardsAngle);
   }
 
+  // Caps wrist from 0 to pi radians
   if (elevator_status_->elevator_height() < kElevatorWristHorizHeight) {
     *wrist_goal = muan::utils::Cap(*wrist_goal, wrist::kMinAngle, M_PI);
   }
 
+  // Gives wrist goal priority over elevator goal
   if ((wrist_status_->wrist_angle() > kWristSafeBackwardsAngle &&
        *wrist_goal < kWristSafeBackwardsAngle) ||
       (wrist_status_->wrist_angle() < kWristSafeForwardsAngle &&
@@ -57,11 +61,6 @@ void Superstructure::BoundGoal(double* elevator_goal, double* wrist_goal) {
        wrist_status_->wrist_angle() > kWristSafeForwardsAngle)) {
     force_backplate_ = true;
   }
-
-  /* if (elevator_status_->elevator_height() > kElevatorBoardHeight && */
-  /*     *elevator_goal < kElevatorBoardHeight) { */
-  /*   *wrist_goal = 0; */
-  /* } */
 }
 
 elevator::ElevatorGoalProto Superstructure::PopulateElevatorGoal() {
@@ -80,6 +79,7 @@ wrist::WristGoalProto Superstructure::PopulateWristGoal() {
   return goal;
 }
 
+// Ground hatch intake got taken off comp bot before competition
 ground_hatch_intake::GroundHatchIntakeGoalProto
 Superstructure::PopulateGroundHatchIntakeGoal() {
   ground_hatch_intake::GroundHatchIntakeGoalProto goal;
@@ -131,7 +131,8 @@ cargo_intake::CargoIntakeGoalProto Superstructure::PopulateCargoIntakeGoal() {
 
 winch::WinchGoalProto Superstructure::PopulateWinchGoal() {
   winch::WinchGoalProto goal;
-  goal->set_winch(should_climb_);
+  goal->set_winch_right(winch_right_);
+  goal->set_winch_left(winch_left_);
   // Buddy climb logic
   if (buddy_) {
     goal->set_climb_goal(winch::BUDDY);
@@ -166,7 +167,7 @@ void Superstructure::Update() {
   DriverStationProto driver_station;
 
   if (!input_reader_.ReadLastMessage(&input)) {
-    // TODO(Kyle) handle this gracefully
+    // TODO(Jishnu) handle this gracefully
     return;
   }
 
@@ -269,8 +270,8 @@ void Superstructure::Update() {
   output->set_hatch_roller_voltage(
       ground_hatch_intake_output->roller_voltage());
   output->set_snap_down(ground_hatch_intake_output->snap_down());
-  output->set_left_winch_voltage(winch_output->winch_voltage());
-  output->set_right_winch_voltage(winch_output->winch_voltage());
+  output->set_left_winch_voltage(winch_output->right_winch_voltage());
+  output->set_right_winch_voltage(winch_output->left_winch_voltage());
   output->set_drop_forks(winch_output->drop_forks());
   output->set_elevator_high_gear(elevator_output->high_gear());
   output->set_crawler_one_solenoid(elevator_output->crawler_one_solenoid());
@@ -280,10 +281,13 @@ void Superstructure::Update() {
   output->set_elevator_setpoint_ff(climbing_ ? (high_gear_ ? -2.7 : -4) : 1.5);
   output->set_pins(pins_);
 
+  // Rezeroing the elevator and wrist in case of an encoder or CAN loop fault
+
+  // Rezero mode logic
   if (rezero_mode_) {
     force_backplate_ = true;
     if (!elevator_rezeroed_) {
-      output->set_elevator_setpoint(-2);
+      output->set_elevator_setpoint(-2);  // Sends elevator down
       output->set_elevator_setpoint_type(OPEN_LOOP);
     } else {
       output->set_elevator_setpoint(
@@ -294,7 +298,7 @@ void Superstructure::Update() {
           static_cast<TalonOutput>(elevator_output->elevator_output_type()));
     }
     if (!wrist_rezeroed_) {
-      output->set_wrist_setpoint(-4);
+      output->set_wrist_setpoint(-4);  // Sends wrist forward
       output->set_wrist_setpoint_type(OPEN_LOOP);
     } else {
       output->set_wrist_setpoint(
@@ -322,6 +326,7 @@ void Superstructure::Update() {
     output->set_backplate_solenoid(hatch_intake_output->backplate_solenoid());
   }
 
+  // Elevator and wrist current will spike upon hitting the hard stops
   if ((elevator_current_ > kElevatorRezeroCurrentThreshold ||
        input->elevator_hall()) &&
       rezero_mode_) {
@@ -333,12 +338,13 @@ void Superstructure::Update() {
     wrist_rezeroed_ = true;
     wrist_offset_ = input->wrist_encoder();
   }
+
   if (elevator_rezeroed_ && wrist_rezeroed_) {
     rezero_mode_ = false;
   }
 
   if (request_crawl_) {
-    if (elevator_status_->elevator_height() < 0.08) {
+    if (elevator_status_->elevator_height() < kClimbHeight + 3e-2) {
       output->set_crawler_voltage(12.);
     } else {
       output->set_crawler_voltage(2.5);
@@ -347,12 +353,12 @@ void Superstructure::Update() {
     output->set_crawler_voltage(0.);
   }
 
-  if (goal->manual_left_winch()) {
-    output->set_left_winch_voltage(12.);
+  if (goal->manual_right_winch()) {
+    winch_right_ = true;
   }
 
-  if (goal->manual_right_winch()) {
-    output->set_right_winch_voltage(12.);
+  if (goal->manual_left_winch()) {
+    winch_left_ = true;
   }
 
   // Write those queues after Updating the controllers
