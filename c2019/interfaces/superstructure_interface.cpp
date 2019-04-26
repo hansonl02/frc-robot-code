@@ -27,6 +27,14 @@ constexpr double kWristDeadband = 0.0;
 constexpr uint32_t kGroundPDPSlot = 7;
 constexpr uint32_t kCargoPDPSlot = 6;
 
+constexpr uint32_t kSetupTimeout = 100;
+
+constexpr uint32_t kElevatorCruiseVelocity = 14325;
+constexpr uint32_t kElevatorCruiseAccel = 19100;
+constexpr uint32_t KWristCruiseVelocity = 1432.5;
+constexpr uint32_t KWristCruiseAccel = 1528;
+
+
 using c2019::superstructure::TalonOutput;
 using muan::queues::QueueManager;
 
@@ -54,27 +62,27 @@ SuperstructureInterface::SuperstructureInterface(
   pcm_->CreateSolenoid(kPins);
 
   elevator_master_.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General,
-                                        20, 100);
+                                        20, kSetupTimeout);
   elevator_master_.SetStatusFramePeriod(StatusFrameEnhanced::Status_2_Feedback0,
-                                        20, 100);
+                                        20, kSetupTimeout);
 
-  elevator_slave_a_.SetStatusFramePeriod(StatusFrame::Status_1_General_, 100,
-                                         100);
-  elevator_slave_a_.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 100,
-                                         100);
+  elevator_slave_a_.SetStatusFramePeriod(StatusFrame::Status_1_General_, kSetupTimeout,
+                                         kSetupTimeout);
+  elevator_slave_a_.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, kSetupTimeout,
+                                         kSetupTimeout);
 
-  elevator_slave_b_.SetStatusFramePeriod(StatusFrame::Status_1_General_, 100,
-                                         100);
-  elevator_slave_b_.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 100,
-                                         100);
+  elevator_slave_b_.SetStatusFramePeriod(StatusFrame::Status_1_General_, kSetupTimeout,
+                                         kSetupTimeout);
+  elevator_slave_b_.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, kSetupTimeout,
+                                         kSetupTimeout);
 
-  elevator_slave_c_.SetStatusFramePeriod(StatusFrame::Status_1_General_, 100,
-                                         100);
-  elevator_slave_c_.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, 100,
-                                         100);
+  elevator_slave_c_.SetStatusFramePeriod(StatusFrame::Status_1_General_, kSetupTimeout,
+                                         kSetupTimeout);
+  elevator_slave_c_.SetStatusFramePeriod(StatusFrame::Status_2_Feedback0_, kSetupTimeout,
+                                         kSetupTimeout);
 
-  wrist_.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 20, 100);
-  wrist_.SetStatusFramePeriod(StatusFrameEnhanced::Status_2_Feedback0, 20, 100);
+  wrist_.SetStatusFramePeriod(StatusFrameEnhanced::Status_1_General, 20, kSetupTimeout);
+  wrist_.SetStatusFramePeriod(StatusFrameEnhanced::Status_2_Feedback0, 20, kSetupTimeout);
 }
 
 void SuperstructureInterface::ReadSensors() {
@@ -94,7 +102,7 @@ void SuperstructureInterface::ReadSensors() {
 
   if (inputs->elevator_hall() && !elevator_zeroed_) {
     elevator_zeroed_ = true;
-    elevator_master_.SetSelectedSensorPosition(0, 0, 100);
+    elevator_master_.SetSelectedSensorPosition(0, 0, kSetupTimeout);
   }
 
   inputs->set_wrist_encoder(wrist_.GetSelectedSensorPosition() /
@@ -107,7 +115,7 @@ void SuperstructureInterface::ReadSensors() {
 
   if (inputs->wrist_hall() && !wrist_zeroed_) {
     wrist_zeroed_ = true;
-    wrist_.SetSelectedSensorPosition(0, 0, 100);
+    wrist_.SetSelectedSensorPosition(0, 0, kSetupTimeout);
     canifier_.SetQuadraturePosition(0, 0);
   }
 
@@ -135,32 +143,32 @@ void SuperstructureInterface::ReadSensors() {
 }
 
 void SuperstructureInterface::LoadGains() {
-  elevator_master_.Config_kP(0, kElevatorP, 100);
-  elevator_master_.Config_kI(0, kElevatorI, 100);
-  elevator_master_.Config_kD(0, kElevatorD, 100);
-  elevator_master_.Config_kF(0, kElevatorF, 100);
-  elevator_master_.Config_IntegralZone(0, kElevatorIZone, 100);
+  elevator_master_.Config_kP(0, kElevatorP, kSetupTimeout);
+  elevator_master_.Config_kI(0, kElevatorI, kSetupTimeout);
+  elevator_master_.Config_kD(0, kElevatorD, kSetupTimeout);
+  elevator_master_.Config_kF(0, kElevatorF, kSetupTimeout);
+  elevator_master_.Config_IntegralZone(0, kElevatorIZone, kSetupTimeout);
 
-  wrist_.Config_kP(0, kWristP, 100);
-  wrist_.Config_kI(0, kWristI, 100);
-  wrist_.Config_kD(0, kWristD, 100);
-  wrist_.Config_kF(0, kWristF, 100);
-  wrist_.Config_IntegralZone(0, kWristIZone, 100);
+  wrist_.Config_kP(0, kWristP, kSetupTimeout);
+  wrist_.Config_kI(0, kWristI, kSetupTimeout);
+  wrist_.Config_kD(0, kWristD, kSetupTimeout);
+  wrist_.Config_kF(0, kWristF, kSetupTimeout);
+  wrist_.Config_IntegralZone(0, kWristIZone, kSetupTimeout);
 
   wrist_.ConfigReverseLimitSwitchSource(RemoteLimitSwitchSource_RemoteCANifier,
                                         LimitSwitchNormal_NormallyOpen,
-                                        kCANifier, 100);
+                                        kCANifier, kSetupTimeout);
   wrist_.ConfigForwardLimitSwitchSource(LimitSwitchSource_FeedbackConnector,
-                                        LimitSwitchNormal_NormallyOpen, 100);
+                                        LimitSwitchNormal_NormallyOpen, kSetupTimeout);
   elevator_master_.ConfigSelectedFeedbackSensor(
-      FeedbackDevice::CTRE_MagEncoder_Relative, 0, 100);
+      FeedbackDevice::CTRE_MagEncoder_Relative, 0, kSetupTimeout);
 
   wrist_.ConfigRemoteFeedbackFilter(
       0, RemoteSensorSource::RemoteSensorSource_CANifier_Quadrature, kCANifier,
-      100);
+      kSetupTimeout);
 
   wrist_.ConfigSelectedFeedbackSensor(RemoteFeedbackDevice_RemoteSensor0, 0,
-                                      100);
+                                      kSetupTimeout);
 
   elevator_master_.SetSensorPhase(false);
 
@@ -168,13 +176,13 @@ void SuperstructureInterface::LoadGains() {
   elevator_master_.SetInverted(elevator_inverted);
 
   elevator_master_.ConfigReverseLimitSwitchSource(
-      LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, 100);
+      LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, kSetupTimeout);
   elevator_master_.ConfigForwardLimitSwitchSource(
-      LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, 100);
-  elevator_master_.ConfigMotionCruiseVelocity(2865 * 5, 100);
-  elevator_master_.ConfigMotionAcceleration(3820 * 5, 100);
-  wrist_.ConfigMotionCruiseVelocity(2865 * 0.5, 100);
-  wrist_.ConfigMotionAcceleration(3820 * 0.4, 100);
+      LimitSwitchSource_FeedbackConnector, LimitSwitchNormal_NormallyOpen, kSetupTimeout);
+  elevator_master_.ConfigMotionCruiseVelocity(kElevatorCruiseVelocity, kSetupTimeout);
+  elevator_master_.ConfigMotionAcceleration(kElevatorCruiseAccel, kSetupTimeout);
+  wrist_.ConfigMotionCruiseVelocity(KWristCruiseVelocity, kSetupTimeout);
+  wrist_.ConfigMotionAcceleration(KWristCruiseAccel, kSetupTimeout);
   elevator_master_.ConfigAllowableClosedloopError(0, kElevatorDeadband, 0);
 
   elevator_master_.ConfigForwardSoftLimitEnable(false);
