@@ -93,7 +93,6 @@ class TrajectoryTest : public ::testing::Test {
     EXPECT_NEAR(sample.pose.pose().Get()(0), final.Get()(0), 1e-3);
     EXPECT_NEAR(sample.pose.pose().Get()(1), final.Get()(1), 1e-3);
     EXPECT_NEAR(sample.pose.pose().Get()(2), final.Get()(2), 1e-3);
-
   }
 
  private:
