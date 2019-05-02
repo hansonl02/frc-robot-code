@@ -67,9 +67,9 @@ void Limelight::Update() {
   }
 
   if (back_latency == back_prev_latency_) {
-    bad_ticks_++;
+    back_bad_ticks_++;
   } else {
-    bad_ticks_ = 0;
+    back_bad_ticks_ = 0;
   }
 
   if (bottom_latency == bottom_prev_latency_) {
@@ -79,8 +79,9 @@ void Limelight::Update() {
   }
   prev_latency_ = latency;
   bottom_prev_latency_ = bottom_latency;
+  back_prev_latency_ = back_latency;
   status->set_limelight_ok(bad_ticks_ < 10);
-  status->set_back_limelight_ok(false);
+  status->set_back_limelight_ok(back_bad_ticks_ < 10);
   status->set_bottom_limelight_ok(bottom_bad_ticks_ < 10);
 
   // Very rough doesn't take horizontal translation
